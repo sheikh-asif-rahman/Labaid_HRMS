@@ -1,0 +1,30 @@
+.footer {
+    background-color: #2d2d32;
+    padding: 3% 0;
+    text-align: center;
+    color: white;
+  }
+  
+  .socialmedia {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  .socialmedia h5 {
+    margin: 0 1rem;
+  }
+  
+  hr {
+    width: 100%; /* Adjust this width as needed */
+    border: none; /* Remove default border */
+    height: 2px; /* Set the height for the line */
+    background-color: white; /* Set line color */
+  }
+  
+  .footer-text {
+    font-size: 13px;
+    line-height: 15px;
+    font-weight: 600;
+  }
+  

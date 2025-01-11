@@ -1,0 +1,237 @@
+/* General styles for the container */
+.card {
+    padding: 5%;
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Card hover effect */
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Colors - Normal colors for each card */
+.card-attendance {
+    background-color: #ff6666; /* Red */
+    color: white;
+}
+
+.card-absence {
+    background-color: #3399ff; /* Blue */
+    color: white;
+}
+
+.card-leave {
+    background-color: #66cc66; /* Green */
+    color: white;
+}
+
+.card-working-hours {
+    background-color: #ffcc00; /* Yellow */
+    color: white;
+}
+
+.card-late-attendance {
+    background-color: #ff9966; /* Orange */
+    color: white;
+}
+
+.card-overall-percent {
+    background-color: #9966cc; /* Purple */
+    color: white;
+}
+
+/* Card body */
+.card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+/* Increase font size */
+.card-title {
+    font-size: 24px; /* Larger title font */
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.card-text {
+    font-size: 20px; /* Larger body text */
+    font-weight: normal;
+}
+
+/* Title styling */
+.data-title {
+    margin-top: 6%;
+    font-size: 32px; /* Make the title larger */
+    font-weight: bold;
+    color: #333;
+}
+
+/* Responsive design for mobile view */
+@media (max-width: 768px) {
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .col-md-4 {
+        width: 80%; /* Take 80% width on mobile */
+        margin-bottom: 20px;
+    }
+
+    /* Adjust font size for smaller screens if needed */
+    .card-title {
+        font-size: 22px;
+    }
+
+    .card-text {
+        font-size: 18px;
+    }
+    .data-title {
+        margin-top: 20%;
+    }
+}
+
+/* General .overview-group styling */
+.overview-group {
+    margin-bottom: 1.5rem; /* Space between form groups */
+    margin-top: 10%;
+    padding: 0 30%;
+}
+
+/* Label styling */
+.overview-group label {
+    font-size: 1.1rem; /* Slightly larger font size */
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block; /* Ensure the label is above the input */
+}
+
+/* Select dropdown styling inside .overview-group */
+.overview-group select.form-control {
+    padding: 0.75rem 1.25rem; /* Add padding for a larger dropdown */
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 100%; /* Make the dropdown take full width of the container */
+    box-sizing: border-box; /* Prevent overflow from padding */
+    -webkit-appearance: none; /* Remove default styling on macOS */
+    -moz-appearance: none; /* Remove default styling on Firefox */
+    appearance: none; /* Universal reset for dropdown appearance */
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='gray' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M1 4l7 7 7-7'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center; /* Position for the arrow */
+    background-size: 8px 6px; /* Size for the dropdown arrow */
+}
+
+/* Select dropdown focus style */
+.overview-group select.form-control:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Input style (if needed for future use) */
+.overview-group input {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Input focus style */
+.overview-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Add spacing between form elements */
+.overview-group select,
+.overview-group input {
+    margin-bottom: 1.5rem;
+}
+
+/* .overview-group container for better spacing */
+.overview-group.container {
+    max-width: 600px; /* Limit the width for better presentation */
+    margin: 0 auto; /* Center the form */
+    padding: 1rem;
+}
+
+/* ReportSearch styling */
+.report-search-container {
+    max-width: 800px; /* Limit container width */
+    margin: 0 auto;   /* Center the container */
+    margin-top: 90px;  /* Create space from the top to avoid navbar overlap */
+}
+
+/* Form field layout for larger screens */
+@media (min-width: 768px) {
+    .col-md-4 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+/* Adding responsive margin for small screens */
+@media (max-width: 767px) {
+    .report-search-container {
+        margin-top: 80px; /* For smaller screens, give more space */
+    }
+}
+
+/* Styling the row and columns */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Align inputs properly within columns */
+.col-md-4 {
+    margin-bottom: 1.5rem;
+}
+
+/* Make the buttons styled */
+button.download-btn,
+button.reset-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1.5rem; /* Space from the inputs */
+    width: 100%; /* Make buttons take full width */
+    box-sizing: border-box;
+}
+
+/* Custom styles for Download and Reset buttons */
+button.download-btn {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+button.reset-btn {
+    background-color: #fd7e14; /* Orange */
+    color: white;
+}
+
+/* Responsive layout for small screens */
+@media (max-width: 767px) {
+    .col-md-4 {
+        width: 90%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .overview-group {
+        margin-top: 20%;
+        padding: 0%;
+        margin-bottom: -10%;
+    }
+}
