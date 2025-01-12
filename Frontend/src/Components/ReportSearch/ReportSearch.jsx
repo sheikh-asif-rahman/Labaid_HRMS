@@ -24,6 +24,11 @@ const ReportSearch = () => {
     };
 
     fetchLocations();
+
+    // Set default date values to the current date
+    const currentDate = new Date().toISOString().split("T")[0]; // Format as yyyy-mm-dd
+    setFromDate(currentDate);
+    setToDate(currentDate);
   }, []);
 
   // Format date to dd/mm/yyyy
@@ -58,21 +63,19 @@ const ReportSearch = () => {
   const handleReset = () => {
     setUserType(locations[0] || ""); // Reset dropdown to the first location
     setUserId(""); // Reset User ID
-    setFromDate(""); // Reset From Date
-    setToDate(""); // Reset To Date
+    setFromDate(new Date().toISOString().split("T")[0]); // Reset From Date to current date
+    setToDate(new Date().toISOString().split("T")[0]); // Reset To Date to current date
     setIsDataFetched(false); // Reset data fetched state
   };
 
   // Function to handle the Get Data button
   const handleGetData = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/data", {
-        params: {
+      const response = await axios.post("http://localhost:3000/api/report", {
           location: userType,
           userId,
           fromDate,
           toDate,
-        },
       });
       setFetchedData(response.data); // Store the fetched data
       setIsDataFetched(true); // Mark data as fetched
@@ -258,4 +261,5 @@ const ReportSearch = () => {
     </div>
   );
 };
+
 export default ReportSearch;
