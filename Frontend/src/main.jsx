@@ -8,12 +8,17 @@ import HomePage from "./Page/HomePage.jsx"; // Adjust path if necessary
 import ReportPage from "./Page/ReportPage.jsx"; // Adjust path if necessary
 import OverViewPage from "./Page/OverViewPage.jsx";
 import Admin from "./Page/Admin.jsx";
+import LoginPage from "./Page/LoginPage.jsx";
 
 // Define routes
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "/loginpage", // Fix: change this to a full path for clarity
+    element: <LoginPage />,
   },
   {
     path: "/homepage", // Fix: change this to a full path for clarity

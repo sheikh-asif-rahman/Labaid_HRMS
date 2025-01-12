@@ -6,7 +6,6 @@ import axios from "axios"; // Import axios for data fetching
 const DataCard = () => {
   const [userType, setUserType] = useState(""); // Selected location
   const [locations, setLocations] = useState([]); // List of locations fetched from API
-  const [year, setYear] = useState(new Date().getFullYear()); // Selected year
 
   // Fetch locations from the API when component mounts
   useEffect(() => {
@@ -26,14 +25,6 @@ const DataCard = () => {
   // Handle dropdown change
   const handleUserTypeChange = (event) => {
     setUserType(event.target.value);
-  };
-
-  // Handle year input change
-  const handleYearChange = (e) => {
-    const value = e.target.value;
-    if (value.length <= 4 && /^[0-9]*$/.test(value)) {
-      setYear(value); // Allow only numbers and limit to 4 digits
-    }
   };
 
   // Random data generation for count (not percentage)
@@ -63,19 +54,6 @@ const DataCard = () => {
                 <option>Loading locations...</option>
               )}
             </select>
-          </div>
-
-          {/* Year Selection */}
-          <div className="ms-3">
-            <label htmlFor="yearInput">Enter Year</label>
-            <input
-              type="number"
-              id="yearInput"
-              className="form-control"
-              placeholder="Year (e.g., 2023)"
-              value={year}
-              onChange={handleYearChange}
-            />
           </div>
         </div>
         <h1 className="data-title mt-4">Today's Overview</h1>

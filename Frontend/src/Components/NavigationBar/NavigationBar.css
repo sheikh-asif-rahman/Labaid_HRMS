@@ -7,7 +7,7 @@
     font-weight: 500;
     background-color: #1a23a1; /* Set your desired navbar background color */
     transition: background-color 0.3s ease; /* Smooth transition */
-    padding-bottom: 60px; /* Adds bottom padding to the navbar */
+    padding-bottom: 6px; /* Adds bottom padding to the navbar */
 }
 
 .navbar-custom .nav-link {
