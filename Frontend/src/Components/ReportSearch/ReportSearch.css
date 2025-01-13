@@ -1,10 +1,9 @@
-/* ReportSearch.css */
-
 /* Apply margin-top only for the ReportSearch component */
 .reportsearch-container {
   max-width: 800px; /* Limit container width */
   margin: 0 auto;   /* Center the container */
   margin-top: 90px;  /* Create space from the top to avoid navbar overlap */
+  padding: 0 15px; /* Add padding on left and right */
 }
 
 /* Label styling */
@@ -51,10 +50,32 @@
   }
 }
 
-/* Adding responsive margin for small screens */
+/* Responsive adjustments for mobile */
 @media (max-width: 767px) {
   .reportsearch-container {
-    margin-top: 80px; /* For smaller screens, give more space */
+    margin-top: 80px; /* For smaller screens, more space at the top */
+  }
+
+  .reportsearch-row {
+    flex-direction: column; /* Stack items vertically */
+  }
+
+  .reportsearch-col-md-6,
+  .reportsearch-col-md-4 {
+    width: 100%; /* Full width on smaller screens */
+    margin-bottom: 1.5rem; /* Space between fields */
+  }
+
+  /* Adjust button width and padding for smaller screens */
+  .reportsearch-btn {
+    padding: 1rem 1.5rem; /* Increase padding */
+    font-size: 1.2rem; /* Increase font size for better readability */
+  }
+
+  .reportsearch-download-btn,
+  .reportsearch-reset-btn {
+    padding: 1rem 1.5rem; /* Increase padding */
+    font-size: 1.2rem; /* Increase font size */
   }
 }
 
@@ -63,16 +84,17 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between; /* Space between items */
+  margin-bottom: 20px;
 }
 
-/* Adjust column widths */
+/* Adjust column widths for larger screens */
 .reportsearch-col-md-6 {
   flex: 0 0 48%; /* 48% width for larger screens */
   margin-bottom: 1.5rem;
 }
 
 .reportsearch-col-md-4 {
-  flex: 0 0 48%;
+  flex: 0 0 48%; /* 48% width for larger screens */
   margin-bottom: 1.5rem;
 }
 
@@ -83,7 +105,6 @@
   border: none;
   background-color: #28a745; /* Green */
   color: white;
-
   border-radius: 5px;
   cursor: pointer;
   margin-top: 1.5rem; /* Space from the inputs */
@@ -102,11 +123,32 @@
   color: white;
 }
 
+/* Add spacing and mobile-friendly adjustments */
 @media (max-width: 767px) {
   .reportsearch-col-md-6,
   .reportsearch-col-md-4 {
     width: 100%; /* Full width on smaller screens */
     padding-left: 0;
     padding-right: 0;
+  }
+
+  .reportsearch-row {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .reportsearch-btn {
+    padding: 1rem 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .reportsearch-download-btn,
+  .reportsearch-reset-btn {
+    padding: 1rem 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .reportsearch-container {
+    padding: 0 10px; /* Reduce side padding on mobile */
   }
 }

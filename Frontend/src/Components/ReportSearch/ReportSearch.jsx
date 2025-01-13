@@ -14,6 +14,10 @@ const ReportSearch = () => {
   const [loadingProgress, setLoadingProgress] = useState(0); // Loading progress percentage
   const [loadingMessage, setLoadingMessage] = useState(""); // Loading message
 
+  // States for download progress
+  const [downloadProgress, setDownloadProgress] = useState(0); // Track download progress
+  const [isDownloading, setIsDownloading] = useState(false); // Flag to track if download is in progress
+
   // Fetch unique locations on component mount
   useEffect(() => {
     const fetchLocations = async () => {
@@ -111,46 +115,57 @@ const ReportSearch = () => {
 
   // Convert data to CSV format
   const convertToCSV = (data) => {
-    const header = ["Date", "In Time", "Out Time"];
-    const rows = data.map((row) => [
-      row.date || "N/A",
-      row.timeFromDevdt || "N/A",
-      row.timeFromDevdtedit || "N/A",
+    const header = [
+      "SL",
+      "Branch Name",
+      "User ID",
+      "Date",
+      "In Time",
+      "Out Time",
+    ];
+    const rows = data.map((row, index) => [
+      index + 1, // SL number
+      userType || "N/A", // Branch name (selected location)
+      userId || row.user_id || "N/A", // User ID from frontend or from query result
+      row.date || "N/A", // Date
+      row.timeFromDevdt || "N/A", // In Time
+      row.timeFromDevdtedit || "N/A", // Out Time
     ]);
 
     return [header, ...rows].map((row) => row.join(",")).join("\n");
   };
 
   // Handle Download button
-  const handleDownload = async () => {
-    setIsLoading(true); // Show progress bar
-    setLoadingMessage("Preparing download...");
-    setLoadingProgress(0);
+  const handleDownload = () => {
+    // Start download and show progress bar
+    setIsDownloading(true);
+    setDownloadProgress(0);
 
-    // Simulate progress increment for the download
+    // Simulate the CSV generation process with progress updates
     const interval = setInterval(() => {
-      setLoadingProgress((prev) => {
+      setDownloadProgress((prev) => {
         if (prev >= 90) {
           clearInterval(interval);
           return prev;
         }
-        return prev + 10;
+        return prev + 10; // Increment progress
       });
-    }, 200);
+    }, 500); // Update progress every 500ms
 
+    // Simulate delay before the CSV download
     setTimeout(() => {
       const formattedData = fetchedData.map((row) => {
         const date = row.devdt ? formatDate(row.devdt) : "N/A";
         const timeFromDevdt = formatTimeToBangladesh(row.devdt);
         const timeFromDevdtedit = formatTimeToBangladesh(row.devdtedit);
 
-        return { date, timeFromDevdt, timeFromDevdtedit };
+        return { date, timeFromDevdt, timeFromDevdtedit, user_id: row.user_id };
       });
 
       const csvContent = convertToCSV(formattedData);
-
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
+      // Trigger download
       if (navigator.msSaveBlob) {
         navigator.msSaveBlob(blob, "report.csv");
       } else {
@@ -166,10 +181,12 @@ const ReportSearch = () => {
         }
       }
 
-      setLoadingProgress(100); // Set progress to 100% when the download is complete
-      setLoadingMessage("Download successful!");
-      setTimeout(() => setIsLoading(false), 2000); // Hide loading after 2 seconds
-    }, 3000); // Simulate a 3-second delay for the download process
+      // Reset the progress and download flag after download
+      setDownloadProgress(100);
+      setTimeout(() => {
+        setIsDownloading(false); // Hide progress bar after download
+      }, 1000);
+    }, 2000); // Simulate a 2-second delay for the download process
   };
 
   return (
@@ -178,17 +195,27 @@ const ReportSearch = () => {
       {isLoading && (
         <div className="reportsearch-loading-popup">
           <div className="reportsearch-loading-content">
-            <h2>{loadingMessage}</h2>
-            <div className="progress">
+            <h2>Data Fetching</h2>
+            <div className="progress" style={{ height: "20px" }}>
               <div
                 className="progress-bar progress-bar-striped progress-bar-animated"
                 style={{ width: `${loadingProgress}%` }}
-                role="progressbar"
-                aria-valuenow={loadingProgress}
-                aria-valuemin="0"
-                aria-valuemax="100"
               ></div>
             </div>
+            <p>{loadingMessage}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Download Progress Bar */}
+      {isDownloading && (
+        <div className="download-progress-bar">
+          <p>Downloading CSV...</p>
+          <div className="progress" style={{ height: "20px" }}>
+            <div
+              className="progress-bar progress-bar-striped progress-bar-animated"
+              style={{ width: `${downloadProgress}%` }}
+            ></div>
           </div>
         </div>
       )}
