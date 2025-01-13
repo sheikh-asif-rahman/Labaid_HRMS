@@ -7,19 +7,20 @@ const getReportData = async (req, res) => {
     // Input validation
     if (!location || !fromDate || !toDate) {
         return res.status(400).json({
-            message: "All parameters (location, userId, fromDate, toDate) are required",
+            message: "All parameters (location, fromDate, toDate) are required. User ID is optional.",
         });
     }
 
     try {
-        const query = `
+        // Base query
+        let query = `
             SELECT devdt, devdtedit, user_id, devnm
             FROM dbo.punchlog
             WHERE devnm = @location
             AND CAST(devdt AS DATE) BETWEEN CAST(@fromDate AS DATE) AND CAST(@toDate AS DATE)
         `;
 
-        // Add user_id condition only if provided
+        // Add user_id condition if provided
         if (userId) {
             query += ` AND user_id = @userId`;
         }

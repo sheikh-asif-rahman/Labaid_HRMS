@@ -10,6 +10,9 @@ const ReportSearch = () => {
   const [toDate, setToDate] = useState(""); // To Date input
   const [fetchedData, setFetchedData] = useState([]); // Data from API
   const [isDataFetched, setIsDataFetched] = useState(false); // Flag to track if data is fetched
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [loadingProgress, setLoadingProgress] = useState(0); // Loading progress percentage
+  const [loadingMessage, setLoadingMessage] = useState(""); // Loading message
 
   // Fetch unique locations on component mount
   useEffect(() => {
@@ -41,12 +44,11 @@ const ReportSearch = () => {
     return `${day}/${month}/${year}`;
   };
 
-  // Function to format the time to Bangladesh Time (AM/PM format)
+  // Format time to Bangladesh Time (AM/PM format)
   const formatTimeToBangladesh = (timeString) => {
     if (!timeString) return "N/A";
 
     const date = new Date(timeString);
-    // Convert to Bangladesh Time (UTC +6 hours)
     const options = {
       hour: "2-digit",
       minute: "2-digit",
@@ -55,38 +57,59 @@ const ReportSearch = () => {
       timeZone: "Asia/Dhaka", // Bangladesh Time Zone
     };
 
-    const time = date.toLocaleString("en-US", options);
-    return time;
+    return date.toLocaleString("en-US", options);
   };
 
-  // Function to handle the Reset button
+  // Handle Reset button
   const handleReset = () => {
     setUserType(locations[0] || ""); // Reset dropdown to the first location
     setUserId(""); // Reset User ID
     setFromDate(new Date().toISOString().split("T")[0]); // Reset From Date to current date
     setToDate(new Date().toISOString().split("T")[0]); // Reset To Date to current date
     setIsDataFetched(false); // Reset data fetched state
+    setFetchedData([]); // Clear fetched data
   };
 
-  // Function to handle the Get Data button
+  // Handle Get Data button
   const handleGetData = async () => {
+    setIsLoading(true); // Show loading popup
+    setLoadingMessage("Fetching data...");
+    setLoadingProgress(0);
+
     try {
+      // Simulate progress increment
+      const interval = setInterval(() => {
+        setLoadingProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(interval);
+            return prev;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
       const response = await axios.post("http://localhost:3000/api/report", {
-          location: userType,
-          userId,
-          fromDate,
-          toDate,
+        location: userType,
+        userId,
+        fromDate,
+        toDate,
       });
+
       setFetchedData(response.data); // Store the fetched data
       setIsDataFetched(true); // Mark data as fetched
-      alert("Data fetched successfully!");
+      setLoadingProgress(100); // Set progress to 100%
+      setLoadingMessage("Data fetched successfully!");
     } catch (error) {
       console.error("Error fetching data:", error);
-      alert("Failed to fetch data. Please try again.");
+      setLoadingMessage("Failed to fetch data. Please try again.");
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false); // Hide loading popup
+      }, 2000); // Give time for user to see final message
     }
   };
 
-  // Function to convert the data to CSV format
+  // Convert data to CSV format
   const convertToCSV = (data) => {
     const header = ["Date", "In Time", "Out Time"];
     const rows = data.map((row) => [
@@ -95,167 +118,172 @@ const ReportSearch = () => {
       row.timeFromDevdtedit || "N/A",
     ]);
 
-    const csvContent = [header, ...rows].map((row) => row.join(",")).join("\n");
-    return csvContent;
+    return [header, ...rows].map((row) => row.join(",")).join("\n");
   };
 
-  // Function to handle the Download button click
-  const handleDownload = () => {
-    // Prepare the data to be downloaded
-    const formattedData = fetchedData.map((row) => {
-      const date = row.devdt ? formatDate(row.devdt) : "N/A";
-      const timeFromDevdt = formatTimeToBangladesh(row.devdt);
-      const timeFromDevdtedit = formatTimeToBangladesh(row.devdtedit);
+  // Handle Download button
+  const handleDownload = async () => {
+    setIsLoading(true); // Show progress bar
+    setLoadingMessage("Preparing download...");
+    setLoadingProgress(0);
 
-      return { date, timeFromDevdt, timeFromDevdtedit };
-    });
+    // Simulate progress increment for the download
+    const interval = setInterval(() => {
+      setLoadingProgress((prev) => {
+        if (prev >= 90) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 10;
+      });
+    }, 200);
 
-    const csvContent = convertToCSV(formattedData);
+    setTimeout(() => {
+      const formattedData = fetchedData.map((row) => {
+        const date = row.devdt ? formatDate(row.devdt) : "N/A";
+        const timeFromDevdt = formatTimeToBangladesh(row.devdt);
+        const timeFromDevdtedit = formatTimeToBangladesh(row.devdtedit);
 
-    // Create a Blob object with CSV content
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        return { date, timeFromDevdt, timeFromDevdtedit };
+      });
 
-    // Check if the browser supports download attribute
-    if (navigator.msSaveBlob) {
-      // For Internet Explorer or Edge, use msSaveBlob
-      navigator.msSaveBlob(blob, "report.csv");
-    } else {
-      // For modern browsers, create a temporary <a> link and trigger download
-      const link = document.createElement("a");
-      if (link.download !== undefined) {
-        // For browsers that support the download attribute
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", "report.csv");
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link); // Clean up the DOM
+      const csvContent = convertToCSV(formattedData);
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, "report.csv");
+      } else {
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", "report.csv");
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       }
-    }
+
+      setLoadingProgress(100); // Set progress to 100% when the download is complete
+      setLoadingMessage("Download successful!");
+      setTimeout(() => setIsLoading(false), 2000); // Hide loading after 2 seconds
+    }, 3000); // Simulate a 3-second delay for the download process
   };
 
   return (
-    <div className="report-search-container">
-      <div className="row">
-        <div className="col-md-4">
-          {/* Dropdown */}
-          <div className="form-group">
-            <label htmlFor="userType">Select Location</label>
-            <select
-              className="form-control"
-              id="userType"
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
-            >
-              {locations.map((location, index) => (
-                <option key={index} value={location}>
-                  {location}
-                </option>
-              ))}
-            </select>
+    <div className="reportsearch-container">
+      {/* Fetching Popup */}
+      {isLoading && (
+        <div className="reportsearch-loading-popup">
+          <div className="reportsearch-loading-content">
+            <h2>{loadingMessage}</h2>
+            <div className="progress">
+              <div
+                className="progress-bar progress-bar-striped progress-bar-animated"
+                style={{ width: `${loadingProgress}%` }}
+                role="progressbar"
+                aria-valuenow={loadingProgress}
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
+            </div>
           </div>
         </div>
+      )}
 
-        {/* User ID input */}
-        <div className="col-md-4">
-          <div className="form-group">
-            <label htmlFor="userID">User ID</label>
-            <input
-              type="text"
-              className="form-control"
-              id="userID"
-              placeholder="Enter User ID"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-            />
-          </div>
+      {/* Main Form */}
+      <div className="reportsearch-row">
+        {/* First row with Location and User ID */}
+        <div className="reportsearch-col-md-6">
+          <label htmlFor="userType" className="reportsearch-label">
+            Location
+          </label>
+          <select
+            id="userType"
+            className="reportsearch-select form-control"
+            value={userType}
+            onChange={(e) => setUserType(e.target.value)}
+          >
+            {locations.map((location, index) => (
+              <option key={index} value={location}>
+                {location}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="reportsearch-col-md-6">
+          <label htmlFor="userId" className="reportsearch-label">
+            User ID
+          </label>
+          <input
+            id="userId"
+            className="reportsearch-input"
+            type="text"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+          />
         </div>
       </div>
 
-      {/* From and To Date fields */}
-      <div className="row">
-        <div className="col-md-4">
-          {/* From Date */}
-          <div className="form-group">
-            <label htmlFor="fromDate">From Date</label>
-            <input
-              type="date"
-              className="form-control"
-              id="fromDate"
-              name="fromDate"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-            />
-          </div>
+      <div className="reportsearch-row">
+        {/* Second row with From Date and To Date */}
+        <div className="reportsearch-col-md-6">
+          <label htmlFor="fromDate" className="reportsearch-label">
+            From Date
+          </label>
+          <input
+            id="fromDate"
+            className="reportsearch-input"
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
         </div>
-        <div className="col-md-4">
-          {/* To Date */}
-          <div className="form-group">
-            <label htmlFor="toDate">To Date</label>
-            <input
-              type="date"
-              className="form-control"
-              id="toDate"
-              name="toDate"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-            />
-          </div>
+
+        <div className="reportsearch-col-md-6">
+          <label htmlFor="toDate" className="reportsearch-label">
+            To Date
+          </label>
+          <input
+            id="toDate"
+            className="reportsearch-input"
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
         </div>
       </div>
 
-      {/* Get Data and Reset buttons */}
-      <div className="row">
-        <div className="col-md-4">
+      <div className="reportsearch-row">
+        {/* Buttons row */}
+        <div className="reportsearch-col-md-4">
           {!isDataFetched ? (
-            <button className="download-btn" onClick={handleGetData}>
+            <button
+              className="reportsearch-get-data-btn reportsearch-btn"
+              onClick={handleGetData}
+            >
               Get Data
             </button>
           ) : (
-            <button className="download-btn" onClick={handleDownload}>
-              Download
+            <button
+              className="reportsearch-download-btn reportsearch-btn"
+              onClick={handleDownload}
+            >
+              Download CSV
             </button>
           )}
         </div>
-        <div className="col-md-4">
-          <button className="reset-btn" onClick={handleReset}>
+
+        <div className="reportsearch-col-md-4">
+          <button
+            className="reportsearch-reset-btn reportsearch-btn"
+            onClick={handleReset}
+          >
             Reset
           </button>
-        </div>
-      </div>
-
-      {/* Data Table */}
-      <div className="row">
-        <div className="col-md-12">
-          {fetchedData.length > 0 && (
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>Date (dd/mm/yyyy)</th>
-                  <th>In Time</th>
-                  <th>Out Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {fetchedData.map((row, index) => {
-                  const date = row.devdt ? formatDate(row.devdt) : "N/A";
-                  const timeFromDevdt = formatTimeToBangladesh(row.devdt);
-                  const timeFromDevdtedit = formatTimeToBangladesh(
-                    row.devdtedit
-                  );
-
-                  return (
-                    <tr key={index}>
-                      <td>{date}</td>
-                      <td>{timeFromDevdt}</td>
-                      <td>{timeFromDevdtedit}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
         </div>
       </div>
     </div>
