@@ -21,7 +21,8 @@
 .navbar-custom .navbar-brand {
     color: #ffffff; /* Brand color */
     font-family: 'Arial', sans-serif; /* Change to your desired font */
-    font-size: 24px; /* Adjust the brand font size */
+    font-size: 26px; /* Adjust the brand font size */
+    font-weight: bolder;
 }
 
 /* Offcanvas styles */
