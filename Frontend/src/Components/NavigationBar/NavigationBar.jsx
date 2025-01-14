@@ -24,10 +24,6 @@ const NavigationBar = () => {
             {/* this is the nav for item to align right side */}
             <Nav className="ms-auto">
               <Nav.Link href="homepage">Home</Nav.Link>
-              <Nav.Link href="homepage">Page2</Nav.Link>
-              <Nav.Link href="homepage">Page3</Nav.Link>
-              <Nav.Link href="homepage">Page4</Nav.Link>
-              <Nav.Link href="homepage">Page5</Nav.Link>
               <Nav.Link href="homepage" className="logout-link">
                 Logout
               </Nav.Link>
@@ -47,10 +43,6 @@ const NavigationBar = () => {
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
                 <Nav.Link href="homepage">Home</Nav.Link>
-                <Nav.Link href="homepage">Page2</Nav.Link>
-                <Nav.Link href="homepage">Page3</Nav.Link>
-                <Nav.Link href="homepage">Page4</Nav.Link>
-                <Nav.Link href="homepage">Page5</Nav.Link>
                 <Nav.Link href="homepage" className="logout-link">
                   Logout
                 </Nav.Link>
