@@ -5,7 +5,8 @@ import "./ReportSearch.css";
 const ReportSearch = () => {
   const [locations, setLocations] = useState([]); // List of unique devnm values
   const [userType, setUserType] = useState(""); // Selected location
-  const [userId, setUserId] = useState(""); // User ID input
+  const [userId, setUserId] = useState(""); // Selected User ID
+  const [userIds, setUserIds] = useState([]); // List of User IDs
   const [fromDate, setFromDate] = useState(""); // From Date input
   const [toDate, setToDate] = useState(""); // To Date input
   const [fetchedData, setFetchedData] = useState([]); // Data from API
@@ -30,7 +31,18 @@ const ReportSearch = () => {
       }
     };
 
+    const fetchUserIds = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/users");
+        setUserIds(response.data); // Populate User ID dropdown
+        if (response.data.length > 0) setUserId(response.data[0]); // Set default User ID
+      } catch (error) {
+        console.error("Error fetching user IDs:", error);
+      }
+    };
+
     fetchLocations();
+    fetchUserIds();
 
     // Set default date values to the current date
     const currentDate = new Date().toISOString().split("T")[0]; // Format as yyyy-mm-dd
@@ -67,7 +79,7 @@ const ReportSearch = () => {
   // Handle Reset button
   const handleReset = () => {
     setUserType(locations[0] || ""); // Reset dropdown to the first location
-    setUserId(""); // Reset User ID
+    setUserId(userIds[0] || ""); // Reset User ID dropdown to the first value
     setFromDate(new Date().toISOString().split("T")[0]); // Reset From Date to current date
     setToDate(new Date().toISOString().split("T")[0]); // Reset To Date to current date
     setIsDataFetched(false); // Reset data fetched state
@@ -245,13 +257,18 @@ const ReportSearch = () => {
           <label htmlFor="userId" className="reportsearch-label">
             User ID
           </label>
-          <input
+          <select
             id="userId"
-            className="reportsearch-input"
-            type="text"
+            className="reportsearch-select form-control"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
-          />
+          >
+            {userIds.map((id, index) => (
+              <option key={index} value={id}>
+                {id}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
