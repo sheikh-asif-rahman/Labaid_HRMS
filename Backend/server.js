@@ -4,6 +4,7 @@ const { connectDB } = require('./config/dbConfig');
 
 const locationRoutes = require('./routes/LocationRoute');
 const reportRoutes = require('./routes/ReportRoute');
+const userRoutes = require('./routes/UserRoute');
 
 const app = express();
 app.use(express.json());
@@ -24,6 +25,7 @@ connectDB()
 // Routes
 app.use('/api', locationRoutes);
 app.use('/api', reportRoutes);
+app.use('/api', userRoutes);
 
 app.listen(port, () => {
     console.log(`The server has started on port ${port}`);
