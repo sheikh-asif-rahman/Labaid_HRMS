@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./AccessAdmin.css";
 
 const AccessAdmin = () => {
@@ -12,18 +13,29 @@ const AccessAdmin = () => {
     "78901",
     "23456",
   ]);
-  const [branches, setBranches] = useState({
-    all: false,
-    Dhanmondi: false,
-    Gulshan: false,
-    Kalabagan: false,
-  });
-
-  // New state for password, machine code, and status
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(""); // To store the selected branch
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState("Active"); // Default to 'Active'
-  const [machineCode, setMachineCode] = useState(""); // State for machine code
+  const [machineCode, setMachineCode] = useState("");
+  const [showBranchModal, setShowBranchModal] = useState(false); // To control modal visibility
+  const [selectedBranches, setSelectedBranches] = useState([]);
+
+  // Fetch branches when the component mounts
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/locations");
+        setBranches(response.data); // Populate branch names from API
+        if (response.data.length > 0) setSelectedBranch(response.data[0]); // Set default value if available
+      } catch (error) {
+        console.error("Error fetching branches:", error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
 
   const handleSearchChange = (e) => {
     const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
@@ -38,29 +50,33 @@ const AccessAdmin = () => {
   };
 
   const handleBranchChange = (e) => {
-    const { name, checked } = e.target;
+    setSelectedBranch(e.target.value); // Update selected branch
+  };
 
-    if (name === "all") {
-      setBranches((prev) =>
-        Object.keys(prev).reduce((acc, branch) => {
-          acc[branch] = checked;
-          return acc;
-        }, {})
-      );
-    } else {
-      setBranches((prev) => ({
-        ...prev,
-        [name]: checked,
-        all: false, // Ensure "ALL Branch" is unchecked when specific branches are selected
-      }));
-    }
+  const toggleBranchModal = () => {
+    setShowBranchModal(!showBranchModal);
+  };
+
+  const handleBranchCheckboxChange = (e) => {
+    const value = e.target.value;
+    setSelectedBranches((prevSelectedBranches) => {
+      if (prevSelectedBranches.includes(value)) {
+        return prevSelectedBranches.filter((branch) => branch !== value);
+      } else {
+        return [...prevSelectedBranches, value];
+      }
+    });
+  };
+
+  const handleSaveBranches = () => {
+    alert(`Selected branches: ${selectedBranches.join(", ")}`);
+    toggleBranchModal(); // Close modal after saving
   };
 
   return (
     <div className="custom-access-admin-page">
       {/* Bubbles in the background */}
       <div className="custom-bubbles">
-        {/* Bubble elements */}
         <div className="custom-bubble"></div>
         <div className="custom-bubble"></div>
         <div className="custom-bubble"></div>
@@ -122,12 +138,10 @@ const AccessAdmin = () => {
               />
             </div>
             <div className="custom-form-group">
-              <label htmlFor="branch-name">Branch Name:</label>
-              <select id="branch-name">
-                <option value="Dhanmondi">Dhanmondi</option>
-                <option value="Gulshan">Gulshan</option>
-                <option value="Kalabagan">Kalabagan</option>
-              </select>
+              <label htmlFor="branch-name">Facility:</label>
+              <button className="btn btn-primary" onClick={toggleBranchModal}>
+                Select Branches
+              </button>
             </div>
           </div>
 
@@ -181,6 +195,64 @@ const AccessAdmin = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal for selecting branches */}
+      {showBranchModal && (
+        <div
+          className="modal fade show"
+          style={{ display: "block" }}
+          tabIndex="-1"
+          role="dialog"
+          aria-labelledby="branchModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="branchModalLabel">
+                  Available Branches
+                </h5>
+              </div>
+              <div className="modal-body">
+                <div className="container-fluid">
+                  <div className="row">
+                    {branches.map((branch, index) => (
+                      <div className="col-md-4" key={index}>
+                        <div className="custom-checkbox-group">
+                          <label>
+                            <input
+                              type="checkbox"
+                              value={branch}
+                              onChange={handleBranchCheckboxChange}
+                            />
+                            {branch}
+                          </label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={toggleBranchModal}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleSaveBranches}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -263,6 +263,24 @@
   margin-right: 10px;
 }
 
+/* Modal Backdrop Styling */
+.modal.fade.show {
+  background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
+  backdrop-filter: blur(5px); /* Apply blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari compatibility */
+}
+
+.modal-dialog {
+  z-index: 1050; /* Ensure the modal is above the backdrop */
+}
+
+/* Modal content styling (optional for adjusting the modal itself) */
+.modal-content {
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .custom-form-row {
