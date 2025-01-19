@@ -5,8 +5,9 @@ import "./ReportSearch.css";
 const ReportSearch = () => {
   const [locations, setLocations] = useState([]); // List of unique devnm values
   const [userType, setUserType] = useState(""); // Selected location
-  const [userId, setUserId] = useState(""); // Selected User ID
+  const [userId, setUserId] = useState(""); // Selected User ID (initially empty)
   const [userIds, setUserIds] = useState([]); // List of User IDs
+  const [userIdSuggestions, setUserIdSuggestions] = useState([]); // Suggestions for User IDs
   const [fromDate, setFromDate] = useState(""); // From Date input
   const [toDate, setToDate] = useState(""); // To Date input
   const [fetchedData, setFetchedData] = useState([]); // Data from API
@@ -35,7 +36,6 @@ const ReportSearch = () => {
       try {
         const response = await axios.get("http://localhost:3000/api/users");
         setUserIds(response.data); // Populate User ID dropdown
-        if (response.data.length > 0) setUserId(response.data[0]); // Set default User ID
       } catch (error) {
         console.error("Error fetching user IDs:", error);
       }
@@ -79,11 +79,12 @@ const ReportSearch = () => {
   // Handle Reset button
   const handleReset = () => {
     setUserType(locations[0] || ""); // Reset dropdown to the first location
-    setUserId(userIds[0] || ""); // Reset User ID dropdown to the first value
+    setUserId(""); // Reset User ID to empty
     setFromDate(new Date().toISOString().split("T")[0]); // Reset From Date to current date
     setToDate(new Date().toISOString().split("T")[0]); // Reset To Date to current date
     setIsDataFetched(false); // Reset data fetched state
     setFetchedData([]); // Clear fetched data
+    setUserIdSuggestions([]); // Clear User ID suggestions
   };
 
   // Handle Get Data button
@@ -145,6 +146,28 @@ const ReportSearch = () => {
     ]);
 
     return [header, ...rows].map((row) => row.join(",")).join("\n");
+  };
+
+  // Handle User ID input change to show suggestions
+  const handleUserIdChange = (e) => {
+    const value = e.target.value;
+    setUserId(value);
+
+    // Show suggestions based on the input value
+    if (value) {
+      const suggestions = userIds.filter((id) =>
+        id.toLowerCase().startsWith(value.toLowerCase())
+      );
+      setUserIdSuggestions(suggestions);
+    } else {
+      setUserIdSuggestions([]); // Clear suggestions if input is empty
+    }
+  };
+
+  // Handle suggestion selection
+  const handleSuggestionClick = (suggestion) => {
+    setUserId(suggestion);
+    setUserIdSuggestions([]); // Clear suggestions after selection
   };
 
   // Handle Download button
@@ -257,23 +280,32 @@ const ReportSearch = () => {
           <label htmlFor="userId" className="reportsearch-label">
             User ID
           </label>
-          <select
+          <input
             id="userId"
-            className="reportsearch-select form-control"
+            className="reportsearch-input"
+            type="text"
             value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-          >
-            {userIds.map((id, index) => (
-              <option key={index} value={id}>
-                {id}
-              </option>
-            ))}
-          </select>
+            onChange={handleUserIdChange}
+            placeholder="Start typing User ID..."
+          />
+          {/* Display suggestions */}
+          {userIdSuggestions.length > 0 && (
+            <ul className="suggestions-list">
+              {userIdSuggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
+      {/* Second row with Date Inputs */}
       <div className="reportsearch-row">
-        {/* Second row with From Date and To Date */}
         <div className="reportsearch-col-md-6">
           <label htmlFor="fromDate" className="reportsearch-label">
             From Date
@@ -301,8 +333,8 @@ const ReportSearch = () => {
         </div>
       </div>
 
+      {/* Buttons */}
       <div className="reportsearch-row">
-        {/* Buttons row */}
         <div className="reportsearch-col-md-4">
           {!isDataFetched ? (
             <button

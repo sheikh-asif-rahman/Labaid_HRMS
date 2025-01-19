@@ -3,7 +3,7 @@
   max-width: 800px; /* Limit container width */
   margin: 0 auto;   /* Center the container */
   margin-top: 90px;  /* Create space from the top to avoid navbar overlap */
-  padding: 0 15px; /* Add padding on left and right */
+  padding: 5% 15px; /* Add padding on left and right */
 }
 
 /* Label styling */
@@ -149,6 +149,6 @@
   }
 
   .reportsearch-container {
-    padding: 0 10px; /* Reduce side padding on mobile */
+    padding: 10%; /* Reduce side padding on mobile */
   }
 }
