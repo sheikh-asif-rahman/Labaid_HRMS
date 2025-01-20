@@ -14,13 +14,15 @@ const AccessAdmin = () => {
     "23456",
   ]);
   const [branches, setBranches] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(""); // To store the selected branch
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState("Active"); // Default to 'Active'
   const [permission, setPermission] = useState("User"); // Default permission
   const [showBranchModal, setShowBranchModal] = useState(false); // To control modal visibility
-  const [selectedBranches, setSelectedBranches] = useState([]);
+  const [selectedBranches, setSelectedBranches] = useState([]); // Store selected branches
+  const [name, setName] = useState("");
+  const [userId, setUserId] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
 
   // Fetch branches when the component mounts
   useEffect(() => {
@@ -28,7 +30,6 @@ const AccessAdmin = () => {
       try {
         const response = await axios.get("http://localhost:3000/api/locations");
         setBranches(response.data); // Populate branch names from API
-        if (response.data.length > 0) setSelectedBranch(response.data[0]); // Set default value if available
       } catch (error) {
         console.error("Error fetching branches:", error);
       }
@@ -46,11 +47,24 @@ const AccessAdmin = () => {
   };
 
   const handleSave = () => {
-    alert(`Saved: ${searchValue}`);
-  };
+    // Gather form data into an object
+    const formData = {
+      Name: name,
+      UserID: userId,
+      MobileNumber: mobileNumber,
+      Status: status,
+      Permission: permission,
+      Password: password,
+      ConfirmPassword: confirmPassword,
+      SelectedBranches: selectedBranches.join(", "),
+    };
 
-  const handleBranchChange = (e) => {
-    setSelectedBranch(e.target.value); // Update selected branch
+    // Display alert with form data
+    alert(
+      `Form Data:\n${Object.entries(formData)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join("\n")}`
+    );
   };
 
   const toggleBranchModal = () => {
@@ -68,9 +82,8 @@ const AccessAdmin = () => {
     });
   };
 
-  const handleSaveBranches = () => {
-    alert(`Selected branches: ${selectedBranches.join(", ")}`);
-    toggleBranchModal(); // Close modal after saving
+  const handleOkBranches = () => {
+    toggleBranchModal(); // Close modal after OK
   };
 
   return (
@@ -120,11 +133,23 @@ const AccessAdmin = () => {
           <div className="custom-form-row">
             <div className="custom-form-group">
               <label htmlFor="name">Name:</label>
-              <input id="name" type="text" placeholder="Enter Name" />
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter Name"
+              />
             </div>
             <div className="custom-form-group">
               <label htmlFor="user-id">User ID:</label>
-              <input id="user-id" type="text" placeholder="Enter User ID" />
+              <input
+                id="user-id"
+                type="text"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                placeholder="Enter User ID"
+              />
             </div>
           </div>
           <div className="custom-form-row">
@@ -134,6 +159,8 @@ const AccessAdmin = () => {
                 id="mobile-number"
                 type="tel"
                 pattern="[0-9]{10}"
+                value={mobileNumber}
+                onChange={(e) => setMobileNumber(e.target.value)}
                 placeholder="Enter Mobile Number"
               />
             </div>
@@ -224,6 +251,7 @@ const AccessAdmin = () => {
                             <input
                               type="checkbox"
                               value={branch}
+                              checked={selectedBranches.includes(branch)}
                               onChange={handleBranchCheckboxChange}
                             />
                             {branch}
@@ -240,14 +268,14 @@ const AccessAdmin = () => {
                   className="btn btn-secondary"
                   onClick={toggleBranchModal}
                 >
-                  Close
+                  Cancel
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={handleSaveBranches}
+                  onClick={handleOkBranches}
                 >
-                  Save
+                  OK
                 </button>
               </div>
             </div>
