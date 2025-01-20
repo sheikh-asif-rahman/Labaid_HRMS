@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css"; // Make sure Bootstrap is imported
 import "./ReportSearch.css";
 
 const ReportSearch = () => {
@@ -19,6 +20,10 @@ const ReportSearch = () => {
   // States for download progress
   const [downloadProgress, setDownloadProgress] = useState(0); // Track download progress
   const [isDownloading, setIsDownloading] = useState(false); // Flag to track if download is in progress
+
+  // States to control the modal visibility
+  const [isModalVisible, setIsModalVisible] = useState(false); // Control the visibility of the modal
+  const [modalMessage, setModalMessage] = useState(""); // Modal message to be displayed
 
   // Fetch unique locations on component mount
   useEffect(() => {
@@ -89,9 +94,10 @@ const ReportSearch = () => {
 
   // Handle Get Data button
   const handleGetData = async () => {
-    setIsLoading(true); // Show loading popup
+    setIsLoading(true); // Show loading modal
     setLoadingMessage("Fetching data...");
     setLoadingProgress(0);
+    setIsModalVisible(true); // Show the modal
 
     try {
       // Simulate progress increment
@@ -118,10 +124,11 @@ const ReportSearch = () => {
       setLoadingMessage("Data fetched successfully!");
     } catch (error) {
       console.error("Error fetching data:", error);
+      setLoadingProgress(100); // Set progress to 100%
       setLoadingMessage("Failed to fetch data. Please try again.");
     } finally {
       setTimeout(() => {
-        setIsLoading(false); // Hide loading popup
+        setIsLoading(false); // Hide loading modal
       }, 2000); // Give time for user to see final message
     }
   };
@@ -172,8 +179,7 @@ const ReportSearch = () => {
 
   // Handle Download button
   const handleDownload = () => {
-    // Start download and show progress bar
-    setIsDownloading(true);
+    setIsDownloading(true); // Show downloading modal
     setDownloadProgress(0);
 
     // Simulate the CSV generation process with progress updates
@@ -227,30 +233,82 @@ const ReportSearch = () => {
   return (
     <div className="reportsearch-container">
       {/* Fetching Popup */}
-      {isLoading && (
-        <div className="reportsearch-loading-popup">
-          <div className="reportsearch-loading-content">
-            <h2>Data Fetching</h2>
-            <div className="progress" style={{ height: "20px" }}>
-              <div
-                className="progress-bar progress-bar-striped progress-bar-animated"
-                style={{ width: `${loadingProgress}%` }}
-              ></div>
+      {isModalVisible && (
+        <div
+          className="modal fade show"
+          tabIndex="-1"
+          style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+          aria-labelledby="fetchingDataModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="fetchingDataModalLabel">
+                  Data Fetching
+                </h5>
+              </div>
+              <div className="modal-body">
+                {loadingProgress < 100 ? (
+                  <>
+                    <div className="progress" style={{ height: "20px" }}>
+                      <div
+                        className="progress-bar progress-bar-striped progress-bar-animated"
+                        style={{ width: `${loadingProgress}%` }}
+                      ></div>
+                    </div>
+                    <p>{loadingMessage}</p>
+                  </>
+                ) : (
+                  <>
+                    <p>{loadingMessage}</p>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => setIsModalVisible(false)} // Close modal on button click
+                    >
+                      OK
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-            <p>{loadingMessage}</p>
           </div>
         </div>
       )}
 
-      {/* Download Progress Bar */}
+      {/* Downloading Popup */}
       {isDownloading && (
-        <div className="download-progress-bar">
-          <p>Downloading CSV...</p>
-          <div className="progress" style={{ height: "20px" }}>
-            <div
-              className="progress-bar progress-bar-striped progress-bar-animated"
-              style={{ width: `${downloadProgress}%` }}
-            ></div>
+        <div
+          className="modal fade show"
+          tabIndex="-1"
+          style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+          aria-labelledby="downloadingDataModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="downloadingDataModalLabel">
+                  Downloading CSV
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="progress" style={{ height: "20px" }}>
+                  <div
+                    className="progress-bar progress-bar-striped progress-bar-animated"
+                    style={{ width: `${downloadProgress}%` }}
+                  ></div>
+                </div>
+                <p>Downloading CSV...</p>
+              </div>
+            </div>
           </div>
         </div>
       )}

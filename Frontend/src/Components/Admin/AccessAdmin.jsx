@@ -18,7 +18,7 @@ const AccessAdmin = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState("Active"); // Default to 'Active'
-  const [machineCode, setMachineCode] = useState("");
+  const [permission, setPermission] = useState("User"); // Default permission
   const [showBranchModal, setShowBranchModal] = useState(false); // To control modal visibility
   const [selectedBranches, setSelectedBranches] = useState([]);
 
@@ -169,7 +169,7 @@ const AccessAdmin = () => {
             </div>
           </div>
 
-          {/* Active/Inactive Status and Machine Code side by side */}
+          {/* Active/Inactive Status and Permission dropdown */}
           <div className="custom-form-row">
             <div className="custom-form-group">
               <label htmlFor="status">Status:</label>
@@ -183,14 +183,15 @@ const AccessAdmin = () => {
               </select>
             </div>
             <div className="custom-form-group">
-              <label htmlFor="machine-code">Machine Code:</label>
-              <input
-                id="machine-code"
-                type="text"
-                value={machineCode}
-                onChange={(e) => setMachineCode(e.target.value)}
-                placeholder="Enter Machine Code"
-              />
+              <label htmlFor="permission">Permission:</label>
+              <select
+                id="permission"
+                value={permission}
+                onChange={(e) => setPermission(e.target.value)}
+              >
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+              </select>
             </div>
           </div>
         </div>
