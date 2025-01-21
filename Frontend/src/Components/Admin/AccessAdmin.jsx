@@ -18,6 +18,8 @@ const AccessAdmin = () => {
   const [searchId, setsearchId] = useState(""); // Store search userId
 
   const [mobileNumber, setMobileNumber] = useState("");
+  const [userFound, setUserFound] = useState(false); // To toggle visibility of Save/Update button
+  const [userIdDisabled, setUserIdDisabled] = useState(false); // New state to disable/enable userId input
 
   // Fetch branches when the component mounts
   useEffect(() => {
@@ -58,14 +60,20 @@ const AccessAdmin = () => {
         setPermission(user.Permission);
         setSelectedBranches(user.BranchId.split(", ")); // Assuming BranchId is a comma-separated list
         setModalMessage("User found!");
-      } else {
-        setModalMessage("User not found.");
+        setUserFound(true); // Set the userFound state to true
+
+        // Disable the user-id input field
+        setUserIdDisabled(true);
       }
       setShowModal(true);
     } catch (error) {
       console.error("Error searching user:", error);
-      setModalMessage("An error occurred while searching.");
+      setModalMessage("User Not Found");
       setShowModal(true);
+      setUserFound(false); // Reset userFound state if no user is found
+
+      // Enable the user-id input field again if the user is not found
+      setUserIdDisabled(false);
     }
   };
 
@@ -102,6 +110,32 @@ const AccessAdmin = () => {
     }
   };
 
+  // Handle Update functionality
+  const handleUpdate = async () => {
+    const formData = {
+      userId: userId, // Make sure userId is correctly passed in the form data
+      userName: name, // The field name should match the backend parameter name
+      mobileNo: mobileNumber, // Similarly, map the other fields
+      branchId: selectedBranches.join(", "), // Make sure selectedBranches is an array
+      permission: permission, // Same for permission
+      status: status, // Send "Active" or "Inactive" as a string
+      updatedBy: "admin", // You can set this to the current user's name or ID
+    };
+
+    try {
+      const response = await axios.put(
+        "http://localhost:3000/api/updateuser",
+        formData
+      );
+      setModalMessage("User updated successfully!");
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      setModalMessage("Failed to update user. Please try again.");
+      setShowModal(true);
+    }
+  };
+
   const toggleBranchModal = () => {
     setShowBranchModal(!showBranchModal);
   };
@@ -119,6 +153,10 @@ const AccessAdmin = () => {
 
   const handleOkBranches = () => {
     toggleBranchModal(); // Close modal after OK
+  };
+  // Reset function for all fields
+  const handleReset = () => {
+    window.location.reload(); // Reload the page when "New" is clicked
   };
 
   return (
@@ -143,6 +181,19 @@ const AccessAdmin = () => {
           </div>
         </div>
       </div>
+      {/* Bubbles in the background */}
+      <div className="custom-bubbles">
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+        <div className="custom-bubble"></div>
+      </div>
 
       {/* Main content */}
       <div className="custom-access-admin-container">
@@ -162,10 +213,16 @@ const AccessAdmin = () => {
             >
               <FaSearch />
             </button>
-            <button className="custom-save-button" onClick={handleSave}>
-              Save
-            </button>
-            <button className="custom-new-button" onClick={""}>
+            {userFound ? (
+              <button className="custom-save-button" onClick={handleUpdate}>
+                Update
+              </button>
+            ) : (
+              <button className="custom-save-button" onClick={handleSave}>
+                Save
+              </button>
+            )}
+            <button className="custom-new-button" onClick={handleReset}>
               New
             </button>
           </div>
@@ -192,6 +249,7 @@ const AccessAdmin = () => {
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 placeholder="Enter User ID"
+                disabled={userIdDisabled} // Disable the input if user is found
               />
             </div>
           </div>
