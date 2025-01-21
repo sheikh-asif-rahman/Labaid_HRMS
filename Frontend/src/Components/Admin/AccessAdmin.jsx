@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AccessAdmin.css";
+import { FaSearch } from "react-icons/fa";
 
 const AccessAdmin = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [users] = useState([
-    "12345",
-    "67890",
-    "11223",
-    "44556",
-    "78901",
-    "23456",
-  ]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const [branches, setBranches] = useState([]);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,6 +15,8 @@ const AccessAdmin = () => {
   const [selectedBranches, setSelectedBranches] = useState([]); // Store selected branches
   const [name, setName] = useState("");
   const [userId, setUserId] = useState("");
+  const [searchId, setsearchId] = useState(""); // Store search userId
+
   const [mobileNumber, setMobileNumber] = useState("");
 
   // Fetch branches when the component mounts
@@ -38,33 +33,73 @@ const AccessAdmin = () => {
     fetchBranches();
   }, []);
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-    setSearchValue(value);
+  // Handle Search functionality for user ID
+  const handleSearch = async () => {
+    if (!searchId) {
+      setModalMessage("Please enter a User ID to search.");
+      setShowModal(true);
+      return;
+    }
 
-    const matchingUsers = users.filter((user) => user.startsWith(value));
-    setFilteredUsers(value ? matchingUsers : []);
+    try {
+      // Call the API to search for the user based on userId
+      const response = await axios.post(
+        "http://localhost:3000/api/adminusersearch",
+        { UserId: searchId }
+      );
+
+      if (response.data) {
+        // If user is found, populate form fields with user data
+        const user = response.data;
+        setName(user.UserName);
+        setUserId(user.UserId);
+        setMobileNumber(user.MobileNo);
+        setStatus(user.Status ? "Active" : "Inactive");
+        setPermission(user.Permission);
+        setSelectedBranches(user.BranchId.split(", ")); // Assuming BranchId is a comma-separated list
+        setModalMessage("User found!");
+      } else {
+        setModalMessage("User not found.");
+      }
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error searching user:", error);
+      setModalMessage("An error occurred while searching.");
+      setShowModal(true);
+    }
   };
 
-  const handleSave = () => {
-    // Gather form data into an object
+  // Handle Save functionality
+  const handleSave = async () => {
     const formData = {
-      Name: name,
-      UserID: userId,
-      MobileNumber: mobileNumber,
-      Status: status,
+      UserId: userId,
+      UserName: name,
+      MobileNo: mobileNumber,
+      BranchId: selectedBranches.join(", "),
       Permission: permission,
       Password: password,
-      ConfirmPassword: confirmPassword,
-      SelectedBranches: selectedBranches.join(", "),
+      Status: status === "Active",
+      CreatedBy: "admin",
     };
 
-    // Display alert with form data
-    alert(
-      `Form Data:\n${Object.entries(formData)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join("\n")}`
-    );
+    if (password !== confirmPassword) {
+      setModalMessage("Passwords do not match!");
+      setShowModal(true);
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/administration",
+        formData
+      );
+      setModalMessage("User saved successfully!");
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error saving user:", error);
+      setModalMessage("Failed to save user. Please try again.");
+      setShowModal(true);
+    }
   };
 
   const toggleBranchModal = () => {
@@ -88,18 +123,25 @@ const AccessAdmin = () => {
 
   return (
     <div className="custom-access-admin-page">
-      {/* Bubbles in the background */}
-      <div className="custom-bubbles">
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
-        <div className="custom-bubble"></div>
+      {/* Modal */}
+      <div
+        className={`modal fade ${showModal ? "show d-block" : ""}`}
+        tabIndex="-1"
+        role="dialog"
+        style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content text-center p-4">
+            <p>{modalMessage}</p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setShowModal(false)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Main content */}
@@ -110,25 +152,26 @@ const AccessAdmin = () => {
             <input
               id="user-search"
               type="text"
-              value={searchValue}
-              onChange={handleSearchChange}
               placeholder="Enter User ID"
+              value={searchId}
+              onChange={(e) => setsearchId(e.target.value)} // Update userId state
             />
+            <button
+              className="custom-search-button"
+              onClick={handleSearch} // Trigger search on button click
+            >
+              <FaSearch />
+            </button>
             <button className="custom-save-button" onClick={handleSave}>
               Save
             </button>
+            <button className="custom-new-button" onClick={""}>
+              New
+            </button>
           </div>
-          {filteredUsers.length > 0 && (
-            <ul className="custom-dropdown">
-              {filteredUsers.map((user, index) => (
-                <li key={index} onClick={() => setSearchValue(user)}>
-                  {user}
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
 
+        {/* Form to display user details */}
         <div className="custom-form-container">
           <div className="custom-form-row">
             <div className="custom-form-group">
