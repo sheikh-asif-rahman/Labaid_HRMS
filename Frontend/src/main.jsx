@@ -4,11 +4,12 @@ import App from "./App.jsx";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import HomePage from "./Page/HomePage.jsx"; // Adjust path if necessary
-import ReportPage from "./Page/ReportPage.jsx"; // Adjust path if necessary
+import HomePage from "./Page/HomePage.jsx";
+import ReportPage from "./Page/ReportPage.jsx";
 import OverViewPage from "./Page/OverViewPage.jsx";
 import Admin from "./Page/Admin.jsx";
 import LoginPage from "./Page/LoginPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute component
 
 // Define routes
 const router = createBrowserRouter([
@@ -17,24 +18,24 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "/loginpage", // Fix: change this to a full path for clarity
+    path: "/loginpage",
     element: <LoginPage />,
   },
   {
-    path: "/homepage", // Fix: change this to a full path for clarity
-    element: <HomePage />,
+    path: "/homepage",
+    element: <ProtectedRoute element={<HomePage />} />, // Protect this route
   },
   {
-    path: "/reportpage", // Fix: change this to a full path for clarity
-    element: <ReportPage />,
+    path: "/reportpage",
+    element: <ProtectedRoute element={<ReportPage />} />, // Protect this route
   },
   {
-    path: "/overviewpage", // Fix: change this to a full path for clarity
-    element: <OverViewPage />,
+    path: "/overviewpage",
+    element: <ProtectedRoute element={<OverViewPage />} />, // Protect this route
   },
   {
     path: "/admin",
-    element: <Admin />,
+    element: <ProtectedRoute element={<Admin />} />, // Protect this route
   },
 ]);
 

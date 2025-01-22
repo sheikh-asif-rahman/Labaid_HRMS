@@ -1,13 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginCom.css";
 
 const LoginCom = () => {
+  const [formData, setFormData] = useState({
+    userId: "",
+    password: "",
+  });
+
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigate("/homepage"); // Navigate to homepage on login
+
+    try {
+      // Send login request to the backend
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          UserId: formData.userId,
+          Password: formData.password,
+        }),
+      });
+
+      const message = await response.text();
+
+      if (response.ok) {
+        localStorage.setItem("isLoggedIn", "true"); // Store login status
+        if (message === "Welcome") {
+          navigate("/homepage"); // Navigate to homepage on successful login
+        }
+      } else {
+        alert(message); // Error message
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      alert("An error occurred while logging in. Please try again later.");
+    }
   };
 
   return (
@@ -29,6 +71,8 @@ const LoginCom = () => {
               name="userId"
               className="logincom-form-input"
               placeholder="User ID"
+              value={formData.userId}
+              onChange={handleInputChange}
             />
           </div>
           <div className="logincom-form-group">
@@ -38,6 +82,8 @@ const LoginCom = () => {
               name="password"
               className="logincom-form-input"
               placeholder="Password"
+              value={formData.password}
+              onChange={handleInputChange}
             />
           </div>
           <button type="submit" className="logincom-login-button">

@@ -8,6 +8,7 @@ const userRoutes = require('./routes/UserRoute');
 const adminRoutes = require('./routes/AdminRoute');
 const adminUserSearchRoute = require('./routes/AdminUserSearchRoute');
 const userUpdateRoute = require('./routes/UserUpdateRoute');
+const loginUser = require('./routes/LoginRoute');
 const app = express();
 app.use(express.json());
 const port = 3000;
@@ -31,6 +32,7 @@ app.use('/api', userRoutes);
 app.use('/api', adminRoutes);
 app.use('/api', adminUserSearchRoute);
 app.use('/api', userUpdateRoute);
+app.use('/api', loginUser);
 
 
 app.listen(port, () => {

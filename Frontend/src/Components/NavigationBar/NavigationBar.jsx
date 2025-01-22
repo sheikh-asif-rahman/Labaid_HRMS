@@ -1,12 +1,20 @@
 import { React, useState } from "react";
 import { Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./NavigationBar.css";
 
 const NavigationBar = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate hook
 
   const handleToggle = () => setShowOffcanvas((prev) => !prev);
   const handleLinkClick = () => setShowOffcanvas(false); // Close offcanvas on link click
+
+  // Handle logout function
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn"); // Clear login status from localStorage
+    navigate("/loginpage"); // Redirect to login page
+  };
 
   return (
     <>
@@ -24,7 +32,7 @@ const NavigationBar = () => {
             {/* this is the nav for item to align right side */}
             <Nav className="ms-auto">
               <Nav.Link href="homepage">Home</Nav.Link>
-              <Nav.Link href="homepage" className="logout-link">
+              <Nav.Link onClick={handleLogout} className="logout-link">
                 Logout
               </Nav.Link>
             </Nav>
@@ -43,7 +51,7 @@ const NavigationBar = () => {
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
                 <Nav.Link href="homepage">Home</Nav.Link>
-                <Nav.Link href="homepage" className="logout-link">
+                <Nav.Link onClick={handleLogout} className="logout-link">
                   Logout
                 </Nav.Link>
               </Nav>
