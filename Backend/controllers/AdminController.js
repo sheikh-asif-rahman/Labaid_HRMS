@@ -4,7 +4,7 @@ const crypto = require('crypto');
 // Create a new user login entry
 const doAdmin = async (req, res) => {
     try {
-        const { UserId, UserName, MobileNo, BranchId, Permission, Password, Status, CreatedBy } = req.body;
+        const { UserId, UserName, MobileNo, BranchId, BranchName, Permission, Password, Status, CreatedBy } = req.body;
 
         // Validate input
         if (!UserId || !UserName || !MobileNo || !Password || Status === undefined) {
@@ -34,14 +34,15 @@ const doAdmin = async (req, res) => {
 
         // Prepare the SQL query to insert data
         const insertQuery = `
-            INSERT INTO dbo.UserLogin (UserId, UserName, MobileNo, BranchId, Permission, Password, Status, CreatedBy, CreatedDate, UpdatedBy, UpdateDate)
-            VALUES (@UserId, @UserName, @MobileNo, @BranchId, @Permission, @Password, @Status, @CreatedBy, @CreatedDate, @UpdatedBy, @UpdateDate)
+            INSERT INTO dbo.UserLogin (UserId, UserName, MobileNo, BranchId, BranchName, Permission, Password, Status, CreatedBy, CreatedDate, UpdatedBy, UpdateDate)
+            VALUES (@UserId, @UserName, @MobileNo, @BranchId, @BranchName, @Permission, @Password, @Status, @CreatedBy, @CreatedDate, @UpdatedBy, @UpdateDate)
         `;
 
         // Prepare the insert request
         request.input('UserName', sql.NVarChar, UserName);
         request.input('MobileNo', sql.NVarChar, MobileNo);
-        request.input('BranchId', sql.NVarChar, BranchId || null);
+        request.input('BranchId', sql.NVarChar, BranchId || null); // Comma-separated branch IDs
+        request.input('BranchName', sql.NVarChar, BranchName || null); // Comma-separated branch names
         request.input('Permission', sql.NVarChar, Permission || null);
         request.input('Password', sql.NVarChar, hashedPassword);
         request.input('Status', sql.Bit, Status);

@@ -35,8 +35,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <ProtectedRoute element={<Admin />} />, // Protect this route
+    element: <Admin />,
   },
+  // {
+  //   path: "/admin",
+  //   element: <ProtectedRoute element={<Admin />} />, // Protect this route
+  // },
 ]);
 
 // Render the app with RouterProvider

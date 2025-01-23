@@ -11,15 +11,14 @@ const AccessAdmin = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState("Active"); // Default to 'Active'
   const [permission, setPermission] = useState("User"); // Default permission
-  const [showBranchModal, setShowBranchModal] = useState(false); // To control modal visibility
-  const [selectedBranches, setSelectedBranches] = useState([]); // Store selected branches
+  const [showBranchModal, setShowBranchModal] = useState(false);
+  const [selectedBranches, setSelectedBranches] = useState([]); // Store selected branches (IDs and Names)
   const [name, setName] = useState("");
   const [userId, setUserId] = useState("");
-  const [searchId, setsearchId] = useState(""); // Store search userId
-
+  const [searchId, setSearchId] = useState(""); // Store search userId
   const [mobileNumber, setMobileNumber] = useState("");
-  const [userFound, setUserFound] = useState(false); // To toggle visibility of Save/Update button
-  const [userIdDisabled, setUserIdDisabled] = useState(false); // New state to disable/enable userId input
+  const [userFound, setUserFound] = useState(false); // To toggle Save/Update button
+  const [userIdDisabled, setUserIdDisabled] = useState(false); // Disable/enable userId input
 
   // Fetch branches when the component mounts
   useEffect(() => {
@@ -44,46 +43,56 @@ const AccessAdmin = () => {
     }
 
     try {
-      // Call the API to search for the user based on userId
       const response = await axios.post(
         "http://localhost:3000/api/adminusersearch",
         { UserId: searchId }
       );
 
       if (response.data) {
-        // If user is found, populate form fields with user data
         const user = response.data;
+
         setName(user.UserName);
         setUserId(user.UserId);
         setMobileNumber(user.MobileNo);
         setStatus(user.Status ? "Active" : "Inactive");
         setPermission(user.Permission);
-        setSelectedBranches(user.BranchId.split(", ")); // Assuming BranchId is a comma-separated list
-        setModalMessage("User found!");
-        setUserFound(true); // Set the userFound state to true
 
-        // Disable the user-id input field
-        setUserIdDisabled(true);
+        // Parse selected branches
+        setSelectedBranches(
+          user.BranchId.split(",").map((id, index) => ({
+            id: id.trim(),
+            name: user.BranchName.split(",")[index].trim(),
+          }))
+        );
+
+        setModalMessage("User found!");
+        setUserFound(true);
+        setUserIdDisabled(true); // Disable the user-id input field
       }
+
       setShowModal(true);
     } catch (error) {
       console.error("Error searching user:", error);
       setModalMessage("User Not Found");
       setShowModal(true);
-      setUserFound(false); // Reset userFound state if no user is found
-
-      // Enable the user-id input field again if the user is not found
-      setUserIdDisabled(false);
+      setUserFound(false);
+      setUserIdDisabled(false); // Enable the user-id input field again
     }
   };
 
   // Handle Save functionality
   const handleSave = async () => {
+    const branchIds = selectedBranches.map((branch) => branch.id).join(", ");
+    const branchNames = selectedBranches
+      .map((branch) => branch.name)
+      .join(", ");
+
     const formData = {
       UserId: userId,
       UserName: name,
       MobileNo: mobileNumber,
-      BranchId: selectedBranches.join(", "),
+      BranchId: branchIds,
+      BranchName: branchNames,
       Permission: permission,
       Password: password,
       Status: status === "Active",
@@ -110,29 +119,38 @@ const AccessAdmin = () => {
     }
   };
 
-  // Handle Update functionality
   const handleUpdate = async () => {
+    // Prepare branchIds and branchNames as comma-separated values
+    const branchIds = selectedBranches.map((branch) => branch.id).join(", ");
+    const branchNames = selectedBranches
+      .map((branch) => branch.name)
+      .join(", ");
+
+    // Prepare formData to send to the API
     const formData = {
-      userId: userId, // Make sure userId is correctly passed in the form data
-      userName: name, // The field name should match the backend parameter name
-      mobileNo: mobileNumber, // Similarly, map the other fields
-      branchId: selectedBranches.join(", "), // Make sure selectedBranches is an array
-      permission: permission, // Same for permission
-      status: status, // Send "Active" or "Inactive" as a string
-      updatedBy: "admin", // You can set this to the current user's name or ID
+      userId: userId, // Use userId in camelCase to match the API
+      userName: name, // Use userName in camelCase to match the API
+      mobileNo: mobileNumber, // Use mobileNo in camelCase
+      branchId: branchIds, // Pass the branchId as comma-separated
+      branchName: branchNames, // Pass the branchName as comma-separated
+      permission: permission, // Include permission
+      status: status, // Keep the status as it is ("Active" or "Inactive")
+      updatedBy: "admin", // Hardcoded as "admin" for now
     };
 
     try {
+      // Make the PUT request to the backend API
       const response = await axios.put(
-        "http://localhost:3000/api/updateuser",
+        "http://localhost:3000/api/updateuser", // Make sure this matches your backend endpoint
         formData
       );
-      setModalMessage("User updated successfully!");
-      setShowModal(true);
+      setModalMessage("User updated successfully!"); // Success message
+      setShowModal(true); // Show the modal
     } catch (error) {
+      // Handle errors if the update fails
       console.error("Error updating user:", error);
       setModalMessage("Failed to update user. Please try again.");
-      setShowModal(true);
+      setShowModal(true); // Show the error modal
     }
   };
 
@@ -141,12 +159,18 @@ const AccessAdmin = () => {
   };
 
   const handleBranchCheckboxChange = (e) => {
-    const value = e.target.value;
+    const branchId = e.target.value;
+    const branchName = e.target.getAttribute("data-name");
+
     setSelectedBranches((prevSelectedBranches) => {
-      if (prevSelectedBranches.includes(value)) {
-        return prevSelectedBranches.filter((branch) => branch !== value);
+      const isSelected = prevSelectedBranches.some(
+        (branch) => branch.id === branchId
+      );
+
+      if (isSelected) {
+        return prevSelectedBranches.filter((branch) => branch.id !== branchId);
       } else {
-        return [...prevSelectedBranches, value];
+        return [...prevSelectedBranches, { id: branchId, name: branchName }];
       }
     });
   };
@@ -154,7 +178,7 @@ const AccessAdmin = () => {
   const handleOkBranches = () => {
     toggleBranchModal(); // Close modal after OK
   };
-  // Reset function for all fields
+
   const handleReset = () => {
     window.location.reload(); // Reload the page when "New" is clicked
   };
@@ -194,7 +218,6 @@ const AccessAdmin = () => {
         <div className="custom-bubble"></div>
         <div className="custom-bubble"></div>
       </div>
-
       {/* Main content */}
       <div className="custom-access-admin-container">
         <div className="custom-search-container">
@@ -204,25 +227,35 @@ const AccessAdmin = () => {
               id="user-search"
               type="text"
               placeholder="Enter User ID"
-              value={searchId}
-              onChange={(e) => setsearchId(e.target.value)} // Update userId state
+              value={searchId} // Controlled input bound to searchId state
+              onChange={(e) => setSearchId(e.target.value)} // Updates the searchId state
             />
             <button
               className="custom-search-button"
-              onClick={handleSearch} // Trigger search on button click
+              onClick={handleSearch} // Calls handleSearch when clicked
             >
               <FaSearch />
             </button>
+            {/* Show either Update or Save button based on userFound state */}
             {userFound ? (
-              <button className="custom-save-button" onClick={handleUpdate}>
+              <button
+                className="custom-save-button"
+                onClick={handleUpdate} // Calls handleUpdate when userFound is true
+              >
                 Update
               </button>
             ) : (
-              <button className="custom-save-button" onClick={handleSave}>
+              <button
+                className="custom-save-button"
+                onClick={handleSave} // Calls handleSave when userFound is false
+              >
                 Save
               </button>
             )}
-            <button className="custom-new-button" onClick={handleReset}>
+            <button
+              className="custom-new-button"
+              onClick={handleReset} // Resets the form fields
+            >
               New
             </button>
           </div>
@@ -324,7 +357,6 @@ const AccessAdmin = () => {
           </div>
         </div>
       </div>
-
       {/* Modal for selecting branches */}
       {showBranchModal && (
         <div
@@ -345,17 +377,20 @@ const AccessAdmin = () => {
               <div className="modal-body">
                 <div className="container-fluid">
                   <div className="row">
-                    {branches.map((branch, index) => (
-                      <div className="col-md-4" key={index}>
+                    {branches.map((branch) => (
+                      <div className="col-md-4" key={branch.id}>
                         <div className="custom-checkbox-group">
                           <label>
                             <input
                               type="checkbox"
-                              value={branch}
-                              checked={selectedBranches.includes(branch)}
+                              value={branch.id}
+                              data-name={branch.name} // Pass branch name
+                              checked={selectedBranches.some(
+                                (b) => b.id === branch.id
+                              )}
                               onChange={handleBranchCheckboxChange}
                             />
-                            {branch}
+                            {branch.name}
                           </label>
                         </div>
                       </div>
