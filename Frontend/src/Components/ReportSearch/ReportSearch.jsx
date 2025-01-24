@@ -4,7 +4,10 @@ import "bootstrap/dist/css/bootstrap.min.css"; // Make sure Bootstrap is importe
 import "./ReportSearch.css";
 
 const ReportSearch = () => {
-  const [locations, setLocations] = useState([]); // List of unique devnm values
+  const currentUserId = localStorage.getItem("userId");
+
+  const [locations, setLocations] = useState([]); // List of unique devnm values (Branch Name)
+  const [branchIds, setBranchIds] = useState([]); // List of Branch IDs
   const [userType, setUserType] = useState(""); // Selected location
   const [userId, setUserId] = useState(""); // Selected User ID (initially empty)
   const [userIds, setUserIds] = useState([]); // List of User IDs
@@ -25,15 +28,34 @@ const ReportSearch = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); // Control the visibility of the modal
   const [modalMessage, setModalMessage] = useState(""); // Modal message to be displayed
 
-  // Fetch unique locations on component mount
+  // Fetch locations and user IDs on component mount
+  // Fetch locations and user IDs on component mount
   useEffect(() => {
     const fetchLocations = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/locations");
-        setLocations(response.data); // Populate dropdown
-        if (response.data.length > 0) setUserType(response.data[0]); // Set default value
-      } catch (error) {
-        console.error("Error fetching locations:", error);
+      if (currentUserId) {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/reportLocation?UserId=${currentUserId}`
+          );
+
+          if (response.data && response.data.length > 0) {
+            // Separate Branch Names and Branch IDs into individual arrays
+            const branchIdsList = response.data.map((item) => item.BranchId);
+            const branchNamesList = response.data.map(
+              (item) => item.BranchName
+            );
+
+            // Now, store locations and branchIds as separate arrays with comma-separated values
+            setBranchIds(branchIdsList);
+            setLocations(branchNamesList.join(",").split(",")); // Join all branch names with a comma and then split into an array
+
+            // Add the alert/console log here to check the data
+            console.log("Locations:", branchNamesList);
+            console.log("Branch IDs:", branchIdsList);
+          }
+        } catch (error) {
+          console.error("Error fetching report locations:", error);
+        }
       }
     };
 
@@ -53,7 +75,7 @@ const ReportSearch = () => {
     const currentDate = new Date().toISOString().split("T")[0]; // Format as yyyy-mm-dd
     setFromDate(currentDate);
     setToDate(currentDate);
-  }, []);
+  }, [currentUserId]); // Re-run useEffect when currentUserId changes
 
   // Format date to dd/mm/yyyy
   const formatDate = (date) => {
@@ -326,9 +348,10 @@ const ReportSearch = () => {
             value={userType}
             onChange={(e) => setUserType(e.target.value)}
           >
+            {/* Map over the locations array to render each location */}
             {locations.map((location, index) => (
               <option key={index} value={location}>
-                {location}
+                {location} {/* Display the location name */}
               </option>
             ))}
           </select>

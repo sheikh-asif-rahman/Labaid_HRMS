@@ -40,6 +40,8 @@ const LoginCom = () => {
 
       if (response.ok) {
         localStorage.setItem("isLoggedIn", "true"); // Store login status
+        localStorage.setItem("userId", formData.userId); // Store the userId after successful login
+
         if (message === "Welcome") {
           navigate("/homepage"); // Navigate to homepage on successful login
         }

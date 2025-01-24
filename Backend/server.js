@@ -3,6 +3,7 @@ const cors = require('cors');
 const { connectDB } = require('./config/dbConfig');
 
 const locationRoutes = require('./routes/LocationRoute');
+const reportLocationRoutes = require('./routes/ReportLocationRoute');
 const reportRoutes = require('./routes/ReportRoute');
 const userRoutes = require('./routes/UserRoute');
 const adminRoutes = require('./routes/AdminRoute');
@@ -33,6 +34,7 @@ app.use('/api', adminRoutes);
 app.use('/api', adminUserSearchRoute);
 app.use('/api', userUpdateRoute);
 app.use('/api', loginUser);
+app.use('/api', reportLocationRoutes);
 
 
 app.listen(port, () => {
