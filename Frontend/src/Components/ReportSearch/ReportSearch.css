@@ -1,9 +1,9 @@
-/* Apply margin-top only for the ReportSearch component */
+/* Main container styling */
 .reportsearch-container {
   max-width: 800px; /* Limit container width */
-  margin: 0 auto;   /* Center the container */
-  margin-top: 90px;  /* Create space from the top to avoid navbar overlap */
-  padding: 5% 15px; /* Add padding on left and right */
+  margin: 0 auto; /* Center the container */
+  margin-top: 90px; /* Space from the top to avoid navbar overlap */
+  padding: 5% 15px; /* Padding on the left and right */
 }
 
 /* Label styling */
@@ -25,6 +25,7 @@
   border-radius: 10px;
   width: 100%; /* Make fields take full width */
   box-sizing: border-box; /* Ensure padding and border don't overflow */
+  height: 48px; /* Consistent height for all elements */
 }
 
 /* Dropdown (select) field specific */
@@ -38,117 +39,133 @@
   background-size: 8px 6px;
 }
 
-/* Form field layout for larger screens */
-@media (min-width: 768px) {
-  .reportsearch-col-md-6 {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  .reportsearch-col-md-4 {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-}
-
-/* Responsive adjustments for mobile */
-@media (max-width: 767px) {
-  .reportsearch-container {
-    margin-top: 80px; /* For smaller screens, more space at the top */
-  }
-
-  .reportsearch-row {
-    flex-direction: column; /* Stack items vertically */
-  }
-
-  .reportsearch-col-md-6,
-  .reportsearch-col-md-4 {
-    width: 100%; /* Full width on smaller screens */
-    margin-bottom: 1.5rem; /* Space between fields */
-  }
-
-  /* Adjust button width and padding for smaller screens */
-  .reportsearch-btn {
-    padding: 1rem 1.5rem; /* Increase padding */
-    font-size: 1.2rem; /* Increase font size for better readability */
-  }
-
-  .reportsearch-download-btn,
-  .reportsearch-reset-btn {
-    padding: 1rem 1.5rem; /* Increase padding */
-    font-size: 1.2rem; /* Increase font size */
-  }
-}
-
 /* Styling the row and columns */
 .reportsearch-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between; /* Space between items */
+  align-items: center; /* Vertical alignment for buttons */
   margin-bottom: 20px;
 }
 
 /* Adjust column widths for larger screens */
 .reportsearch-col-md-6 {
   flex: 0 0 48%; /* 48% width for larger screens */
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem; /* Space between fields */
 }
 
 .reportsearch-col-md-4 {
   flex: 0 0 48%; /* 48% width for larger screens */
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem; /* Space between fields */
 }
 
-/* Make the buttons styled */
+/* Button container styling */
+.reportsearch-buttons {
+  display: flex; /* Align buttons horizontally */
+  justify-content: space-between; /* Space between buttons */
+  gap: 20px; /* Add spacing between buttons */
+  flex-wrap: wrap; /* Ensure buttons wrap on smaller screens */
+}
+
+/* Common button styling */
+.reportsearch-btn,
+.reportsearch-reset-btn {
+  padding: 0.75rem; /* Same padding as inputs */
+  font-size: 1rem; /* Same font size as inputs */
+  border: 1px solid #ccc; /* Match input borders */
+  border-radius: 10px; /* Match input border radius */
+  height: 48px; /* Match height of inputs */
+  width: 48%; /* Make buttons take equal width (48% of the container) */
+  box-sizing: border-box; /* Ensure padding and border fit within box */
+  text-align: center; /* Center text inside button */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Specific button colors */
 .reportsearch-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border: none;
-  background-color: #28a745; /* Green */
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 1.5rem; /* Space from the inputs */
-  width: 100%; /* Make buttons take full width */
-  box-sizing: border-box;
-}
-
-/* Custom styles for Download and Reset buttons */
-.reportsearch-download-btn {
   background-color: #28a745; /* Green */
   color: white;
 }
 
 .reportsearch-reset-btn {
-  background-color: #fd7e14; /* Orange */
+  background-color: #ffcc00; /* Yellow */
   color: white;
 }
 
-/* Add spacing and mobile-friendly adjustments */
+/* Styling the suggestions dropdown */
+.input-container {
+  position: relative;
+}
+
+/* Styling the suggestions list */
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+  max-height: 150px;
+}
+
+/* Styling each suggestion item */
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Highlight suggestion item on hover */
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Optional: Style the input field */
+.reportsearch-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Responsive adjustments for mobile */
 @media (max-width: 767px) {
+  .reportsearch-container {
+    margin-top: 80px; /* Adjust top margin for smaller screens */
+    padding: 10%; /* Reduce side padding */
+  }
+
+  .reportsearch-row {
+    flex-direction: column; /* Stack items vertically */
+    align-items: stretch; /* Full-width alignment for children */
+  }
+
   .reportsearch-col-md-6,
   .reportsearch-col-md-4 {
     width: 100%; /* Full width on smaller screens */
     padding-left: 0;
     padding-right: 0;
+    margin-bottom: 1.5rem; /* Space between elements */
   }
 
-  .reportsearch-row {
-    display: block;
-    margin-bottom: 10px;
+  .reportsearch-buttons {
+    flex-direction: column; /* Stack buttons vertically on mobile */
+    gap: 15px; /* Add more spacing between stacked buttons */
   }
 
-  .reportsearch-btn {
-    padding: 1rem 1.5rem;
-    font-size: 1.2rem;
-  }
-
-  .reportsearch-download-btn,
+  .reportsearch-btn,
   .reportsearch-reset-btn {
-    padding: 1rem 1.5rem;
-    font-size: 1.2rem;
-  }
-
-  .reportsearch-container {
-    padding: 10%; /* Reduce side padding on mobile */
+    max-width: 100%; /* Make buttons full width on mobile */
+    padding: 1rem; /* Adjust padding for better touch targets */
+    font-size: 1.2rem; /* Larger font size for readability on small screens */
+    height: 48px; /* Maintain consistent height */
   }
 }

@@ -10,13 +10,13 @@ const DataCard = () => {
   // Fetch locations from the API when component mounts
   useEffect(() => {
     const fetchLocations = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/locations");
-        setLocations(response.data); // Set the locations state with fetched data
-        if (response.data.length > 0) setUserType(response.data[0]); // Set default value if data is available
-      } catch (error) {
-        console.error("Error fetching locations:", error);
-      }
+      // try {
+      //   const response = await axios.get("http://localhost:3000/api/locations");
+      //   setLocations(response.data); // Set the locations state with fetched data
+      //   if (response.data.length > 0) setUserType(response.data[0]); // Set default value if data is available
+      // } catch (error) {
+      //   console.error("Error fetching locations:", error);
+      // }
     };
 
     fetchLocations();
