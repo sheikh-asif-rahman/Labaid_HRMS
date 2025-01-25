@@ -87,6 +87,27 @@ const AccessAdmin = () => {
       .map((branch) => branch.name)
       .join(", ");
 
+    // Validate fields
+    if (
+      !name ||
+      !mobileNumber ||
+      !permission ||
+      !password ||
+      !selectedBranches.length
+    ) {
+      setModalMessage(
+        "All fields are required and at least one branch must be selected!"
+      );
+      setShowModal(true);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setModalMessage("Passwords do not match!");
+      setShowModal(true);
+      return;
+    }
+
     const formData = {
       UserId: userId,
       UserName: name,
@@ -95,15 +116,9 @@ const AccessAdmin = () => {
       BranchName: branchNames,
       Permission: permission,
       Password: password,
-      Status: status === "Active",
+      Status: status === "Active" ? 1 : 0, // Convert to 1 or 0
       CreatedBy: "admin",
     };
-
-    if (password !== confirmPassword) {
-      setModalMessage("Passwords do not match!");
-      setShowModal(true);
-      return;
-    }
 
     try {
       const response = await axios.post(
@@ -114,43 +129,55 @@ const AccessAdmin = () => {
       setShowModal(true);
     } catch (error) {
       console.error("Error saving user:", error);
-      setModalMessage("Failed to save user. Please try again.");
+      const errorMessage =
+        error.response && error.response.data
+          ? error.response.data
+          : "Failed to save user. Please try again.";
+      setModalMessage(errorMessage);
       setShowModal(true);
     }
   };
 
+  // Handle Update functionality
   const handleUpdate = async () => {
-    // Prepare branchIds and branchNames as comma-separated values
     const branchIds = selectedBranches.map((branch) => branch.id).join(", ");
     const branchNames = selectedBranches
       .map((branch) => branch.name)
       .join(", ");
 
-    // Prepare formData to send to the API
+    if (password !== confirmPassword) {
+      setModalMessage("Passwords do not match!");
+      setShowModal(true);
+      return;
+    }
+
     const formData = {
-      userId: userId, // Use userId in camelCase to match the API
-      userName: name, // Use userName in camelCase to match the API
-      mobileNo: mobileNumber, // Use mobileNo in camelCase
-      branchId: branchIds, // Pass the branchId as comma-separated
-      branchName: branchNames, // Pass the branchName as comma-separated
-      permission: permission, // Include permission
-      status: status, // Keep the status as it is ("Active" or "Inactive")
-      updatedBy: "admin", // Hardcoded as "admin" for now
+      userId: userId,
+      userName: name,
+      mobileNo: mobileNumber,
+      branchId: branchIds,
+      branchName: branchNames,
+      permission: permission,
+      status: status === "Active" ? 1 : 0, // Convert to 1 or 0
+      password: password,
+      updatedBy: "admin",
     };
 
     try {
-      // Make the PUT request to the backend API
       const response = await axios.put(
-        "http://localhost:3000/api/updateuser", // Make sure this matches your backend endpoint
+        "http://localhost:3000/api/updateuser",
         formData
       );
-      setModalMessage("User updated successfully!"); // Success message
-      setShowModal(true); // Show the modal
+      setModalMessage("User updated successfully!");
+      setShowModal(true);
     } catch (error) {
-      // Handle errors if the update fails
       console.error("Error updating user:", error);
-      setModalMessage("Failed to update user. Please try again.");
-      setShowModal(true); // Show the error modal
+      const errorMessage =
+        error.response && error.response.data
+          ? error.response.data
+          : "Failed to update user. Please try again.";
+      setModalMessage(errorMessage);
+      setShowModal(true);
     }
   };
 

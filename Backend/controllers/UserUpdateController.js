@@ -1,8 +1,24 @@
 const { sql } = require('../config/dbConfig');
+const crypto = require('crypto'); // Use crypto for password hashing
+
+// Hash a password using crypto
+const hashPassword = (password) => {
+    return crypto.createHash('sha256').update(password).digest('hex');
+};
 
 // Update user data based on UserId
 const updateUser = async (req, res) => {
-    const { userId, userName, mobileNo, branchId, branchName, permission, status, updatedBy } = req.body;
+    const {
+        userId,
+        userName,
+        mobileNo,
+        branchId,
+        branchName,
+        permission,
+        status,
+        password,
+        updatedBy,
+    } = req.body;
 
     // Validate incoming data
     if (!userId) {
@@ -41,7 +57,7 @@ const updateUser = async (req, res) => {
             parameters.push({ name: "MobileNo", value: mobileNo });
         }
 
-        if (branchId || branchName) {  // Only include branchId/branchName if they are provided
+        if (branchId || branchName) {
             if (branchId) {
                 updateFields.push("BranchId = @BranchId");
                 parameters.push({ name: "BranchId", value: branchId });
@@ -58,15 +74,34 @@ const updateUser = async (req, res) => {
         }
 
         // Handle Status (1 for Active, 0 for Inactive)
+        // Handle Status (1 for Active, 0 for Inactive)
+        console.log("Status:", status);  // Log the status before checking
+
         if (status !== undefined) {
-            const statusValue = status === "Active" ? 1 : 0;
+            let statusValue;
+
+            // Check if the status is 'Active' or 'Inactive'
+            if (status == 0) {
+                statusValue = 0; // Set to Active (1)
+            } else if (status == 1) {
+                statusValue = 1; // Set to Inactive (0)
+            }
+
             updateFields.push("Status = @Status");
             parameters.push({ name: "Status", value: statusValue });
         }
 
+
         if (updatedBy) {
             updateFields.push("UpdatedBy = @UpdatedBy");
             parameters.push({ name: "UpdatedBy", value: updatedBy });
+        }
+
+        // Handle Password (if provided)
+        if (password) {
+            const hashedPassword = hashPassword(password); // Hash the password using crypto
+            updateFields.push("Password = @Password");
+            parameters.push({ name: "Password", value: hashedPassword });
         }
 
         // If no fields to update, return an error
@@ -101,9 +136,6 @@ const updateUser = async (req, res) => {
         // Execute the update query
         const updateResult = await updateRequest.query(updateQuery);
 
-        // Log the result of the query execution
-        console.log("Update Result:", updateResult);
-
         // Check if the row was updated
         if (updateResult.rowsAffected[0] > 0) {
             return res.status(200).send("User updated successfully");
@@ -112,7 +144,7 @@ const updateUser = async (req, res) => {
         }
     } catch (err) {
         // Log the error and return a generic message
-        console.error("Error updating user:", err); // Log the full error for debugging
+        console.error("Error updating user:", err);
         res.status(500).send("Error updating user");
     }
 };
