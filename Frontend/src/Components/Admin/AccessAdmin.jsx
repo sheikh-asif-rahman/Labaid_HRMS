@@ -82,10 +82,8 @@ const AccessAdmin = () => {
 
   // Handle Save functionality
   const handleSave = async () => {
-    const branchIds = selectedBranches.map((branch) => branch.id).join(", ");
-    const branchNames = selectedBranches
-      .map((branch) => branch.name)
-      .join(", ");
+    const branchIds = selectedBranches.map((branch) => branch.id).join(",");
+    const branchNames = selectedBranches.map((branch) => branch.name).join(",");
 
     // Validate fields
     if (
@@ -140,10 +138,8 @@ const AccessAdmin = () => {
 
   // Handle Update functionality
   const handleUpdate = async () => {
-    const branchIds = selectedBranches.map((branch) => branch.id).join(", ");
-    const branchNames = selectedBranches
-      .map((branch) => branch.name)
-      .join(", ");
+    const branchIds = selectedBranches.map((branch) => branch.id).join(",");
+    const branchNames = selectedBranches.map((branch) => branch.name).join(",");
 
     if (password !== confirmPassword) {
       setModalMessage("Passwords do not match!");

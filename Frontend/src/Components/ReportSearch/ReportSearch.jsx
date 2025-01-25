@@ -280,32 +280,36 @@ const ReportSearch = () => {
           </div>
 
           <div className="reportsearch-row">
-            <div className="reportsearch-col-md-6">
-              <div className="d-flex justify-content-between">
-                {!isDataFetched ? (
-                  <button
-                    type="button"
-                    className="btn btn-primary flex-fill"
-                    onClick={handleGetData}
-                  >
-                    Get Data
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-success flex-fill"
-                    onClick={handleDownload}
-                  >
-                    Download CSV
-                  </button>
-                )}
-                <button
-                  type="button"
-                  className="btn btn-secondary flex-fill"
-                  onClick={handleReset}
-                >
-                  Reset
-                </button>
+            <div className="col-md-12">
+              <div className="d-flex justify-content-center">
+                <div className="col-md-6">
+                  <div className="d-flex justify-content-between align-items-center gap-3 button-container">
+                    {!isDataFetched ? (
+                      <button
+                        type="button"
+                        className="reportsearch-btn reportsearch-get-data-btn"
+                        onClick={handleGetData}
+                      >
+                        Get Data
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="reportsearch-btn reportsearch-download-btn"
+                        onClick={handleDownload}
+                      >
+                        Download CSV
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="reportsearch-btn reportsearch-reset-btn"
+                      onClick={handleReset}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

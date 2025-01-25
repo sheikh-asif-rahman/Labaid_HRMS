@@ -169,3 +169,58 @@
     height: 48px; /* Maintain consistent height */
   }
 }
+
+/* Button container styling */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem; /* Add spacing between buttons */
+}
+
+/* Button styling */
+.reportsearch-btn {
+  padding: 10px 20px; /* Standard padding */
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap; /* Prevent text wrapping */
+  flex: 1; /* Allow buttons to scale evenly */
+  text-align: center;
+}
+
+/* Individual button styles */
+.reportsearch-get-data-btn {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.reportsearch-download-btn {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.reportsearch-reset-btn {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+/* Hover effect */
+.reportsearch-btn:hover {
+  filter: brightness(0.9);
+}
+
+/* Responsive styling */
+@media (max-width: 767px) {
+  .button-container {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px; /* Add space between stacked buttons */
+  }
+
+  .reportsearch-btn {
+    width: 100%; /* Make buttons full width */
+  }
+}

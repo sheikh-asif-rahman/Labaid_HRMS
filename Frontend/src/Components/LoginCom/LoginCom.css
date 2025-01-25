@@ -86,58 +86,67 @@
   
   /* Container for the login form */
   .logincom-container {
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #ffffff, #f7f9fc); /* Light gradient background */
+    width: 40%;
+    padding: 50px;
+    border-radius: 20px; /* More rounded corners for a modern look */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Softer and more visible shadow */
     position: relative;
-    z-index: 1; /* Ensures form is on top of bubbles */
+    z-index: 1; /* Ensure form is on top of bubbles */
+    text-align: center; /* Center-align the content */
   }
-  
+
   /* Heading style */
   .logincom-heading {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 28px; /* Larger font size for better readability */
+    font-weight: 600; /* Bold text */
+    margin-bottom: 25px;
     color: #333;
+    text-transform: uppercase; /* All uppercase for a more formal appearance */
   }
-  
+
   /* Form styling */
   .logincom-form {
     display: flex;
     flex-direction: column;
+    gap: 20px; /* Add consistent spacing between elements */
   }
-  
-  .logincom-form-group {
-    margin-bottom: 15px;
-  }
-  
+
+  /* Input styling */
   .logincom-form-input {
     width: 100%;
-    padding: 10px;
+    padding: 15px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
     outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
-  
+
   .logincom-form-input:focus {
     border-color: #4e73df;
+    box-shadow: 0 0 8px rgba(78, 115, 223, 0.4);
   }
-  
-  /* Login button styling */
+
+  /* Button styling */
   .logincom-login-button {
-    padding: 12px 0;
+    padding: 15px 0;
     font-size: 16px;
+    font-weight: bold;
     background-color: #4e73df;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
   }
-  
+
   .logincom-login-button:hover {
     background-color: #375a8c;
+    transform: translateY(-2px); /* Subtle lift effect on hover */
   }
-  
+
+  .logincom-login-button:active {
+    transform: translateY(0); /* Reset the lift effect when clicked */
+  }
