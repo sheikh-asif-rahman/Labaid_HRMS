@@ -8,6 +8,7 @@ import {
   BsPersonWorkspace,
   BsClipboard2Data,
 } from "react-icons/bs";
+import { SiAdblock } from "react-icons/si";
 
 const Dashboard = () => {
   const navigate = useNavigate(); // Create a navigate function
@@ -100,7 +101,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <BsClipboard2Data size={70} />
+                <SiAdblock size={70} />
               </div>
             </div>
           </div>
@@ -119,7 +120,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <BsClipboard2Data size={70} />
+                <SiAdblock size={70} />
               </div>
             </div>
           </div>
@@ -138,7 +139,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <BsClipboard2Data size={70} />
+                <SiAdblock size={70} />
               </div>
             </div>
           </div>
@@ -157,7 +158,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <BsClipboard2Data size={70} />
+                <SiAdblock size={70} />
               </div>
             </div>
           </div>
@@ -176,7 +177,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <BsClipboard2Data size={70} />
+                <SiAdblock size={70} />
               </div>
             </div>
           </div>

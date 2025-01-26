@@ -45,7 +45,7 @@
 @media (max-width: 480px) {
   .custom-card {
     padding: 3%; /* Further reduce padding for small screens */
-    height: 180px; /* Further reduce the height for small screens */
+    height: 250px; /* Further reduce the height for small screens */
   }
 
   .card-title {
