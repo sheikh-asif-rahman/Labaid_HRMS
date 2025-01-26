@@ -33,12 +33,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div
-      className="container-fluid d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
+    <div className="dashboard-container d-flex justify-content-center align-items-center">
       <div className="row w-100">
-        {/* Card 1 */}
+        {/* Card 1: Overview */}
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-overview"
@@ -51,17 +48,17 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <BsPersonWorkspace size={70} />
+                <BsPersonWorkspace className="card-icon" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Card 2 */}
+        {/* Card 2: Report */}
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-report"
-            onClick={() => handleCardClick("Report")} // Only Report card navigates to the report page
+            onClick={() => handleCardClick("Report")}
           >
             <div className="row g-0">
               <div className="col-md-8">
@@ -70,7 +67,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <BsClipboard2Data size={70} />
+                <BsClipboard2Data className="card-icon" />
               </div>
             </div>
           </div>
@@ -90,7 +87,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="col-md-4 d-flex justify-content-center align-items-center">
-                  <BsWrenchAdjustableCircle size={70} />
+                  <BsWrenchAdjustableCircle className="card-icon" />
                 </div>
               </div>
             </div>
@@ -110,7 +107,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <SiAdblock size={70} />
+                <SiAdblock className="card-icon" />
               </div>
             </div>
           </div>
@@ -129,7 +126,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <SiAdblock size={70} />
+                <SiAdblock className="card-icon" />
               </div>
             </div>
           </div>
@@ -148,7 +145,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <SiAdblock size={70} />
+                <SiAdblock className="card-icon" />
               </div>
             </div>
           </div>
@@ -167,7 +164,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <SiAdblock size={70} />
+                <SiAdblock className="card-icon" />
               </div>
             </div>
           </div>
@@ -186,7 +183,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <SiAdblock size={70} />
+                <SiAdblock className="card-icon" />
               </div>
             </div>
           </div>

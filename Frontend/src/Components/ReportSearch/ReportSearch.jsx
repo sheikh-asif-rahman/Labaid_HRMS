@@ -138,13 +138,14 @@ const ReportSearch = () => {
       "In Time",
       "Out Time",
     ];
+
     const rows = data.map((row, index) => [
       index + 1,
-      userType || "N/A",
-      userId || row.user_id || "N/A",
+      row.branchName || "N/A", // Ensuring branch name is included
+      row.userId || "N/A", // Ensuring user ID is included
       row.date || "N/A",
-      row.timeFromDevdt || "N/A",
-      row.timeFromDevdtedit || "N/A",
+      row.inTime || "N/A",
+      row.outTime || "N/A",
     ]);
 
     return [header, ...rows].map((row) => row.join(",")).join("\n");
@@ -170,18 +171,45 @@ const ReportSearch = () => {
         requestData
       );
 
-      const formattedData = response.data.map((row) => ({
-        ...row,
-        date: formatDate(row.devdt),
-        timeFromDevdt: formatTimeToBangladesh(row.devdt),
-        timeFromDevdtedit: formatTimeToBangladesh(row.devdtedit),
-      }));
+      // Process the response to organize data by date
+      const formattedData = response.data.reduce((acc, row) => {
+        const date = formatDate(row.devdt);
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(row);
+        return acc;
+      }, {});
 
-      setFetchedData(formattedData);
+      // Now calculate In Time and Out Time, and extract the branch name
+      const finalData = Object.keys(formattedData).map((date) => {
+        const rows = formattedData[date];
+
+        // Sort the rows by time (ascending)
+        rows.sort((a, b) => new Date(a.devdt) - new Date(b.devdt));
+
+        // In Time is the first entry, Out Time is the last entry
+        const inTime = formatTimeToBangladesh(rows[0].devdt);
+        const outTime = formatTimeToBangladesh(rows[rows.length - 1].devdt);
+
+        // Extract branch name and userId from the first row
+        const branchName = userType || "N/A";
+        const userId = rows[0].user_id || "N/A";
+
+        return {
+          date,
+          inTime,
+          outTime,
+          branchName,
+          userId,
+        };
+      });
+
+      setFetchedData(finalData);
       setIsDataFetched(true);
       setFetchSuccess(true);
 
-      const csvContent = convertToCSV(formattedData);
+      const csvContent = convertToCSV(finalData);
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       setCsvBlob(blob);
     } catch (error) {

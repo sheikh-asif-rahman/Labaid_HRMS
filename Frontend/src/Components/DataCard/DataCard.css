@@ -1,31 +1,65 @@
 /* General styles for the container */
 .card {
     padding: 5%;
-    border: none;
-    border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 5px solid transparent; /* Default border is transparent */
+    border-radius: 0; /* No rounded corners */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    background-color: #ffffff; /* Default background is white */
+    color: #333; /* Default text color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    cursor: pointer; /* Pointer cursor on hover */
 }
 
-/* Card hover effect */
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Card Colors */
+/* Card Colors (Specific categories with hover matching their color) */
 .card-attendance {
-    background-color: #ff6666;
-    color: white;
+    color: #ff6666; /* Red text and icon */
+    border-color: #ff6666; /* Red border */
+    
+}
+
+.card-attendance:hover {
+    background-color: #ff6666; /* Red background on hover */
+    color: white; /* White text on hover */
+    box-shadow: 0 8px 15px rgba(255, 102, 102, 0.4); /* Deeper red shadow */
 }
 
 .card-absence {
-    background-color: #3399ff;
-    color: white;
+    color: #3399ff; /* Blue text and icon */
+    border-color: #3399ff; /* Blue border */
+}
+
+.card-absence:hover {
+    background-color: #3399ff; /* Blue background on hover */
+    color: white; /* White text on hover */
+    box-shadow: 0 8px 15px rgba(51, 153, 255, 0.4); /* Deeper blue shadow */
 }
 
 .card-late-attendance {
-    background-color: #ff9966;
-    color: white;
+    color: #ff9966; /* Orange text and icon */
+    border-color: #ff9966; /* Orange border */
+}
+
+.card-late-attendance:hover {
+    background-color: #ff9966; /* Orange background on hover */
+    color: white; /* White text on hover */
+    box-shadow: 0 8px 15px rgba(255, 153, 102, 0.4); /* Deeper orange shadow */
+}
+
+.card-on-leave {
+    color: #66cc66; /* Green text and icon */
+    border-color: #66cc66; /* Green border */
+}
+
+.card-on-leave:hover {
+    background-color: #66cc66; /* Green background on hover */
+    color: white; /* White text on hover */
+    box-shadow: 0 8px 15px rgba(102, 204, 102, 0.4); /* Deeper green shadow */
+}
+
+/* Icons inside cards */
+.card svg {
+    font-size: 3rem; /* Size of icons */
+    margin-bottom: 10px; /* Space between icon and text */
 }
 
 /* Card body */
@@ -34,13 +68,14 @@
     text-align: center;
 }
 
-/* Card text */
+/* Card title */
 .card-title {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
+/* Card text */
 .card-text {
     font-size: 20px;
 }
@@ -82,11 +117,12 @@
         margin: 10% 0 1.5rem;
         padding: 0 5%;
     }
+
     /* Container margin */
     .container.mt-5 {
         padding-top: 20%;
         padding-bottom: 30%;
-}
+    }
 }
 
 /* Dropdown styling */
@@ -107,7 +143,7 @@
     padding: 0.75rem 1.25rem;
     font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 10px;
+    border-radius: 0; /* No rounded corners */
     width: 100%;
     box-sizing: border-box;
     appearance: none;
@@ -131,6 +167,12 @@
 
 /* Container margin */
 .container.mt-5 {
-    margin-top: 6% !important; /* Adjust margin as needed */
-    margin-bottom: 10%;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 0 10% 10%;
+    padding-top: 1% ;
+    /* margin-bottom: 10%; */
+}
+.dashboard-overview {
+    background-color: rgb(192, 192, 192);
 }

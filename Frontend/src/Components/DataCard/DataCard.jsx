@@ -76,7 +76,7 @@ const DataCard = () => {
   const randomNumber = () => Math.floor(Math.random() * 100);
 
   return (
-    <div className="container mt-5">
+    <div className="dashboard-overview container mt-5">
       {/* First Section: Current Year Overview */}
       <div className="text-center mb-5">
         <h1 className="data-title mt-4">Today's Overview</h1>
@@ -135,10 +135,7 @@ const DataCard = () => {
 
         {/* Card 4: On Leave */}
         <div className="col-md-6 mb-4">
-          <div
-            className="card card-on-leave"
-            style={{ backgroundColor: "#66cc66", color: "white" }}
-          >
+          <div className="card card-on-leave">
             <div className="card-body">
               <p className="card-title">On Leave</p>
               <p className="card-text">{randomNumber()} people</p>

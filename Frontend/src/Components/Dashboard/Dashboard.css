@@ -1,163 +1,192 @@
 /* Styling for the card */
 .custom-card {
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 10%; /* Customizable padding */
-  transition: padding 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease; /* Smooth transition for padding, shadow, scaling, and background color */
-  height: 150px; /* Fixed height for all cards */
+  background-color: white;
+  border: 5px solid transparent; /* Default border is transparent */
+  border-radius: 0; /* Sharp corners */
+  box-shadow: 0px 4px 6px rgba(0, 0, 255, 0.1); /* Blue shadow */
+  padding: 10%;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  height: 150px;
   display: flex;
-  flex-direction: column; /* Ensure content is stacked vertically */
-  justify-content: space-between; /* Space content evenly */
-  text-align: center; /* Center text inside the card */
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  cursor: pointer; /* Pointer on hover */
 }
 
 /* Card hover effect */
 .custom-card:hover {
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow for hover effect */
-  transform: scale(1.05); /* Slight scaling effect on hover */
+  box-shadow: 0px 8px 15px rgba(0, 0, 255, 0.2); /* Deeper blue shadow */
+  transform: scale(1.05); /* Slight scaling */
 }
 
-/* Card body title */
+/* Default text and icon colors */
 .card-title {
   font-size: 1.5rem;
   font-weight: 600;
+  transition: color 0.3s ease;
 }
 
-/* For mobile screens */
-@media (max-width: 768px) {
-  .custom-card {
-    padding: 5%; /* Less padding on mobile */
-    height: 200px; /* Reduce the height for mobile */
-  }
-
-  .card-title {
-    font-size: 1.2rem; /* Smaller font size on mobile */
-  }
-
-  /* Add margin-top to the first card only on mobile view */
-  .row .col-md-4:first-child .custom-card {
-    margin-top: 20%; /* Adjust the value as needed */
-  }
+.card-icon {
+  font-size: 70px;
+  transition: color 0.3s ease;
 }
 
-/* For extra small screens (very narrow devices) */
-@media (max-width: 480px) {
-  .custom-card {
-    padding: 3%; /* Further reduce padding for small screens */
-    height: 250px; /* Further reduce the height for small screens */
-  }
-
-  .card-title {
-    font-size: 1rem; /* Even smaller font size on very small screens */
-  }
-
-  /* Add margin-top to the first card on very small screens */
-  .row .col-md-4:first-child .custom-card {
-    margin-top: 30%; /* Adjust the value as needed */
-  }
-
-  /* Ensure cards are centered in mobile view */
-  .container-fluid {
-    margin-top: 5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column; /* Stack cards vertically */
-  }
-
-  .row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap; /* Ensure the cards are stacked on smaller screens */
-  }
-
-  .col-md-4 {
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px; /* Adds spacing between cards */
-  }
+/* Card-specific styles */
+.card-overview .card-title,
+.card-overview .card-icon {
+  color: #6c757d; /* Gray */
 }
 
-/* Card colors for different cards (optional, can be customized) */
-.card-overview {
-  background-color: #6c757d; /* Gray */
-  color: white;
+.card-report .card-title,
+.card-report .card-icon {
+  color: #007bff; /* Blue */
 }
 
-.card-report {
-  background-color: #007bff; /* Blue */
-  color: white;
+.card-monitoring .card-title,
+.card-monitoring .card-icon {
+  color: #28a745; /* Green */
 }
 
-.card-monitoring {
-  background-color: #28a745; /* Green */
-  color: white;
+.card-employee-directory .card-title,
+.card-employee-directory .card-icon {
+  color: #ffc107; /* Yellow */
 }
 
-.card-employee-directory {
-  background-color: #ffc107; /* Yellow */
-  color: white;
+.card-training-development .card-title,
+.card-training-development .card-icon {
+  color: #dc3545; /* Red */
 }
 
-.card-training-development {
-  background-color: #dc3545; /* Red */
-  color: white;
+.card-leave-attendance .card-title,
+.card-leave-attendance .card-icon {
+  color: #17a2b8; /* Teal */
 }
 
-.card-leave-attendance {
-  background-color: #17a2b8; /* Teal */
-  color: white;
+.card-onboarding-offboarding .card-title,
+.card-onboarding-offboarding .card-icon {
+  color: #6f42c1; /* Purple */
 }
 
-.card-onboarding-offboarding {
-  background-color: #6f42c1; /* Purple */
-  color: white;
+.card-performance-reviews .card-title,
+.card-performance-reviews .card-icon {
+  color: #fd7e14; /* Orange */
 }
 
-.card-performance-reviews {
-  background-color: #fd7e14; /* Orange */
-  color: white;
-}
-
-/* Hover effects for different colored cards */
+/* Hover effects */
 .card-overview:hover {
-  background-color: #5a6268; /* Darker gray on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  background-color: #6c757d; /* Gray background */
+}
+
+.card-overview:hover .card-title,
+.card-overview:hover .card-icon {
+  color: white; /* Text and icon turn white */
 }
 
 .card-report:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  background-color: #007bff; /* Blue background */
+}
+
+.card-report:hover .card-title,
+.card-report:hover .card-icon {
+  color: white;
 }
 
 .card-monitoring:hover {
-  background-color: #218838; /* Darker green on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  background-color: #28a745; /* Green background */
+}
+
+.card-monitoring:hover .card-title,
+.card-monitoring:hover .card-icon {
+  color: white;
 }
 
 .card-employee-directory:hover {
-  background-color: #e0a800; /* Darker yellow on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  background-color: #ffc107; /* Yellow background */
+}
+
+.card-employee-directory:hover .card-title,
+.card-employee-directory:hover .card-icon {
+  color: white;
 }
 
 .card-training-development:hover {
-  background-color: #c82333; /* Darker red on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  background-color: #dc3545; /* Red background */
+}
+
+.card-training-development:hover .card-title,
+.card-training-development:hover .card-icon {
+  color: white;
 }
 
 .card-leave-attendance:hover {
-  background-color: #138496; /* Darker teal on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  background-color: #17a2b8; /* Teal background */
+}
+
+.card-leave-attendance:hover .card-title,
+.card-leave-attendance:hover .card-icon {
+  color: white;
 }
 
 .card-onboarding-offboarding:hover {
-  background-color: #5a3d92; /* Darker purple on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  background-color: #6f42c1; /* Purple background */
+}
+
+.card-onboarding-offboarding:hover .card-title,
+.card-onboarding-offboarding:hover .card-icon {
+  color: white;
 }
 
 .card-performance-reviews:hover {
-  background-color: #e76a24; /* Darker orange on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  background-color: #fd7e14; /* Orange background */
+}
+
+.card-performance-reviews:hover .card-title,
+.card-performance-reviews:hover .card-icon {
+  color: white;
+}
+
+/* Mobile view adjustments remain unchanged */
+@media (max-width: 768px) {
+  .custom-card {
+    padding: 5%;
+    height: 200px;
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-card {
+    padding: 3%;
+    height: 250px;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+}
+/* Styles for the container */
+.dashboard-container {
+  background-color: rgb(192, 192, 192);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 110vh;
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 768px) {
+  .dashboard-container {
+    min-height: 300vh; /* Adjust height for tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    min-height: 260vh; /* Adjust height for smaller devices */
+    flex-direction: column; /* Stack items vertically on smaller screens */
+  }
 }

@@ -14,7 +14,7 @@ const getReportData = async (req, res) => {
     try {
         // Base query
         let query = `
-            SELECT devdt, devdtedit, user_id, devnm
+            SELECT devdt, user_id, devnm
             FROM dbo.punchlog
             WHERE devnm = @location
             AND CAST(devdt AS DATE) BETWEEN CAST(@fromDate AS DATE) AND CAST(@toDate AS DATE)
