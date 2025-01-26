@@ -5,22 +5,67 @@ import axios from "axios"; // Import axios for data fetching
 
 const DataCard = () => {
   const [userType, setUserType] = useState(""); // Selected location
-  const [locations, setLocations] = useState([]); // List of locations fetched from API
+  const [locations, setLocations] = useState([]);
+  const [branchIds, setBranchIds] = useState([]);
+  const [userIds, setUserIds] = useState([]); // State for user IDs
+
+  const currentUserId = localStorage.getItem("userId");
 
   // Fetch locations from the API when component mounts
   useEffect(() => {
     const fetchLocations = async () => {
-      // try {
-      //   const response = await axios.get("http://localhost:3000/api/locations");
-      //   setLocations(response.data); // Set the locations state with fetched data
-      //   if (response.data.length > 0) setUserType(response.data[0]); // Set default value if data is available
-      // } catch (error) {
-      //   console.error("Error fetching locations:", error);
-      // }
+      if (currentUserId) {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/reportLocation?UserId=${currentUserId}`
+          );
+          if (response.data && response.data.length > 0) {
+            const branchIdsList = response.data.map((item) => item.BranchId);
+            const branchNamesList = response.data.map(
+              (item) => item.BranchName
+            );
+
+            const separatedBranchNames = branchNamesList.join(",").split(",");
+            const separatedBranchIds = branchIdsList.join(",").split(",");
+
+            setBranchIds(separatedBranchIds);
+            setLocations(separatedBranchNames);
+          }
+        } catch (error) {
+          console.error("Error fetching report locations:", error);
+        }
+      }
     };
 
     fetchLocations();
-  }, []);
+  }, [currentUserId]);
+
+  // Fetch user IDs when userType changes
+  useEffect(() => {
+    const fetchUserIds = async () => {
+      if (userType) {
+        const branchId = branchIds[locations.indexOf(userType)];
+        if (branchId) {
+          try {
+            const response = await axios.get(
+              `http://localhost:3000/api/users?ugid=${branchId}`
+            );
+            const fetchedUserIds = response.data;
+            setUserIds(fetchedUserIds);
+
+            // Display the user IDs in an alert box
+            if (fetchedUserIds.length > 0) {
+              window.alert(`Fetched User IDs: ${fetchedUserIds.join(", ")}`);
+            }
+          } catch (error) {
+            console.error("Error fetching user IDs:", error);
+          }
+        }
+      }
+    };
+
+    fetchUserIds();
+  }, [userType, branchIds, locations]); // Depend on userType, branchIds, and locations
 
   // Handle dropdown change
   const handleUserTypeChange = (event) => {
@@ -45,15 +90,12 @@ const DataCard = () => {
               value={userType}
               onChange={handleUserTypeChange}
             >
-              {locations.length > 0 ? (
-                locations.map((location, index) => (
-                  <option key={index} value={location}>
-                    {location}
-                  </option>
-                ))
-              ) : (
-                <option>Loading locations...</option>
-              )}
+              <option value="">Select Location</option>
+              {locations.map((location, index) => (
+                <option key={index} value={location}>
+                  {location}
+                </option>
+              ))}
             </select>
           </div>
         </div>
