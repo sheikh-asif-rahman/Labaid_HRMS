@@ -37,13 +37,40 @@ const LoginCom = () => {
       });
 
       const message = await response.text();
+      debugger;
 
       if (response.ok) {
+        debugger;
         localStorage.setItem("isLoggedIn", "true"); // Store login status
         localStorage.setItem("userId", formData.userId); // Store the userId after successful login
 
         if (message === "Welcome") {
-          navigate("/homepage"); // Navigate to homepage on successful login
+          // Fetch user data and permissions after successful login
+          const userResponse = await fetch(
+            "http://localhost:3000/api/adminusersearch",
+            {
+              method: "POST", // Using POST method
+              headers: {
+                "Content-Type": "application/json", // Sending JSON payload
+              },
+              body: JSON.stringify({
+                UserId: formData.userId, // Sending UserId in the body as an nvarchar string
+              }),
+            }
+          );
+
+          if (userResponse.ok) {
+            const userData = await userResponse.json();
+
+            // Store the Permission from the response
+            const permission = userData.Permission; // Extracting the Permission field
+            localStorage.setItem("permission", permission); // Store permission in localStorage
+            debugger;
+
+            navigate("/homepage"); // Navigate to homepage on successful login
+          } else {
+            alert("Failed to fetch user data.");
+          }
         }
       } else {
         alert(message); // Error message

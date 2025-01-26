@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap styles are imported
 import "./Dashboard.css"; // Import custom CSS
 import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
@@ -12,6 +12,13 @@ import { SiAdblock } from "react-icons/si";
 
 const Dashboard = () => {
   const navigate = useNavigate(); // Create a navigate function
+  const [permission, setPermission] = useState(null);
+
+  useEffect(() => {
+    // Load permission from localStorage
+    const storedPermission = localStorage.getItem("permission");
+    setPermission(storedPermission);
+  }, []);
 
   // Define the onClick handler for each card to navigate
   const handleCardClick = (cardName) => {
@@ -19,9 +26,9 @@ const Dashboard = () => {
     if (cardName === "Report") {
       navigate("/reportpage"); // Navigate to the Report page when the Report card is clicked
     } else if (cardName === "OverView") {
-      navigate("/overviewpage"); // Navigate to the Report page when the Report card is clicked
+      navigate("/overviewpage"); // Navigate to the OverView page when the OverView card is clicked
     } else if (cardName === "Admin") {
-      navigate("/admin"); // Navigate to the Report page when the Report card is clicked
+      navigate("/admin"); // Navigate to the Admin page when the Admin card is clicked
     }
   };
 
@@ -69,24 +76,26 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Card 3 */}
-        <div className="col-md-4 mb-4">
-          <div
-            className="card custom-card card-monitoring"
-            onClick={() => handleCardClick("Admin")}
-          >
-            <div className="row g-0">
-              <div className="col-md-8">
-                <div className="card-body">
-                  <h5 className="card-title">Admin</h5>
+        {/* Conditionally render the Admin card based on permission */}
+        {permission === "Admin" && (
+          <div className="col-md-4 mb-4">
+            <div
+              className="card custom-card card-monitoring"
+              onClick={() => handleCardClick("Admin")}
+            >
+              <div className="row g-0">
+                <div className="col-md-8">
+                  <div className="card-body">
+                    <h5 className="card-title">Admin</h5>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <BsWrenchAdjustableCircle size={70} />
+                <div className="col-md-4 d-flex justify-content-center align-items-center">
+                  <BsWrenchAdjustableCircle size={70} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Card 4: Employee Directory */}
         <div className="col-md-4 mb-4">

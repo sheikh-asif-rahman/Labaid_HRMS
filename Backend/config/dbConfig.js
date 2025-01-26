@@ -12,6 +12,18 @@ const dbConfig = {
         instancename: "SQLEXPRESS",
     },
     port: 1433,
+
+    // user: "sa",
+    // password: "L@b@id#?$%238",
+    // server: "103.125.253.241",
+    // database: "TADB",
+    // options: {
+    //     trustServerCertificate: true,
+    //     trustedConnection: false,
+    //     enableArithAbort: true,
+    //     instancename: "SQLEXPRESS",
+    // },
+    // port: 1433,
 };
 
 // Database connection

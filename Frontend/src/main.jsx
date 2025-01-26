@@ -9,7 +9,7 @@ import ReportPage from "./Page/ReportPage.jsx";
 import OverViewPage from "./Page/OverViewPage.jsx";
 import Admin from "./Page/Admin.jsx";
 import LoginPage from "./Page/LoginPage.jsx";
-import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute component
+import ProtectedRoute from "./components/ProtectedRoute.jsx"; // Import the ProtectedRoute component
 
 // Define routes
 const router = createBrowserRouter([
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <ProtectedRoute element={<Admin />} />, // Protect this route
+    element: <ProtectedRoute element={<Admin />} restrictedToAdmin={true} />, // Protect this route for Admin only
   },
 ]);
 
