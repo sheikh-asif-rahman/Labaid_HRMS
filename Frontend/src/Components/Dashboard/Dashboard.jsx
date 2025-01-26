@@ -87,16 +87,16 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Card 4 */}
+        {/* Card 4: Employee Directory */}
         <div className="col-md-4 mb-4">
           <div
-            className="card custom-card card-card4"
-            onClick={() => handleCardClick("Card 4")}
+            className="card custom-card card-employee-directory"
+            onClick={() => handleCardClick("")}
           >
             <div className="row g-0">
               <div className="col-md-8">
                 <div className="card-body">
-                  <h5 className="card-title">Card 4</h5>
+                  <h5 className="card-title">Employee Directory</h5>
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
@@ -106,16 +106,16 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Card 5 */}
+        {/* Card 5: Training and Development */}
         <div className="col-md-4 mb-4">
           <div
-            className="card custom-card card-card5"
-            onClick={() => handleCardClick("Card 5")}
+            className="card custom-card card-training-development"
+            onClick={() => handleCardClick("")}
           >
             <div className="row g-0">
               <div className="col-md-8">
                 <div className="card-body">
-                  <h5 className="card-title">Card 5</h5>
+                  <h5 className="card-title">Training and Development</h5>
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
@@ -125,16 +125,54 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Card 6 */}
+        {/* Card 6: Leave & Attendance Tracking */}
         <div className="col-md-4 mb-4">
           <div
-            className="card custom-card card-card6"
-            onClick={() => handleCardClick("Card 6")}
+            className="card custom-card card-leave-attendance"
+            onClick={() => handleCardClick("")}
           >
             <div className="row g-0">
               <div className="col-md-8">
                 <div className="card-body">
-                  <h5 className="card-title">Card 6</h5>
+                  <h5 className="card-title">Leave & Attendance Tracking</h5>
+                </div>
+              </div>
+              <div className="col-md-4 d-flex justify-content-center align-items-center">
+                <BsClipboard2Data size={70} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 7: Onboarding/Offboarding */}
+        <div className="col-md-4 mb-4">
+          <div
+            className="card custom-card card-onboarding-offboarding"
+            onClick={() => handleCardClick("")}
+          >
+            <div className="row g-0">
+              <div className="col-md-8">
+                <div className="card-body">
+                  <h5 className="card-title">Onboarding - Offboarding</h5>
+                </div>
+              </div>
+              <div className="col-md-4 d-flex justify-content-center align-items-center">
+                <BsClipboard2Data size={70} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 8: Performance Reviews */}
+        <div className="col-md-4 mb-4">
+          <div
+            className="card custom-card card-performance-reviews"
+            onClick={() => handleCardClick("")}
+          >
+            <div className="row g-0">
+              <div className="col-md-8">
+                <div className="card-body">
+                  <h5 className="card-title">Performance Reviews</h5>
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">

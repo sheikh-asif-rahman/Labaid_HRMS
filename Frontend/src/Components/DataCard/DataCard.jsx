@@ -34,10 +34,11 @@ const DataCard = () => {
     <div className="container mt-5">
       {/* First Section: Current Year Overview */}
       <div className="text-center mb-5">
-        <div className="overview-group d-flex justify-content-center align-items-center mb-3">
-          {/* Select Location */}
+        <h1 className="data-title mt-4">Today's Overview</h1>
+
+        {/* Select Location */}
+        <div className="overview-group d-flex justify-content-center align-items-center mt-4">
           <div>
-            <label htmlFor="userType">Select Location</label>
             <select
               className="form-control"
               id="userType"
@@ -56,107 +57,49 @@ const DataCard = () => {
             </select>
           </div>
         </div>
-        <h1 className="data-title mt-4">Today's Overview</h1>
       </div>
 
+      {/* Card Section */}
       <div className="row">
         {/* Card 1: Attendance */}
-        <div className="col-md-4 mb-4">
+        <div className="col-md-6 mb-4">
           <div className="card card-attendance">
             <div className="card-body">
-              <p className="card-text">Attendance: {randomNumber()} people</p>
+              <p className="card-title">Attendance</p>
+              <p className="card-text">{randomNumber()} people</p>
             </div>
           </div>
         </div>
 
         {/* Card 2: Absence */}
-        <div className="col-md-4 mb-4">
+        <div className="col-md-6 mb-4">
           <div className="card card-absence">
             <div className="card-body">
-              <p className="card-text">Absences: {randomNumber()} people</p>
+              <p className="card-title">Absence</p>
+              <p className="card-text">{randomNumber()} people</p>
             </div>
           </div>
         </div>
 
         {/* Card 3: Late Attendance */}
-        <div className="col-md-4 mb-4">
+        <div className="col-md-6 mb-4">
           <div className="card card-late-attendance">
             <div className="card-body">
-              <p className="card-text">
-                Late Attendances: {randomNumber()} people
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Second Section: Current Month Overview */}
-      <div className="text-center mb-5 mt-5">
-        <h1 className="data-title">This Month Overview</h1>
-      </div>
-
-      <div className="row">
-        {/* Card 1: Attendance */}
-        <div className="col-md-4 mb-4">
-          <div className="card card-attendance">
-            <div className="card-body">
-              <p className="card-text">Attendance: {randomNumber()} people</p>
+              <p className="card-title">Late Attendance</p>
+              <p className="card-text">{randomNumber()} people</p>
             </div>
           </div>
         </div>
 
-        {/* Card 2: Absence */}
-        <div className="col-md-4 mb-4">
-          <div className="card card-absence">
+        {/* Card 4: On Leave */}
+        <div className="col-md-6 mb-4">
+          <div
+            className="card card-on-leave"
+            style={{ backgroundColor: "#66cc66", color: "white" }}
+          >
             <div className="card-body">
-              <p className="card-text">Absences: {randomNumber()} people</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Late Attendance */}
-        <div className="col-md-4 mb-4">
-          <div className="card card-late-attendance">
-            <div className="card-body">
-              <p className="card-text">
-                Late Attendances: {randomNumber()} people
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Third Section: Additional Section (Placeholder for future content) */}
-      <div className="text-center mb-5 mt-5">
-        <h1 className="data-title">This Year Overview</h1>
-      </div>
-
-      <div className="row">
-        {/* Card 1: Attendance */}
-        <div className="col-md-4 mb-4">
-          <div className="card card-attendance">
-            <div className="card-body">
-              <p className="card-text">Attendance: {randomNumber()} people</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2: Absence */}
-        <div className="col-md-4 mb-4">
-          <div className="card card-absence">
-            <div className="card-body">
-              <p className="card-text">Absences: {randomNumber()} people</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Late Attendance */}
-        <div className="col-md-4 mb-4">
-          <div className="card card-late-attendance">
-            <div className="card-body">
-              <p className="card-text">
-                Late Attendances: {randomNumber()} people
-              </p>
+              <p className="card-title">On Leave</p>
+              <p className="card-text">{randomNumber()} people</p>
             </div>
           </div>
         </div>

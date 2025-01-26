@@ -74,7 +74,7 @@ const ReportSearch = () => {
   }, [userType]);
 
   const handleReset = () => {
-    setUserType(locations[0] || "");
+    setUserType("");
     setUserId("");
     setFromDate(new Date().toISOString().split("T")[0]);
     setToDate(new Date().toISOString().split("T")[0]);

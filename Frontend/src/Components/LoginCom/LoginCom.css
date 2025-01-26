@@ -1,152 +1,306 @@
-/* Login Page Styling */
+/* Base styling for login page */
 .logincom-page {
-    display: flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #0c5aa8;
+  position: relative;
+  overflow: hidden; /* Prevents bubbles from overflowing outside */
+}
+
+.logincom-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Prevents interaction with bubbles */
+  z-index: 0; /* Ensure bubbles are behind the login form */
+}
+
+.logincom-bubble {
+  position: absolute;
+  background-color: rgba(0, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: bubble-animation 6s infinite ease-in-out;
+}
+
+.logincom-bubble:nth-child(1) {
+  width: 80px;
+  height: 80px;
+  animation-duration: 6s;
+  animation-delay: 0s;
+  top: 20%;
+  left: 10%;
+}
+
+.logincom-bubble:nth-child(2) {
+  width: 100px;
+  height: 100px;
+  animation-duration: 7s;
+  animation-delay: 2s;
+  top: 40%;
+  left: 30%;
+}
+
+.logincom-bubble:nth-child(3) {
+  width: 120px;
+  height: 120px;
+  animation-duration: 8s;
+  animation-delay: 4s;
+  top: 50%;
+  left: 50%;
+}
+
+.logincom-bubble:nth-child(4) {
+  width: 90px;
+  height: 90px;
+  animation-duration: 6s;
+  animation-delay: 1s;
+  top: 60%;
+  left: 70%;
+}
+
+.logincom-bubble:nth-child(5) {
+  width: 110px;
+  height: 110px;
+  animation-duration: 6s;
+  animation-delay: 3s;
+  top: 30%;
+  left: 80%;
+}
+
+/* Bubble animation keyframes */
+@keyframes bubble-animation {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-50px) scale(1.2);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Login container styling */
+.logincom-container {
+  background: linear-gradient(135deg, #ffffff, #f7f9fc);
+  width: 40%;
+  padding: 50px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.logincom-heading {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #333;
+  text-transform: uppercase;
+}
+
+.logincom-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.logincom-form-group {
+  width: 100%;
+}
+
+.logincom-form-input {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.logincom-form-input:focus {
+  border-color: #4e73df;
+  box-shadow: 0 0 8px rgba(78, 115, 223, 0.4);
+}
+
+.logincom-login-button {
+  padding: 15px 0;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #4e73df;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.logincom-login-button:hover {
+  background-color: #375a8c;
+  transform: translateY(-2px);
+}
+
+.logincom-login-button:active {
+  transform: translateY(0);
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .logincom-page {
+    padding: 20px;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #0c5aa8;
-    position: relative;
-    overflow: hidden; /* Prevents bubbles from overflowing outside */
+    align-items: center; /* Centers the content vertically */
+    flex-direction: column; /* Ensure everything is stacked vertically */
   }
-  
-  .logincom-bubbles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Prevents interaction with bubbles */
-    z-index: 0; /* Ensure bubbles are behind the login form */
+
+  .logincom-container {
+    width: 80%;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the form content */
   }
-  
+
+  .logincom-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .logincom-form {
+    gap: 15px;
+  }
+
+  .logincom-form-input {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .logincom-login-button {
+    font-size: 14px;
+    padding: 12px 0;
+  }
+
+  /* Adjust the bubble sizes */
   .logincom-bubble {
-    position: absolute;
-    background-color: rgba(0, 255, 255, 0.5);
-    border-radius: 50%;
-    animation: bubble-animation 6s infinite ease-in-out;
+    width: 50px;
+    height: 50px;
+    animation-duration: 5s;
   }
-  
+
   .logincom-bubble:nth-child(1) {
+    width: 60px;
+    height: 60px;
+    animation-duration: 6s;
+    top: 10%;
+    left: 5%;
+  }
+
+  .logincom-bubble:nth-child(2) {
+    width: 70px;
+    height: 70px;
+    animation-duration: 6.5s;
+    top: 30%;
+    left: 20%;
+  }
+
+  .logincom-bubble:nth-child(3) {
+    width: 90px;
+    height: 90px;
+    animation-duration: 7s;
+    top: 40%;
+    left: 40%;
+  }
+
+  .logincom-bubble:nth-child(4) {
+    width: 70px;
+    height: 70px;
+    animation-duration: 6s;
+    top: 55%;
+    left: 60%;
+  }
+
+  .logincom-bubble:nth-child(5) {
     width: 80px;
     height: 80px;
     animation-duration: 6s;
-    animation-delay: 0s;
-    top: 20%;
+    top: 25%;
+    left: 75%;
+  }
+}
+
+@media (max-width: 480px) {
+  .logincom-container {
+    width: 90%;
+    padding: 25px;
+  }
+
+  .logincom-heading {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .logincom-form-input {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .logincom-login-button {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+
+  .logincom-bubble {
+    width: 40px;
+    height: 40px;
+    animation-duration: 5s;
+  }
+
+  .logincom-bubble:nth-child(1) {
+    width: 50px;
+    height: 50px;
+    animation-duration: 5.5s;
+    top: 10%;
+    left: 0%;
+  }
+
+  .logincom-bubble:nth-child(2) {
+    width: 60px;
+    height: 60px;
+    animation-duration: 6s;
+    top: 30%;
     left: 10%;
   }
-  
-  .logincom-bubble:nth-child(2) {
-    width: 100px;
-    height: 100px;
-    animation-duration: 7s;
-    animation-delay: 2s;
+
+  .logincom-bubble:nth-child(3) {
+    width: 70px;
+    height: 70px;
+    animation-duration: 6.5s;
     top: 40%;
     left: 30%;
   }
-  
-  .logincom-bubble:nth-child(3) {
-    width: 120px;
-    height: 120px;
-    animation-duration: 8s;
-    animation-delay: 4s;
+
+  .logincom-bubble:nth-child(4) {
+    width: 60px;
+    height: 60px;
+    animation-duration: 6s;
     top: 50%;
     left: 50%;
   }
-  
-  .logincom-bubble:nth-child(4) {
-    width: 90px;
-    height: 90px;
+
+  .logincom-bubble:nth-child(5) {
+    width: 70px;
+    height: 70px;
     animation-duration: 6s;
-    animation-delay: 1s;
-    top: 60%;
+    top: 20%;
     left: 70%;
   }
-  
-  .logincom-bubble:nth-child(5) {
-    width: 110px;
-    height: 110px;
-    animation-duration: 6s;
-    animation-delay: 3s;
-    top: 30%;
-    left: 80%;
-  }
-  
-  /* Bubble animation keyframes */
-  @keyframes bubble-animation {
-    0% {
-      transform: translateY(0) scale(1);
-    }
-    50% {
-      transform: translateY(-50px) scale(1.2);
-    }
-    100% {
-      transform: translateY(0) scale(1);
-    }
-  }
-  
-  /* Container for the login form */
-  .logincom-container {
-    background: linear-gradient(135deg, #ffffff, #f7f9fc); /* Light gradient background */
-    width: 40%;
-    padding: 50px;
-    border-radius: 20px; /* More rounded corners for a modern look */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Softer and more visible shadow */
-    position: relative;
-    z-index: 1; /* Ensure form is on top of bubbles */
-    text-align: center; /* Center-align the content */
-  }
-
-  /* Heading style */
-  .logincom-heading {
-    font-size: 28px; /* Larger font size for better readability */
-    font-weight: 600; /* Bold text */
-    margin-bottom: 25px;
-    color: #333;
-    text-transform: uppercase; /* All uppercase for a more formal appearance */
-  }
-
-  /* Form styling */
-  .logincom-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Add consistent spacing between elements */
-  }
-
-  /* Input styling */
-  .logincom-form-input {
-    width: 100%;
-    padding: 15px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-
-  .logincom-form-input:focus {
-    border-color: #4e73df;
-    box-shadow: 0 0 8px rgba(78, 115, 223, 0.4);
-  }
-
-  /* Button styling */
-  .logincom-login-button {
-    padding: 15px 0;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #4e73df;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-
-  .logincom-login-button:hover {
-    background-color: #375a8c;
-    transform: translateY(-2px); /* Subtle lift effect on hover */
-  }
-
-  .logincom-login-button:active {
-    transform: translateY(0); /* Reset the lift effect when clicked */
-  }
+}

@@ -5,7 +5,13 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   padding: 10%; /* Customizable padding */
   transition: padding 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease; /* Smooth transition for padding, shadow, scaling, and background color */
+  height: 150px; /* Fixed height for all cards */
+  display: flex;
+  flex-direction: column; /* Ensure content is stacked vertically */
+  justify-content: space-between; /* Space content evenly */
+  text-align: center; /* Center text inside the card */
 }
+
 /* Card hover effect */
 .custom-card:hover {
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow for hover effect */
@@ -22,6 +28,7 @@
 @media (max-width: 768px) {
   .custom-card {
     padding: 5%; /* Less padding on mobile */
+    height: 200px; /* Reduce the height for mobile */
   }
 
   .card-title {
@@ -29,83 +36,7 @@
   }
 
   /* Add margin-top to the first card only on mobile view */
-  .row .col-md-4:f/* Styling for the card */
-  .custom-card {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 10%; /* Customizable padding */
-    transition: padding 0.3s ease; /* Smooth transition for padding */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center; /* Center text inside the card */
-  }
-  
-  /* Card body title */
-  .card-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-  
-  /* For mobile screens */
-  @media (max-width: 768px) {
-    .custom-card {
-      padding: 5%; /* Less padding on mobile */
-    }
-  
-    .card-title {
-      font-size: 1.2rem; /* Smaller font size on mobile */
-    }
-  
-    /* Add margin-top to the first card only on mobile view */
-    .row .col-md-4:first-child .custom-card {
-      margin-top: 20%; /* Adjust the value as needed */
-    }
-  }
-  
-  /* For extra small screens (very narrow devices) */
-  @media (max-width: 480px) {
-    .custom-card {
-      padding: 3%; /* Further reduce padding for small screens */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-  
-    .card-title {
-      font-size: 1rem; /* Even smaller font size on very small screens */
-    }
-  
-    /* Add margin-top to the first card on very small screens */
-    .row .col-md-4:first-child .custom-card {
-      margin-top: 30%; /* Adjust the value as needed */
-    }
-  
-    /* Ensure cards are centered in mobile view */
-    .container-fluid {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column; /* Stack cards vertically */
-    }
-  
-    .row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap; /* Ensure the cards are stacked on smaller screens */
-    }
-  
-    .col-md-4 {
-      /* display: flex; */
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 15px; /* Adds spacing between cards */
-    }
-  }
-  irst-child .custom-card {
+  .row .col-md-4:first-child .custom-card {
     margin-top: 20%; /* Adjust the value as needed */
   }
 }
@@ -114,6 +45,7 @@
 @media (max-width: 480px) {
   .custom-card {
     padding: 3%; /* Further reduce padding for small screens */
+    height: 180px; /* Further reduce the height for small screens */
   }
 
   .card-title {
@@ -124,7 +56,30 @@
   .row .col-md-4:first-child .custom-card {
     margin-top: 30%; /* Adjust the value as needed */
   }
+
+  /* Ensure cards are centered in mobile view */
+  .container-fluid {
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Stack cards vertically */
+  }
+
+  .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Ensure the cards are stacked on smaller screens */
+  }
+
+  .col-md-4 {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px; /* Adds spacing between cards */
+  }
 }
+
 /* Card colors for different cards (optional, can be customized) */
 .card-overview {
   background-color: #6c757d; /* Gray */
@@ -141,18 +96,28 @@
   color: white;
 }
 
-.card-card4 {
+.card-employee-directory {
   background-color: #ffc107; /* Yellow */
   color: white;
 }
 
-.card-card5 {
+.card-training-development {
   background-color: #dc3545; /* Red */
   color: white;
 }
 
-.card-card6 {
+.card-leave-attendance {
   background-color: #17a2b8; /* Teal */
+  color: white;
+}
+
+.card-onboarding-offboarding {
+  background-color: #6f42c1; /* Purple */
+  color: white;
+}
+
+.card-performance-reviews {
+  background-color: #fd7e14; /* Orange */
   color: white;
 }
 
@@ -172,17 +137,27 @@
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
 }
 
-.card-card4:hover {
+.card-employee-directory:hover {
   background-color: #e0a800; /* Darker yellow on hover */
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
 }
 
-.card-card5:hover {
+.card-training-development:hover {
   background-color: #c82333; /* Darker red on hover */
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
 }
 
-.card-card6:hover {
+.card-leave-attendance:hover {
   background-color: #138496; /* Darker teal on hover */
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+.card-onboarding-offboarding:hover {
+  background-color: #5a3d92; /* Darker purple on hover */
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+.card-performance-reviews:hover {
+  background-color: #e76a24; /* Darker orange on hover */
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
 }
