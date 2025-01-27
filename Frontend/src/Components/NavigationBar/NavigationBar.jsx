@@ -21,7 +21,7 @@ const NavigationBar = () => {
       <Navbar expand="lg" className="navbar-custom" fixed="top">
         <Container>
           {/* this is for logo of labaid */}
-          <Navbar.Brand href="#">LABAID HRMS</Navbar.Brand>
+          <Navbar.Brand href="homepage">LABAID HRMS</Navbar.Brand>
           {/* when screen is small, it will become menu button */}
           <Navbar.Toggle
             aria-controls="offcanvasNavbar"

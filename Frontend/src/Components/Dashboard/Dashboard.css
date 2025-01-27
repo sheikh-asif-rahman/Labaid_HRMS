@@ -175,6 +175,7 @@
   justify-content: center;
   align-items: center;
   min-height: 110vh;
+  padding: 7% 2% !important;
 }
 
 /* Responsive adjustments for different screen sizes */
@@ -188,5 +189,12 @@
   .dashboard-container {
     min-height: 260vh; /* Adjust height for smaller devices */
     flex-direction: column; /* Stack items vertically on smaller screens */
+  }
+  .card-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .card-icon {
+    font-size: 80px !important;
   }
 }

@@ -154,7 +154,7 @@
   padding: 8px;
   width: 100%;
   max-width: 300px;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   border-radius: 4px;
 }
 
@@ -166,7 +166,7 @@
   width: 100%;
   max-width: 300px;
   background-color: white;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   border-radius: 4px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -209,7 +209,7 @@
 
 /* New button styling */
 .custom-new-button {
-  background-color: #ffc107; /* Yellow color for new button */
+  background-color: #fd5858; /* Yellow color for new button */
   color: white;
   padding: 8px 16px;
   border: none;
@@ -219,7 +219,7 @@
 }
 
 .custom-new-button:hover {
-  background-color: #e0a800; /* Darker yellow on hover */
+  background-color: #ff3434; /* Darker yellow on hover */
 }
 
 /* Save button styling (already provided) */
@@ -266,7 +266,7 @@
 .custom-form-group input,
 .custom-form-group select {
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   border-radius: 4px;
 }
 

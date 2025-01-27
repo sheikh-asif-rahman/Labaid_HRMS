@@ -21,8 +21,8 @@
 .reportsearch-input[type="text"] {
   padding: 0.75rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  border: 1px solid #000000;
+  border-radius: 5px;
   width: 100%; /* Make fields take full width */
   box-sizing: border-box; /* Ensure padding and border don't overflow */
   height: 48px; /* Consistent height for all elements */
