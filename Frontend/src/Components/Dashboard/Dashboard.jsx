@@ -13,6 +13,8 @@ import { SiAdblock } from "react-icons/si";
 const Dashboard = () => {
   const navigate = useNavigate(); // Create a navigate function
   const [permission, setPermission] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     // Load permission from localStorage
@@ -29,7 +31,14 @@ const Dashboard = () => {
       navigate("/overviewpage"); // Navigate to the OverView page when the OverView card is clicked
     } else if (cardName === "Admin") {
       navigate("/admin"); // Navigate to the Admin page when the Admin card is clicked
+    } else if (cardName === "underDevelopmentModal") {
+      setModalMessage("Under Development");
+      setShowModal(true);
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -39,7 +48,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-overview"
-            onClick={() => handleCardClick("OverView")}
+            onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
@@ -98,7 +107,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-employee-directory"
-            onClick={() => handleCardClick("")}
+            onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
@@ -117,7 +126,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-training-development"
-            onClick={() => handleCardClick("")}
+            onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
@@ -136,7 +145,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-leave-attendance"
-            onClick={() => handleCardClick("")}
+            onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
@@ -155,7 +164,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-onboarding-offboarding"
-            onClick={() => handleCardClick("")}
+            onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
@@ -174,7 +183,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-performance-reviews"
-            onClick={() => handleCardClick("")}
+            onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
@@ -185,6 +194,29 @@ const Dashboard = () => {
               <div className="col-md-4 d-flex justify-content-center align-items-center">
                 <SiAdblock className="card-icon" />
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal */}
+      <div
+        className={`modal fade ${showModal ? "show" : ""}`}
+        style={{ display: showModal ? "block" : "none" }}
+        tabIndex="-1"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body text-center">
+              <p>{modalMessage}</p>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={closeModal}
+              >
+                OK
+              </button>
             </div>
           </div>
         </div>

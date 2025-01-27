@@ -97,6 +97,12 @@ const LoginCom = () => {
               placeholder="User ID"
               value={formData.userId}
               onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  document.getElementById("password").focus();
+                }
+              }}
             />
           </div>
           <div className="logincom-form-group">
@@ -108,6 +114,12 @@ const LoginCom = () => {
               placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  document.querySelector(".logincom-login-button").click();
+                }
+              }}
             />
           </div>
           <button type="submit" className="logincom-login-button">
@@ -117,6 +129,7 @@ const LoginCom = () => {
       </div>
     </div>
   );
+  
 };
 
 export default LoginCom;

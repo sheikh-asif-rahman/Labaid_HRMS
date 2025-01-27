@@ -4,7 +4,7 @@
   border: 5px solid transparent; /* Default border is transparent */
   border-radius: 0; /* Sharp corners */
   box-shadow: 0px 4px 6px rgba(0, 0, 255, 0.1); /* Blue shadow */
-  padding: 10%;
+  padding: 5% 0% !important;
   transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   height: 150px;
   display: flex;

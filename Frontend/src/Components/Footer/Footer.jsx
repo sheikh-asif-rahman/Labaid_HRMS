@@ -4,17 +4,16 @@ import "./Footer.css";
 const Footer = () => {
   return (
     <div className="footer">
-      <div className="socialmedia">
-        <h5>Facebook</h5>
-        <h5>Twitter</h5>
-        <h5>Youtube</h5>
-      </div>
+      <h3>
+        DEVELOPED BY LABAID IT TEAM
+      </h3>
       <hr />
-      <div className="footer-text">
-        <p>@{new Date().getFullYear()} Asif. All rights reserved.</p>
-      </div>
+      <p>
+        @SHEIKH_ASIF_RAHMAN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@YOUSUF_MD_RIYAD
+      </p>
     </div>
   );
+  
 };
 
 export default Footer;
