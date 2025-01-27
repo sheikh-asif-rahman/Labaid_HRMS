@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginCom.css";
-
+import Logo from "../../assets/LabaidLogo.png";
 const LoginCom = () => {
   const [formData, setFormData] = useState({
     userId: "",
@@ -83,15 +83,10 @@ const LoginCom = () => {
 
   return (
     <div className="logincom-page">
-      <div className="logincom-bubbles">
-        <div className="logincom-bubble"></div>
-        <div className="logincom-bubble"></div>
-        <div className="logincom-bubble"></div>
-        <div className="logincom-bubble"></div>
-        <div className="logincom-bubble"></div>
-      </div>
       <div className="logincom-container">
-        <h2 className="logincom-heading">Login</h2>
+        <h2 className="logincom-heading">
+          <img src={Logo} alt="Labaid" />
+        </h2>
         <form className="logincom-form" onSubmit={handleLogin}>
           <div className="logincom-form-group">
             <input
