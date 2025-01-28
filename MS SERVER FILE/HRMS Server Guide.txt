@@ -1,6 +1,7 @@
 For Backend Server -
-1. For start the server command: "pm2 start server.js"
-2. For stop the server command: "pm2 stop server.js"
+1. npm install -g pm2
+2. For start the server command: "pm2 start server.js"
+3. For stop the server command: "pm2 stop server.js"
 
 
 Frontend URL: 103.228.38.109:5037
