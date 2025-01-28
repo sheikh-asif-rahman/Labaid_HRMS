@@ -23,6 +23,8 @@
     font-family: 'Arial', sans-serif; /* Change to your desired font */
     font-size: 26px; /* Adjust the brand font size */
     font-weight: bolder;
+    cursor: pointer;
+
 }
 
 /* Offcanvas styles */

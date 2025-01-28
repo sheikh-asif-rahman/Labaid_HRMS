@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AccessAdmin.css";
 import { FaSearch } from "react-icons/fa";
+import { BASE_URL } from "/src/constants/constant.jsx";
+
 
 const AccessAdmin = () => {
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +26,7 @@ const AccessAdmin = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/locations");
+        const response = await axios.get(`${BASE_URL}locations`);
         setBranches(response.data); // Populate branch names from API
       } catch (error) {
         console.error("Error fetching branches:", error);
@@ -44,7 +46,7 @@ const AccessAdmin = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/adminusersearch",
+        `${BASE_URL}adminusersearch`,
         { UserId: searchId }
       );
 
@@ -120,7 +122,7 @@ const AccessAdmin = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/administration",
+        `${BASE_URL}administration`,
         formData
       );
       setModalMessage("User saved successfully!");
@@ -161,7 +163,7 @@ const AccessAdmin = () => {
 
     try {
       const response = await axios.put(
-        "http://localhost:3000/api/updateuser",
+        `${BASE_URL}updateuser`,
         formData
       );
       setModalMessage("User updated successfully!");
@@ -203,7 +205,18 @@ const AccessAdmin = () => {
   };
 
   const handleReset = () => {
-    window.location.reload(); // Reload the page when "New" is clicked
+    setSearchId(""); // Clear the search ID field
+  setName(""); // Clear the name field
+  setUserId(""); // Clear the user ID field
+  setMobileNumber(""); // Clear the mobile number field
+  setPassword(""); // Clear the password field
+  setConfirmPassword(""); // Clear the confirm password field
+  setStatus("Active"); // Reset status to the default value
+  setPermission("Admin"); // Reset permission to the default value
+  setSelectedBranches([]); // Clear selected branches
+  setUserIdDisabled(false); // Re-enable the user ID field
+  setUserFound(false); // Reset the userFound state
+  setModalMessage(""); // Clear modal message (if needed)
   };
 
   return (

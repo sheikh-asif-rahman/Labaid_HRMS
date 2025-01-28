@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ReportSearch.css";
+import { BASE_URL } from "/src/constants/constant.jsx";
+
 
 const ReportSearch = () => {
   const currentUserId = localStorage.getItem("userId");
@@ -26,7 +28,7 @@ const ReportSearch = () => {
       if (currentUserId) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/reportLocation?UserId=${currentUserId}`
+            `${BASE_URL}reportLocation?UserId=${currentUserId}`
           );
           if (response.data && response.data.length > 0) {
             const branchIdsList = response.data.map((item) => item.BranchId);
@@ -60,7 +62,7 @@ const ReportSearch = () => {
         if (branchId) {
           try {
             const response = await axios.get(
-              `http://localhost:3000/api/users?ugid=${branchId}`
+              `${BASE_URL}users?ugid=${branchId}`
             );
             setUserIds(response.data);
           } catch (error) {
@@ -167,7 +169,7 @@ const ReportSearch = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:3000/api/report",
+        `${BASE_URL}report`,
         requestData
       );
 

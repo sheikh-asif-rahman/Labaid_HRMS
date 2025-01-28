@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap styles are imported
 import "./DataCard.css"; // Import custom CSS
 import axios from "axios"; // Import axios for data fetching
+import { BASE_URL } from "/src/constants/constant.jsx";
 
 const DataCard = () => {
   const [userType, setUserType] = useState(""); // Selected location
@@ -17,7 +18,7 @@ const DataCard = () => {
       if (currentUserId) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/reportLocation?UserId=${currentUserId}`
+            `${BASE_URL}/reportLocation?UserId=${currentUserId}`
           );
           if (response.data && response.data.length > 0) {
             const branchIdsList = response.data.map((item) => item.BranchId);
@@ -48,7 +49,7 @@ const DataCard = () => {
         if (branchId) {
           try {
             const response = await axios.get(
-              `http://localhost:3000/api/users?ugid=${branchId}`
+              `${BASE_URL}users?ugid=${branchId}`
             );
             const fetchedUserIds = response.data;
             setUserIds(fetchedUserIds);

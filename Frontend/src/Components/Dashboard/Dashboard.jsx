@@ -9,7 +9,6 @@ import {
   BsClipboard2Data,
 } from "react-icons/bs";
 import { SiAdblock } from "react-icons/si";
-
 const Dashboard = () => {
   const navigate = useNavigate(); // Create a navigate function
   const [permission, setPermission] = useState(null);
@@ -48,7 +47,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-overview"
-            onClick={() => handleCardClick("underDevelopmentModal")}
+            onClick={() => handleCardClick("OverView")}
           >
             <div className="row g-0">
               <div className="col-md-8">

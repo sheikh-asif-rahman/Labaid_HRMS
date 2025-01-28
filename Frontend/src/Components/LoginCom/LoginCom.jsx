@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginCom.css";
 import Logo from "../../assets/LabaidLogo.png";
+import { BASE_URL } from "/src/constants/constant.jsx";
+
 const LoginCom = () => {
   const [formData, setFormData] = useState({
     userId: "",
@@ -25,7 +27,7 @@ const LoginCom = () => {
 
     try {
       // Send login request to the backend
-      const response = await fetch("http://localhost:3000/api/login", {
+      const response = await fetch(`${BASE_URL}login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +49,7 @@ const LoginCom = () => {
         if (message === "Welcome") {
           // Fetch user data and permissions after successful login
           const userResponse = await fetch(
-            "http://localhost:3000/api/adminusersearch",
+            `${BASE_URL}adminusersearch`,
             {
               method: "POST", // Using POST method
               headers: {
@@ -67,7 +69,7 @@ const LoginCom = () => {
             localStorage.setItem("permission", permission); // Store permission in localStorage
             debugger;
 
-            navigate("/homepage"); // Navigate to homepage on successful login
+            navigate(`/homepage`); // Navigate to homepage on successful login
           } else {
             alert("Failed to fetch user data.");
           }

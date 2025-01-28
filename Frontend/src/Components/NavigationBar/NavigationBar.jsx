@@ -13,7 +13,11 @@ const NavigationBar = () => {
   // Handle logout function
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn"); // Clear login status from localStorage
-    navigate("/loginpage"); // Redirect to login page
+    navigate(`/loginpage`); // Redirect to login page
+  };
+  // Handle logout function
+  const handleHomePage = () => {
+    navigate(`/homepage`); // Redirect to login page
   };
 
   return (
@@ -21,7 +25,7 @@ const NavigationBar = () => {
       <Navbar expand="lg" className="navbar-custom" fixed="top">
         <Container>
           {/* this is for logo of labaid */}
-          <Navbar.Brand href="homepage">LABAID HRMS</Navbar.Brand>
+          <Navbar.Brand onClick={handleHomePage}>LABAID HRMS</Navbar.Brand>
           {/* when screen is small, it will become menu button */}
           <Navbar.Toggle
             aria-controls="offcanvasNavbar"
@@ -31,7 +35,7 @@ const NavigationBar = () => {
           <Navbar.Collapse id="offcanvasNavbar" className="d-none d-lg-flex">
             {/* this is the nav for item to align right side */}
             <Nav className="ms-auto">
-              <Nav.Link href="homepage">Home</Nav.Link>
+              <Nav.Link onClick={handleHomePage}>Home</Nav.Link>
               <Nav.Link onClick={handleLogout} className="logout-link">
                 Logout
               </Nav.Link>
@@ -50,7 +54,7 @@ const NavigationBar = () => {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
-                <Nav.Link href="homepage">Home</Nav.Link>
+                <Nav.Link href={`homepage`}>Home</Nav.Link>
                 <Nav.Link onClick={handleLogout} className="logout-link">
                   Logout
                 </Nav.Link>
