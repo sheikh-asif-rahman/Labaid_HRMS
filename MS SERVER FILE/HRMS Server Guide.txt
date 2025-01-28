@@ -1,0 +1,9 @@
+For Backend Server -
+1. For start the server command: "pm2 start server.js"
+2. For stop the server command: "pm2 stop server.js"
+
+
+Frontend URL: 103.228.38.109:5037
+Backend URL: 103.228.38.109:3000
+
+
