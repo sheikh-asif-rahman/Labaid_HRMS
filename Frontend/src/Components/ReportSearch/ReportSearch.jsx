@@ -154,71 +154,83 @@ const handleGetData = async () => {
   setFetchSuccess(null);
 
   try {
-      const requestData = {
-          location: userType,
-          fromDate,
-          toDate,
-      };
+    const branchIndex = locations.indexOf(userType);
+    const branchId = branchIds[branchIndex];
 
-      if (userId) {
-          requestData.userId = userId;
+    const requestData = {
+      branchId: branchId,  // Send the branchId instead of location
+      fromDate,
+      toDate,
+    };
+
+    if (userId) {
+      requestData.userId = userId;
+    }
+
+    const response = await axios.post(`${BASE_URL}report`, requestData);
+
+    // Group data by (Branch Name, User ID, Date)
+    const groupedData = {};
+
+    response.data.forEach(row => {
+      const branchName = row.devnm || "N/A";
+      const userId = row.user_id || "N/A";
+      const date = formatDate(row.devdt);
+      const time = new Date(row.devdt);
+
+      const key = `${branchName}-${userId}-${date}`;
+
+      if (!groupedData[key]) {
+        groupedData[key] = {
+          branchName,
+          userId,
+          date,
+          inTime: time,
+          outTime: time,
+        };
+      } else {
+        if (time < groupedData[key].inTime) {
+          groupedData[key].inTime = time;
+        }
+        if (time > groupedData[key].outTime) {
+          groupedData[key].outTime = time;
+        }
       }
+    });
 
-      const response = await axios.post(`${BASE_URL}report`, requestData);
+    // Convert to array for rendering
+    const finalData = Object.values(groupedData).map((entry, index) => {
+      const { branchName, userId, date, inTime, outTime } = entry;
 
-      // Group data by (Branch Name, User ID, Date)
-      const groupedData = {};
+      // Check if inTime and outTime are the same and set outTime to "N/A" if true
+      const formattedInTime = formatTimeToBangladesh(inTime);
+      const formattedOutTime = (inTime.getTime() === outTime.getTime()) ? "N/A" : formatTimeToBangladesh(outTime);
 
-      response.data.forEach(row => {
-          const branchName = row.devnm || "N/A";
-          const userId = row.user_id || "N/A";
-          const date = formatDate(row.devdt);
-          const time = new Date(row.devdt);
+      return {
+        sl: index + 1,
+        branchName,
+        userId,
+        date,
+        inTime: formattedInTime,
+        outTime: formattedOutTime,
+      };
+    });
 
-          const key = `${branchName}-${userId}-${date}`;
+    setFetchedData(finalData);
+    setIsDataFetched(true);
+    setFetchSuccess(true);
 
-          if (!groupedData[key]) {
-              groupedData[key] = {
-                  branchName,
-                  userId,
-                  date,
-                  inTime: time,
-                  outTime: time, 
-              };
-          } else {
-              if (time < groupedData[key].inTime) {
-                  groupedData[key].inTime = time;
-              }
-              if (time > groupedData[key].outTime) {
-                  groupedData[key].outTime = time;
-              }
-          }
-      });
-
-      // Convert to array for rendering
-      const finalData = Object.values(groupedData).map((entry, index) => ({
-          sl: index + 1,
-          branchName: entry.branchName,
-          userId: entry.userId,
-          date: entry.date,
-          inTime: formatTimeToBangladesh(entry.inTime),
-          outTime: formatTimeToBangladesh(entry.outTime),
-      }));
-
-      setFetchedData(finalData);
-      setIsDataFetched(true);
-      setFetchSuccess(true);
-
-      const csvContent = convertToCSV(finalData);
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      setCsvBlob(blob);
+    const csvContent = convertToCSV(finalData);
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    setCsvBlob(blob);
   } catch (error) {
-      console.error("Error fetching data:", error);
-      setFetchSuccess(false);
+    console.error("Error fetching data:", error);
+    setFetchSuccess(false);
   } finally {
-      setIsFetchingData(false);
+    setIsFetchingData(false);
   }
 };
+
 
 
 
