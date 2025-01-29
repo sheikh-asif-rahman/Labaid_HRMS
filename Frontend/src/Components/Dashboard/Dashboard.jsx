@@ -47,7 +47,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-overview"
-            onClick={() => handleCardClick("OverView")}
+            onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">

@@ -132,80 +132,78 @@ const ReportSearch = () => {
   };
 
   const convertToCSV = (data) => {
-    const header = [
-      "SL",
-      "Branch Name",
-      "User ID",
-      "Date",
-      "In Time",
-      "Out Time",
-    ];
+    const header = ["SL", "Branch Name", "User ID", "Date", "In Time", "Out Time"];
 
-    const rows = data.map((row, index) => [
-      index + 1,
-      row.branchName || "N/A", // Ensuring branch name is included
-      row.userId || "N/A", // Ensuring user ID is included
-      row.date || "N/A",
-      row.inTime || "N/A",
-      row.outTime || "N/A",
+    const rows = data.map(row => [
+        row.sl,
+        row.branchName,
+        row.userId,
+        row.date,
+        row.inTime,
+        row.outTime
     ]);
 
-    return [header, ...rows].map((row) => row.join(",")).join("\n");
-  };
+    return [header, ...rows].map(row => row.join(",")).join("\n");
+};
 
-  const handleGetData = async () => {
-    setIsModalOpen(true);
-    setIsFetchingData(true);
-    setFetchSuccess(null);
-    try {
+
+
+const handleGetData = async () => {
+  setIsModalOpen(true);
+  setIsFetchingData(true);
+  setFetchSuccess(null);
+
+  try {
       const requestData = {
-        location: userType,
-        fromDate,
-        toDate,
+          location: userType,
+          fromDate,
+          toDate,
       };
 
       if (userId) {
-        requestData.userId = userId;
+          requestData.userId = userId;
       }
 
-      const response = await axios.post(
-        `${BASE_URL}report`,
-        requestData
-      );
+      const response = await axios.post(`${BASE_URL}report`, requestData);
 
-      // Process the response to organize data by date
-      const formattedData = response.data.reduce((acc, row) => {
-        const date = formatDate(row.devdt);
-        if (!acc[date]) {
-          acc[date] = [];
-        }
-        acc[date].push(row);
-        return acc;
-      }, {});
+      // Group data by (Branch Name, User ID, Date)
+      const groupedData = {};
 
-      // Now calculate In Time and Out Time, and extract the branch name
-      const finalData = Object.keys(formattedData).map((date) => {
-        const rows = formattedData[date];
+      response.data.forEach(row => {
+          const branchName = row.devnm || "N/A";
+          const userId = row.user_id || "N/A";
+          const date = formatDate(row.devdt);
+          const time = new Date(row.devdt);
 
-        // Sort the rows by time (ascending)
-        rows.sort((a, b) => new Date(a.devdt) - new Date(b.devdt));
+          const key = `${branchName}-${userId}-${date}`;
 
-        // In Time is the first entry, Out Time is the last entry
-        const inTime = formatTimeToBangladesh(rows[0].devdt);
-        const outTime = formatTimeToBangladesh(rows[rows.length - 1].devdt);
-
-        // Extract branch name and userId from the first row
-        const branchName = userType || "N/A";
-        const userId = rows[0].user_id || "N/A";
-
-        return {
-          date,
-          inTime,
-          outTime,
-          branchName,
-          userId,
-        };
+          if (!groupedData[key]) {
+              groupedData[key] = {
+                  branchName,
+                  userId,
+                  date,
+                  inTime: time,
+                  outTime: time, 
+              };
+          } else {
+              if (time < groupedData[key].inTime) {
+                  groupedData[key].inTime = time;
+              }
+              if (time > groupedData[key].outTime) {
+                  groupedData[key].outTime = time;
+              }
+          }
       });
+
+      // Convert to array for rendering
+      const finalData = Object.values(groupedData).map((entry, index) => ({
+          sl: index + 1,
+          branchName: entry.branchName,
+          userId: entry.userId,
+          date: entry.date,
+          inTime: formatTimeToBangladesh(entry.inTime),
+          outTime: formatTimeToBangladesh(entry.outTime),
+      }));
 
       setFetchedData(finalData);
       setIsDataFetched(true);
@@ -214,13 +212,15 @@ const ReportSearch = () => {
       const csvContent = convertToCSV(finalData);
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       setCsvBlob(blob);
-    } catch (error) {
+  } catch (error) {
       console.error("Error fetching data:", error);
       setFetchSuccess(false);
-    } finally {
+  } finally {
       setIsFetchingData(false);
-    }
-  };
+  }
+};
+
+
 
   const handleDownload = () => {
     if (csvBlob) {
