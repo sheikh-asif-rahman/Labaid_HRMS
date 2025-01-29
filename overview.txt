@@ -23,3 +23,34 @@ MS SERVER WORK
 12. GO TO FIREWALL AND GIVE ACCESS TO THE BOTH PORT
 		Frontend URL: 103.228.38.109:5037
 		Backend URL: 103.228.38.109:3000
+
+
+13. Refresh problem:
+	404 - File or directory not found.
+	The resource you are looking for might have been removed,
+	had its name changed, or is temporarily unavailable.
+
+	solution:
+		1. Install url-rewrite from link: "https://www.iis.net/downloads/microsoft/url-rewrite" in server pc
+		2. in the public folder of your app create "web.config" file and put this code then build you app:
+
+		*************************************************************************************************************
+		<?xml version="1.0"?>
+		<configuration>
+ 		<system.webServer>
+ 		<rewrite>
+ 		<rules>
+		<rule name="React Routes" stopProcessing="true">
+		<match url=".*" />
+		<conditions logicalGrouping="MatchAll">
+		<add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+		<add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+		<add input="{REQUEST_URI}" pattern="^/(api)" negate="true" />
+		</conditions>
+		<action type="Rewrite" url="/" />
+		</rule>
+		</rules>
+		</rewrite>
+		</system.webServer>
+		</configuration>
+		*************************************************************************************************************
