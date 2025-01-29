@@ -12,7 +12,7 @@ const ProtectedRoute = ({ element, restrictedToAdmin = false }) => {
 
   // If restricted to Admin, check if the user has Admin permission
   if (restrictedToAdmin && permission !== "Admin") {
-    return <Navigate to="/homepage" replace />; // Redirect to homepage if not Admin
+    return <Navigate to="/" replace />; // Redirect to homepage if not Admin
   }
 
   // If logged in (and possibly Admin), render the passed-in element

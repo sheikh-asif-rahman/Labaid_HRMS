@@ -14,27 +14,27 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx"; // Import the Prot
 // Define routes
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: `/`,
     element: <App />,
   },
   {
-    path: "/loginpage",
+    path: `/loginpage`,
     element: <LoginPage />,
   },
   {
-    path: "/homepage",
+    path: `/homepage`,
     element: <ProtectedRoute element={<HomePage />} />, // Protect this route
   },
   {
-    path: "/reportpage",
+    path: `/reportpage`,
     element: <ProtectedRoute element={<ReportPage />} />, // Protect this route
   },
   {
-    path: "/overviewpage",
+    path: `/overviewpage`,
     element: <ProtectedRoute element={<OverViewPage />} />, // Protect this route
   },
   {
-    path: "/admin",
+    path: `/admin`,
     element: <ProtectedRoute element={<Admin />} restrictedToAdmin={true} />, // Protect this route for Admin only
   },
 ]);
