@@ -1,0 +1,258 @@
+/* Page background */
+.custom-rules-permission-page {
+    position: relative;
+    min-height: 100vh;
+    background-color: #98cbff;
+    overflow: hidden;
+  }
+  /* Special Permission Section */
+.custom-rules-permission-special-permission {
+    margin-top: 20px;
+  }
+  
+  .custom-rules-permission-special-permission h3 {
+    margin-bottom: 15px;
+  }
+  
+  .custom-rules-permission-checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    gap: 10px;
+  }
+  
+  .custom-rules-permission-checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  
+  .custom-rules-permission-checkbox-group input {
+    margin-right: 10px;
+  }
+  
+  
+  /* Bubbles */
+  .custom-rules-permission-bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .custom-rules-permission-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(1, 99, 204, 0.5);
+    animation: bubbleAnimation 6s infinite;
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  
+  /* Define the size and positions of bubbles */
+.custom-rules-permission-bubble:nth-child(1) {
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    top: 10%;
+    left: 15%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(2) {
+    width: 100px;
+    height: 100px;
+    animation-delay: 1s;
+    top: 20%;
+    left: 70%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(3) {
+    width: 80px;
+    height: 80px;
+    animation-delay: 2s;
+    top: 30%;
+    left: 50%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(4) {
+    width: 90px;
+    height: 90px;
+    animation-delay: 3s;
+    top: 50%;
+    left: 20%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(5) {
+    width: 110px;
+    height: 110px;
+    animation-delay: 4s;
+    top: 60%;
+    left: 80%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(6) {
+    width: 70px;
+    height: 70px;
+    animation-delay: 5s;
+    top: 70%;
+    left: 10%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(7) {
+    width: 120px;
+    height: 120px;
+    animation-delay: 0s;
+    top: 80%;
+    left: 30%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(8) {
+    width: 90px;
+    height: 90px;
+    animation-delay: 1s;
+    top: 90%;
+    left: 60%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(9) {
+    width: 80px;
+    height: 80px;
+    animation-delay: 2s;
+    top: 10%;
+    left: 90%;
+  }
+  
+  .custom-rules-permission-bubble:nth-child(10) {
+    width: 100px;
+    height: 100px;
+    animation-delay: 3s;
+    top: 40%;
+    left: 10%;
+  }
+  
+  @keyframes bubbleAnimation {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.5) translateY(-200px);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(1) translateY(0);
+      opacity: 0.8;
+    }
+  }
+  
+  /* Main container */
+  .custom-rules-permission-container {
+    position: relative;
+    z-index: 10;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 10% auto;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Search container */
+  .custom-rules-permission-search-container {
+    margin-bottom: 20px;
+  }
+  
+  .custom-rules-permission-search-box-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .custom-rules-permission-search-container label {
+    font-weight: bold;
+  }
+  
+  #user-search {
+    padding: 8px;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+  }
+  
+  /* Buttons */
+  .custom-rules-permission-search-button {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .custom-rules-permission-save-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .custom-rules-permission-new-button {
+    background-color: #fd5858;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* Form styling */
+  .custom-rules-permission-form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .custom-rules-permission-form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .custom-rules-permission-form-group {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+  }
+  
+  .custom-rules-permission-form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .custom-rules-permission-form-group input {
+    padding: 8px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+  }
+  
+  /* Modal */
+  .modal.fade.show {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+  }
+  
+  .modal-content {
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  

@@ -1,13 +1,13 @@
 const { sql } = require('../config/dbConfig');
 
-// Fetch data based on location, user ID, and date range
+// Fetch data based on branch ID, user ID, and date range
 const getReportData = async (req, res) => {
-    const { location, userId, fromDate, toDate } = req.body; // Use req.body for POST method
+    const { branchId, userId, fromDate, toDate } = req.body; // Use req.body for POST method
 
     // Input validation
-    if (!location || !fromDate || !toDate) {
+    if (!branchId || !fromDate || !toDate) {
         return res.status(400).json({
-            message: "All parameters (location, fromDate, toDate) are required. User ID is optional.",
+            message: "All parameters (branchId, fromDate, toDate) are required. User ID is optional.",
         });
     }
 
@@ -16,7 +16,7 @@ const getReportData = async (req, res) => {
         let query = `
             SELECT devdt, user_id, devnm
             FROM dbo.punchlog
-            WHERE devnm = @location
+            WHERE devid = @branchId
             AND CAST(devdt AS DATE) BETWEEN CAST(@fromDate AS DATE) AND CAST(@toDate AS DATE)
         `;
 
@@ -26,7 +26,7 @@ const getReportData = async (req, res) => {
         }
 
         const request = new sql.Request();
-        request.input('location', sql.NVarChar, location);
+        request.input('branchId', sql.NVarChar, branchId);
         request.input('fromDate', sql.Date, fromDate);
         request.input('toDate', sql.Date, toDate);
 

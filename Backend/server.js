@@ -10,6 +10,10 @@ const adminRoutes = require('./routes/AdminRoute');
 const adminUserSearchRoute = require('./routes/AdminUserSearchRoute');
 const userUpdateRoute = require('./routes/UserUpdateRoute');
 const loginUser = require('./routes/LoginRoute');
+const OverViewOneRoute = require('./routes/OverViewOneRoute');
+
+
+
 const app = express();
 app.use(express.json());
 const port = 3000;
@@ -35,6 +39,7 @@ app.use('/api', adminUserSearchRoute);
 app.use('/api', userUpdateRoute);
 app.use('/api', loginUser);
 app.use('/api', reportLocationRoutes);
+app.use('/api', OverViewOneRoute);
 
 
 app.listen(port, () => {

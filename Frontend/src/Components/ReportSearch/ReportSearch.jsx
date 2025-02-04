@@ -154,23 +154,28 @@ const handleGetData = async () => {
   setFetchSuccess(null);
 
   try {
+    // Get the selected branchId directly from the userType (location)
     const branchIndex = locations.indexOf(userType);
-    const branchId = branchIds[branchIndex];
+    const branchId = branchIds[branchIndex]; // Get the corresponding branchId
 
     const requestData = {
-      branchId: branchId,  // Send the branchId instead of location
+      branchId: branchId,  // Send the selected branchId in the request
       fromDate,
       toDate,
     };
 
+    // If userId is provided, include it in the requestData
     if (userId) {
       requestData.userId = userId;
     }
 
+    // Make the POST request to fetch the report data
     const response = await axios.post(`${BASE_URL}report`, requestData);
+    debugger
 
     // Group data by (Branch Name, User ID, Date)
     const groupedData = {};
+    debugger
 
     response.data.forEach(row => {
       const branchName = row.devnm || "N/A";
@@ -198,7 +203,7 @@ const handleGetData = async () => {
       }
     });
 
-    // Convert to array for rendering
+    // Convert grouped data to array for rendering
     const finalData = Object.values(groupedData).map((entry, index) => {
       const { branchName, userId, date, inTime, outTime } = entry;
 
@@ -220,6 +225,7 @@ const handleGetData = async () => {
     setIsDataFetched(true);
     setFetchSuccess(true);
 
+    // Convert the data to CSV format
     const csvContent = convertToCSV(finalData);
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     setCsvBlob(blob);

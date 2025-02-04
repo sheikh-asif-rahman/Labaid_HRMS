@@ -9,6 +9,8 @@ const DataCard = () => {
   const [locations, setLocations] = useState([]);
   const [branchIds, setBranchIds] = useState([]);
   const [userIds, setUserIds] = useState([]); // State for user IDs
+  const [userData, setUserData] = useState({ total: 0, present: 0, absent: 0 });
+  const [loading, setLoading] = useState(false); // To handle loading state
 
   const currentUserId = localStorage.getItem("userId");
 
@@ -16,6 +18,7 @@ const DataCard = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       if (currentUserId) {
+        setLoading(true); // Show loading spinner
         try {
           const response = await axios.get(
             `${BASE_URL}/reportLocation?UserId=${currentUserId}`
@@ -34,6 +37,8 @@ const DataCard = () => {
           }
         } catch (error) {
           console.error("Error fetching report locations:", error);
+        } finally {
+          setLoading(false); // Hide loading spinner after data is fetched
         }
       }
     };
@@ -41,31 +46,42 @@ const DataCard = () => {
     fetchLocations();
   }, [currentUserId]);
 
-  // Fetch user IDs when userType changes
+  // Fetch user status data when userType changes
   useEffect(() => {
-    const fetchUserIds = async () => {
+    const fetchUserData = async () => {
       if (userType) {
+        setLoading(true); // Show loading spinner
         const branchId = branchIds[locations.indexOf(userType)];
         if (branchId) {
           try {
             const response = await axios.get(
-              `${BASE_URL}users?ugid=${branchId}`
+              `${BASE_URL}/overViewOne?devid=${branchId}`
             );
-            const fetchedUserIds = response.data;
-            setUserIds(fetchedUserIds);
+            const fetchedData = response.data;
+            if (fetchedData && fetchedData.length > 0) {
+              // Calculate total, present, and absent counts
+              const total = fetchedData.length;
+              const present = fetchedData.filter(
+                (user) => user.status === "Present"
+              ).length;
+              const absent = total - present;
 
-            // Display the user IDs in an alert box
-            if (fetchedUserIds.length > 0) {
-              window.alert(`Fetched User IDs: ${fetchedUserIds.join(", ")}`);
+              setUserData({
+                total,
+                present,
+                absent,
+              });
             }
           } catch (error) {
-            console.error("Error fetching user IDs:", error);
+            console.error("Error fetching user data:", error);
+          } finally {
+            setLoading(false); // Hide loading spinner after data is fetched
           }
         }
       }
     };
 
-    fetchUserIds();
+    fetchUserData();
   }, [userType, branchIds, locations]); // Depend on userType, branchIds, and locations
 
   // Handle dropdown change
@@ -73,11 +89,30 @@ const DataCard = () => {
     setUserType(event.target.value);
   };
 
-  // Random data generation for count (not percentage)
-  const randomNumber = () => Math.floor(Math.random() * 100);
-
   return (
     <div className="dashboard-overview container mt-5">
+      {/* Modal to show loading spinner */}
+      <div
+        className={`modal fade ${loading ? "show" : ""}`}
+        style={{ display: loading ? "block" : "none" }}
+        tabIndex="-1"
+        role="dialog"
+        aria-hidden={!loading}
+      >
+        <div
+          className="modal-dialog modal-dialog-centered"
+          role="document"
+          style={{ maxWidth: "200px", width: "200px", height: "200px" }} // Make modal square and smaller
+        >
+          <div className="modal-content">
+            <div className="modal-body text-center">
+              {/* Circular spinner only */}
+              <div className="spinner-border text-primary" role="status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* First Section: Current Year Overview */}
       <div className="text-center mb-5">
         <h1 className="data-title mt-4">Today's Overview</h1>
@@ -104,42 +139,32 @@ const DataCard = () => {
 
       {/* Card Section */}
       <div className="row">
-        {/* Card 1: Attendance */}
-        <div className="col-md-6 mb-4">
-          <div className="card card-attendance">
+        {/* Card 1: Total Employees */}
+        <div className="col-md-4 mb-4">
+          <div className="card card-total-employees">
             <div className="card-body">
-              <p className="card-title">Attendance</p>
-              <p className="card-text">{randomNumber()} people</p>
+              <p className="card-title">Total Employees</p>
+              <p className="card-text">{userData.total} people</p>
             </div>
           </div>
         </div>
 
-        {/* Card 2: Absence */}
-        <div className="col-md-6 mb-4">
+        {/* Card 2: Present */}
+        <div className="col-md-4 mb-4">
+          <div className="card card-present">
+            <div className="card-body">
+              <p className="card-title">Present</p>
+              <p className="card-text">{userData.present} people</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Absence */}
+        <div className="col-md-4 mb-4">
           <div className="card card-absence">
             <div className="card-body">
               <p className="card-title">Absence</p>
-              <p className="card-text">{randomNumber()} people</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Late Attendance */}
-        <div className="col-md-6 mb-4">
-          <div className="card card-late-attendance">
-            <div className="card-body">
-              <p className="card-title">Late Attendance</p>
-              <p className="card-text">{randomNumber()} people</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4: On Leave */}
-        <div className="col-md-6 mb-4">
-          <div className="card card-on-leave">
-            <div className="card-body">
-              <p className="card-title">On Leave</p>
-              <p className="card-text">{randomNumber()} people</p>
+              <p className="card-text">{userData.absent} people</p>
             </div>
           </div>
         </div>

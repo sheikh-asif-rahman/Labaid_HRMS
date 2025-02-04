@@ -82,85 +82,105 @@ const AccessAdmin = () => {
     }
   };
 
-  // Handle Save functionality
-  const handleSave = async () => {
-    const branchIds = selectedBranches.map((branch) => branch.id).join(",");
-    const branchNames = selectedBranches.map((branch) => branch.name).join(",");
+// Handle Save functionality
+const handleSave = async () => {
+  // Join valid branchIds and branchNames, ensuring no empty entries or leading commas
+  const branchIds = selectedBranches
+    .map((branch) => branch.id)
+    .filter((id) => id) // Filter out falsy values (null, undefined, etc.)
+    .join(","); // Join with a comma, no leading comma
 
-    // Validate fields
-    if (
-      !name ||
-      !mobileNumber ||
-      !permission ||
-      !password ||
-      !selectedBranches.length
-    ) {
-      setModalMessage(
-        "All fields are required and at least one branch must be selected!"
-      );
-      setShowModal(true);
-      return;
-    }
+  const branchNames = selectedBranches
+    .map((branch) => branch.name)
+    .filter((name) => name) // Filter out falsy values (null, undefined, etc.)
+    .join(","); // Join with a comma, no leading comma
 
-    if (password !== confirmPassword) {
-      setModalMessage("Passwords do not match!");
-      setShowModal(true);
-      return;
-    }
+  // Validate fields
+  if (
+    !name ||
+    !mobileNumber ||
+    !permission ||
+    !password ||
+    !selectedBranches.length
+  ) {
+    setModalMessage(
+      "All fields are required and at least one branch must be selected!"
+    );
+    setShowModal(true);
+    return;
+  }
 
-    const formData = {
-      UserId: userId,
-      UserName: name,
-      MobileNo: mobileNumber,
-      BranchId: branchIds,
-      BranchName: branchNames,
-      Permission: permission,
-      Password: password,
-      Status: status === "Active" ? 1 : 0, // Convert to 1 or 0
-      CreatedBy: "admin",
-    };
+  if (password !== confirmPassword) {
+    setModalMessage("Passwords do not match!");
+    setShowModal(true);
+    return;
+  }
 
-    try {
-      const response = await axios.post(
-        `${BASE_URL}administration`,
-        formData
-      );
-      setModalMessage("User saved successfully!");
-      setShowModal(true);
-    } catch (error) {
-      console.error("Error saving user:", error);
-      const errorMessage =
-        error.response && error.response.data
-          ? error.response.data
-          : "Failed to save user. Please try again.";
-      setModalMessage(errorMessage);
-      setShowModal(true);
-    }
+  const formData = {
+    UserId: userId,
+    UserName: name,
+    MobileNo: mobileNumber,
+    BranchId: branchIds, // No leading comma in branchId string
+    BranchName: branchNames, // No leading comma in branchName string
+    Permission: permission,
+    Password: password,
+    Status: status === "Active" ? 1 : 0, // Convert to 1 or 0
+    CreatedBy: "admin",
   };
+
+  try {
+    const response = await axios.post(
+      `${BASE_URL}administration`,
+      formData
+    );
+    setModalMessage("User saved successfully!");
+    setShowModal(true);
+  } catch (error) {
+    console.error("Error saving user:", error);
+    const errorMessage =
+      error.response && error.response.data
+        ? error.response.data
+        : "Failed to save user. Please try again.";
+    setModalMessage(errorMessage);
+    setShowModal(true);
+  }
+};
+
+  
 
   // Handle Update functionality
   const handleUpdate = async () => {
-    const branchIds = selectedBranches.map((branch) => branch.id).join(",");
-    const branchNames = selectedBranches.map((branch) => branch.name).join(",");
-
+    // Join valid branchIds and branchNames, ensuring no empty entries or leading commas
+    const branchIds = selectedBranches
+      .map((branch) => branch.id)
+      .filter((id) => id) // Filter out falsy values (null, undefined, etc.)
+      .join(","); // Join with a comma, no leading comma
+  
+    const branchNames = selectedBranches
+      .map((branch) => branch.name)
+      .filter((name) => name) // Filter out falsy values (null, undefined, etc.)
+      .join(","); // Join with a comma, no leading comma
+  
+    // Check if password and confirm password match
     if (password !== confirmPassword) {
       setModalMessage("Passwords do not match!");
       setShowModal(true);
       return;
     }
-
+  
+    // Prepare form data for API request
     const formData = {
       userId: userId,
       userName: name,
       mobileNo: mobileNumber,
-      branchId: branchIds,
-      branchName: branchNames,
+      branchId: branchIds, // No leading comma in branchId string
+      branchName: branchNames, // No leading comma in branchName string
       permission: permission,
       status: status === "Active" ? 1 : 0, // Convert to 1 or 0
       password: password,
       updatedBy: "admin",
     };
-
+  
     try {
       const response = await axios.put(
         `${BASE_URL}updateuser`,
@@ -178,6 +198,8 @@ const AccessAdmin = () => {
       setShowModal(true);
     }
   };
+  
+  
 
   const toggleBranchModal = () => {
     setShowBranchModal(!showBranchModal);
@@ -387,7 +409,10 @@ const AccessAdmin = () => {
                 onChange={(e) => setPermission(e.target.value)}
               >
                 <option value="Admin">Admin</option>
+                <option value="HR">HR</option>
                 <option value="User">User</option>
+                <option value="Branch IT">Branch IT</option>
+                
               </select>
             </div>
           </div>

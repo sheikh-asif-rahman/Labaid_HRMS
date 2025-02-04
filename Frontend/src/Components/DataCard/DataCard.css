@@ -11,50 +11,38 @@
 }
 
 /* Card Colors (Specific categories with hover matching their color) */
-.card-attendance {
-    color: #ff6666; /* Red text and icon */
-    border-color: #ff6666; /* Red border */
-    
-}
-
-.card-attendance:hover {
-    background-color: #ff6666; /* Red background on hover */
-    color: white; /* White text on hover */
-    box-shadow: 0 8px 15px rgba(255, 102, 102, 0.4); /* Deeper red shadow */
-}
-
-.card-absence {
+.card-total-employees {
     color: #3399ff; /* Blue text and icon */
     border-color: #3399ff; /* Blue border */
 }
 
-.card-absence:hover {
+.card-total-employees:hover {
     background-color: #3399ff; /* Blue background on hover */
     color: white; /* White text on hover */
     box-shadow: 0 8px 15px rgba(51, 153, 255, 0.4); /* Deeper blue shadow */
 }
 
-.card-late-attendance {
-    color: #ff9966; /* Orange text and icon */
-    border-color: #ff9966; /* Orange border */
-}
-
-.card-late-attendance:hover {
-    background-color: #ff9966; /* Orange background on hover */
-    color: white; /* White text on hover */
-    box-shadow: 0 8px 15px rgba(255, 153, 102, 0.4); /* Deeper orange shadow */
-}
-
-.card-on-leave {
+.card-present {
     color: #66cc66; /* Green text and icon */
     border-color: #66cc66; /* Green border */
 }
 
-.card-on-leave:hover {
+.card-present:hover {
     background-color: #66cc66; /* Green background on hover */
     color: white; /* White text on hover */
     box-shadow: 0 8px 15px rgba(102, 204, 102, 0.4); /* Deeper green shadow */
 }
+
+.card-absence {
+    color: #ff6666; /* Red text and icon */
+    border-color: #ff6666; /* Red border */
+}
+
+.card-absence:hover {
+    background-color: #ff6666; /* Red background on hover */
+    color: white; /* White text on hover */
+    box-shadow: 0 8px 15px rgba(255, 102, 102, 0.4); /* Deeper red shadow */
+    }
 
 /* Icons inside cards */
 .card svg {
@@ -123,6 +111,9 @@
         padding-top: 20%;
         padding-bottom: 30%;
     }
+    .modal-dialog-centered{
+        margin: 0% auto;
+    }
 }
 
 /* Dropdown styling */
@@ -170,7 +161,7 @@
     max-width: 100%;
     max-height: 100%;
     padding: 0 10% 10%;
-    padding-top: 1% ;
+    padding-top: 1%;
     /* margin-bottom: 10%; */
 }
 .dashboard-overview {

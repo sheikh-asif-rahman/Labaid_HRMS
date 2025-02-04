@@ -8,7 +8,10 @@ import {
   BsPersonWorkspace,
   BsClipboard2Data,
 } from "react-icons/bs";
+import { RiTeamFill } from "react-icons/ri";
 import { SiAdblock } from "react-icons/si";
+import { LiaUserShieldSolid } from "react-icons/lia";
+
 const Dashboard = () => {
   const navigate = useNavigate(); // Create a navigate function
   const [permission, setPermission] = useState(null);
@@ -30,6 +33,11 @@ const Dashboard = () => {
       navigate("/overviewpage"); // Navigate to the OverView page when the OverView card is clicked
     } else if (cardName === "Admin") {
       navigate("/admin"); // Navigate to the Admin page when the Admin card is clicked
+    }  else if (cardName === "Employee") {
+      navigate("/employeepage"); // Navigate to the Employee page when the Employee card is clicked
+    } 
+    else if (cardName === "Rules and Permission") {
+      navigate("/rulespermission"); // Navigate to the Rules permission page when card is clicked
     } else if (cardName === "underDevelopmentModal") {
       setModalMessage("Under Development");
       setShowModal(true);
@@ -47,7 +55,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-overview"
-            onClick={() => handleCardClick("underDevelopmentModal")}
+            onClick={() => handleCardClick("OverView")}
           >
             <div className="row g-0">
               <div className="col-md-8">
@@ -102,39 +110,39 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Card 4: Employee Directory */}
+        {/* Card 4: Employee */}
         <div className="col-md-4 mb-4">
           <div
-            className="card custom-card card-employee-directory"
-            onClick={() => handleCardClick("underDevelopmentModal")}
+            className="card custom-card card-employee"
+            onClick={() => handleCardClick("Employee")}
           >
             <div className="row g-0">
               <div className="col-md-8">
                 <div className="card-body">
-                  <h5 className="card-title">Employee Directory</h5>
+                  <h5 className="card-title">Employee</h5>
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <SiAdblock className="card-icon" />
+                <RiTeamFill className="card-icon" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Card 5: Training and Development */}
+        {/* Card 5: Rules and Permission */}
         <div className="col-md-4 mb-4">
           <div
-            className="card custom-card card-training-development"
-            onClick={() => handleCardClick("underDevelopmentModal")}
+            className="card custom-card card-rules-permission"
+            onClick={() => handleCardClick("Rules and Permission")}
           >
             <div className="row g-0">
               <div className="col-md-8">
                 <div className="card-body">
-                  <h5 className="card-title">Training and Development</h5>
+                  <h5 className="card-title">Rules and Permission</h5>
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <SiAdblock className="card-icon" />
+                <LiaUserShieldSolid className="card-icon" />
               </div>
             </div>
           </div>

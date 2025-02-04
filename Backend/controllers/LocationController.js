@@ -3,11 +3,14 @@ const { sql } = require("../config/dbConfig");
 // Fetch unique device names and IDs
 const getLocations = async (req, res) => {
     try {
+        // const query = `
+        //     SELECT id, name 
+        //     FROM dbo.usergroup AS ug 
+        //     WHERE ug.parent_id IS NOT NULL 
+        //     ORDER BY name ASC
+        // `;
         const query = `
-            SELECT id, name 
-            FROM dbo.usergroup AS ug 
-            WHERE ug.parent_id IS NOT NULL 
-            ORDER BY name ASC
+            select id,[name] from dbo.device
         `;
         const request = new sql.Request();
         const result = await request.query(query);

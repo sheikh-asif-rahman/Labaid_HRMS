@@ -48,13 +48,13 @@
   color: #28a745; /* Green */
 }
 
-.card-employee-directory .card-title,
-.card-employee-directory .card-icon {
+.card-employee .card-title,
+.card-employee .card-icon {
   color: #ffc107; /* Yellow */
 }
 
-.card-training-development .card-title,
-.card-training-development .card-icon {
+.card-rules-permission .card-title,
+.card-rules-permission .card-icon {
   color: #dc3545; /* Red */
 }
 
@@ -101,21 +101,21 @@
   color: white;
 }
 
-.card-employee-directory:hover {
+.card-employee:hover {
   background-color: #ffc107; /* Yellow background */
 }
 
-.card-employee-directory:hover .card-title,
-.card-employee-directory:hover .card-icon {
+.card-employee:hover .card-title,
+.card-employee:hover .card-icon {
   color: white;
 }
 
-.card-training-development:hover {
+.card-rules-permission:hover {
   background-color: #dc3545; /* Red background */
 }
 
-.card-training-development:hover .card-title,
-.card-training-development:hover .card-icon {
+.card-rules-permission:hover .card-title,
+.card-rules-permission:hover .card-icon {
   color: white;
 }
 

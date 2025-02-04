@@ -10,7 +10,9 @@ import OverViewPage from "./Page/OverViewPage.jsx";
 import Admin from "./Page/Admin.jsx";
 import LoginPage from "./Page/LoginPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx"; // Import the ProtectedRoute component
-
+import ChangePasswordPage from "./Page/ChangePasswordPage.jsx";
+import RulesPermissionPage from "./Page/RulesPermissionPage.jsx";
+import EmployeePage from "./Page/EmployeePage.jsx";
 // Define routes
 const router = createBrowserRouter([
   {
@@ -36,6 +38,18 @@ const router = createBrowserRouter([
   {
     path: `/admin`,
     element: <ProtectedRoute element={<Admin />} restrictedToAdmin={true} />, // Protect this route for Admin only
+  },
+  {
+    path: `/rulespermission`,
+    element: <ProtectedRoute element={<RulesPermissionPage />} restrictedToAdmin={true} />, // Protect this route for Admin only
+  },
+  {
+    path: `/employeepage`,
+    element: <ProtectedRoute element={<EmployeePage />}/>, // Protect this route for Admin only
+  },
+  {
+    path: `/changepasswordpage`,
+    element: <ProtectedRoute element={<ChangePasswordPage />}/>, // Protect this route for Admin only
   },
 ]);
 

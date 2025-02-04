@@ -9,12 +9,17 @@ const getUsers = async (req, res) => {
     }
 
     try {
+        // const query = `
+        //     SELECT u.user_id 
+        //     FROM dbo.[user] AS u
+        //     JOIN dbo.uguser AS uu ON u.user_id = uu.user_id
+        //     JOIN dbo.usergroup AS ug ON uu.ugid = ug.id
+        //     WHERE uu.ugid = @ugid
+        // `;
+
         const query = `
-            SELECT u.user_id 
-            FROM dbo.[user] AS u
-            JOIN dbo.uguser AS uu ON u.user_id = uu.user_id
-            JOIN dbo.usergroup AS ug ON uu.ugid = ug.id
-            WHERE uu.ugid = @ugid
+            select distinct (user_id)  from dbo.punchlog as pl
+            where pl.devid=@ugid
         `;
 
         const request = new sql.Request();
