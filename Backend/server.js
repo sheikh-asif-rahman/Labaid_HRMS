@@ -11,7 +11,7 @@ const adminUserSearchRoute = require('./routes/AdminUserSearchRoute');
 const userUpdateRoute = require('./routes/UserUpdateRoute');
 const loginUser = require('./routes/LoginRoute');
 const OverViewOneRoute = require('./routes/OverViewOneRoute');
-
+const changeThePassword = require('./routes/ChangePasswordRoute');
 
 
 const app = express();
@@ -40,6 +40,8 @@ app.use('/api', userUpdateRoute);
 app.use('/api', loginUser);
 app.use('/api', reportLocationRoutes);
 app.use('/api', OverViewOneRoute);
+app.use('/api', changeThePassword);
+
 
 
 app.listen(port, () => {
