@@ -130,7 +130,7 @@ const Dashboard = () => {
         </div>
 
         {/* Card 5: Rules and Permission */}
-        <div className="col-md-4 mb-4">
+        {permission === "Admin" && (<div className="col-md-4 mb-4">
           <div
             className="card custom-card card-rules-permission"
             onClick={() => handleCardClick("Rules and Permission")}
@@ -146,18 +146,18 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div>)}
 
-        {/* Card 6: Leave & Attendance Tracking */}
+        {/* Card 6: Leave Management */}
         <div className="col-md-4 mb-4">
           <div
-            className="card custom-card card-leave-attendance"
+            className="card custom-card card-leave-management"
             onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
                 <div className="card-body">
-                  <h5 className="card-title">Leave & Attendance Tracking</h5>
+                  <h5 className="card-title">Leave Management</h5>
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
@@ -170,13 +170,13 @@ const Dashboard = () => {
         {/* Card 7: Onboarding/Offboarding */}
         <div className="col-md-4 mb-4">
           <div
-            className="card custom-card card-onboarding-offboarding"
+            className="card custom-card card-employee-onboarding"
             onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
                 <div className="card-body">
-                  <h5 className="card-title">Onboarding - Offboarding</h5>
+                  <h5 className="card-title">Employee Onboarding</h5>
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
@@ -186,16 +186,16 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Card 8: Performance Reviews */}
+        {/* Card 8: Holiday Calendar */}
         <div className="col-md-4 mb-4">
           <div
-            className="card custom-card card-performance-reviews"
+            className="card custom-card card-holiday-calendar"
             onClick={() => handleCardClick("underDevelopmentModal")}
           >
             <div className="row g-0">
               <div className="col-md-8">
                 <div className="card-body">
-                  <h5 className="card-title">Performance Reviews</h5>
+                  <h5 className="card-title">Holiday Calendar</h5>
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">

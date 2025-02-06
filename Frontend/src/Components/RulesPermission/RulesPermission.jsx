@@ -30,16 +30,9 @@ const RulesPermission = () => {
 
       {/* Bubbles in the background */}
       <div className="custom-rules-permission-bubbles">
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
-        <div className="custom-rules-permission-bubble"></div>
+        {[...Array(10)].map((_, index) => (
+          <div key={index} className="custom-rules-permission-bubble"></div>
+        ))}
       </div>
 
       {/* Main content */}
@@ -47,11 +40,7 @@ const RulesPermission = () => {
         <div className="custom-rules-permission-search-container">
           <label htmlFor="user-search">Search User ID:</label>
           <div className="custom-rules-permission-search-box-wrapper">
-            <input
-              id="user-search"
-              type="text"
-              placeholder="Enter User ID"
-            />
+            <input id="user-search" type="text" placeholder="Enter User ID" />
             <button className="custom-rules-permission-search-button">
               <FaSearch />
             </button>
@@ -61,9 +50,7 @@ const RulesPermission = () => {
             >
               Save
             </button>
-            <button className="custom-rules-permission-new-button">
-              New
-            </button>
+            <button className="custom-rules-permission-new-button">New</button>
           </div>
         </div>
 
@@ -72,11 +59,11 @@ const RulesPermission = () => {
           <div className="custom-rules-permission-form-row">
             <div className="custom-rules-permission-form-group">
               <label htmlFor="name">User Name:</label>
-              <input id="name" type="text" placeholder="Enter User Name" />
+              <input id="name" type="text" placeholder="Enter User Name" disabled />
             </div>
             <div className="custom-rules-permission-form-group">
               <label htmlFor="user-id">User ID:</label>
-              <input id="user-id" type="text" placeholder="Enter User ID" />
+              <input id="user-id" type="text" placeholder="Enter User ID" disabled />
             </div>
           </div>
 
@@ -85,16 +72,16 @@ const RulesPermission = () => {
             <h3>Special Permission</h3>
             <div className="custom-rules-permission-checkbox-group">
               <label>
-                <input type="checkbox" /> Can View Reports
+                <input type="checkbox" /> Can Create New User
               </label>
               <label>
-                <input type="checkbox" /> Can Edit Users
+                <input type="checkbox" /> Can Edit User Information
               </label>
               <label>
-                <input type="checkbox" /> Can Delete Records
+                <input type="checkbox" /> Can Edit Holiday Calendar
               </label>
               <label>
-                <input type="checkbox" /> Can Manage Roles
+                <input type="checkbox" /> Can Approve Leave
               </label>
             </div>
           </div>

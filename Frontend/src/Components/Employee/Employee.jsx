@@ -1,10 +1,33 @@
 import React, { useState } from 'react';
 import './Employee.css';
 import { FaSearch } from "react-icons/fa";
-
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css'; // Import the calendar styles
 
 const Employee = () => {
   const [showModal, setShowModal] = useState(false);
+  const [date, setDate] = useState(new Date());
+
+  // Sample data for leave, present, absent, and holiday
+  const leaveDates = ['2025-02-06'];
+  const presentDates = ['2025-02-07'];
+  const absentDates = ['2025-02-08'];
+  const holidayDates = ['2025-02-14'];
+
+  // Function to add custom classes to the dates
+  const tileClassName = ({ date, view }) => {
+    const dateStr = date.toISOString().split('T')[0]; // Get date in YYYY-MM-DD format
+    if (leaveDates.includes(dateStr)) {
+      return 'leave';
+    } else if (presentDates.includes(dateStr)) {
+      return 'present';
+    } else if (absentDates.includes(dateStr)) {
+      return 'absent';
+    } else if (holidayDates.includes(dateStr)) {
+      return 'holiday';
+    }
+  };
+
 
   return (
     <div className="custom-employee-page">
@@ -232,10 +255,72 @@ const Employee = () => {
                 placeholder="Enter Permanent Address"
               />
             </div>
+            <div className="custom-employee-form-group">
+              <label htmlFor="present-address">Password:</label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter Present Address"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </div>   
+      <div className="custom-employee-container-calendar">
+  {/* Left Column for Calendar */}
+  <div className="custom-employee-container-calendar-left">
+    <Calendar
+      onChange={setDate} // Handle date change
+      value={date} // Set the current selected date
+      tileClassName={tileClassName} // Apply custom classes based on dates
+    />
+
+    {/* Legend */}
+  <div className="custom-employee-calendar-legend">
+    <div className="legend-item">
+      <div className="legend-color attended"></div>
+      <span>Attended</span>
     </div>
+    <div className="legend-item">
+      <div className="legend-color absent"></div>
+      <span>Absent</span>
+    </div>
+    <div className="legend-item">
+      <div className="legend-color holiday"></div>
+      <span>Holiday</span>
+    </div>
+    <div className="legend-item">
+      <div className="legend-color leave"></div>
+      <span>Leave</span>
+    </div>
+  </div>
+  </div>
+
+  {/* Right Column for Performance */}
+  <div className="custom-employee-container-calendar-right">
+  <h3>Performance</h3>
+  <div className="custom-employee-performance-cards">
+    <div className="custom-employee-performance-card">
+      <h4>Attendance</h4>
+      <p>Details about attendance</p>
+    </div>
+    <div className="custom-employee-performance-card">
+      <h4>Absent</h4>
+      <p>Details about absence</p>
+    </div>
+    <div className="custom-employee-performance-card">
+      <h4>Leave</h4>
+      <p>Details about leave</p>
+    </div>
+    <div className="custom-employee-performance-card">
+      <h4>Holiday</h4>
+      <p>Details about holiday</p>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
   );
 };
 

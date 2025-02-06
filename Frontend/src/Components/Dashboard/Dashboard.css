@@ -58,18 +58,18 @@
   color: #dc3545; /* Red */
 }
 
-.card-leave-attendance .card-title,
-.card-leave-attendance .card-icon {
+.card-leave-management .card-title,
+.card-leave-management .card-icon {
   color: #17a2b8; /* Teal */
 }
 
-.card-onboarding-offboarding .card-title,
-.card-onboarding-offboarding .card-icon {
+.card-employee-onboarding .card-title,
+.card-employee-onboarding .card-icon {
   color: #6f42c1; /* Purple */
 }
 
-.card-performance-reviews .card-title,
-.card-performance-reviews .card-icon {
+.card-holiday-calendar .card-title,
+.card-holiday-calendar .card-icon {
   color: #fd7e14; /* Orange */
 }
 
@@ -119,30 +119,30 @@
   color: white;
 }
 
-.card-leave-attendance:hover {
+.card-leave-management:hover {
   background-color: #17a2b8; /* Teal background */
 }
 
-.card-leave-attendance:hover .card-title,
-.card-leave-attendance:hover .card-icon {
+.card-leave-management:hover .card-title,
+.card-leave-management:hover .card-icon {
   color: white;
 }
 
-.card-onboarding-offboarding:hover {
+.card-employee-onboarding:hover {
   background-color: #6f42c1; /* Purple background */
 }
 
-.card-onboarding-offboarding:hover .card-title,
-.card-onboarding-offboarding:hover .card-icon {
+.card-employee-onboarding:hover .card-title,
+.card-employee-onboarding:hover .card-icon {
   color: white;
 }
 
-.card-performance-reviews:hover {
+.card-holiday-calendar:hover {
   background-color: #fd7e14; /* Orange background */
 }
 
-.card-performance-reviews:hover .card-title,
-.card-performance-reviews:hover .card-icon {
+.card-holiday-calendar:hover .card-title,
+.card-holiday-calendar:hover .card-icon {
   color: white;
 }
 

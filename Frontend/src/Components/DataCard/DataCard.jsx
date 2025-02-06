@@ -11,6 +11,7 @@ const DataCard = () => {
   const [userIds, setUserIds] = useState([]); // State for user IDs
   const [userData, setUserData] = useState({ total: 0, present: 0, absent: 0 });
   const [loading, setLoading] = useState(false); // To handle loading state
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const currentUserId = localStorage.getItem("userId");
 
@@ -119,22 +120,43 @@ const DataCard = () => {
 
         {/* Select Location */}
         <div className="overview-group d-flex justify-content-center align-items-center mt-4">
-          <div>
-            <select
-              className="form-control"
-              id="userType"
-              value={userType}
-              onChange={handleUserTypeChange}
+      <div className="col-md-12">
+        <div className="dropdown">
+          <button
+            className="btn btn-secondary dropdown-toggle w-100"
+            type="button"
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
+            {userType || "Select Location"}
+          </button>
+          {showDropdown && (
+            <ul
+              className="dropdown-menu show w-100"
+              style={{
+                maxHeight: "150px",
+                overflowY: "auto",
+                position: "absolute",
+                display: "block",
+              }}
             >
-              <option value="">Select Location</option>
               {locations.map((location, index) => (
-                <option key={index} value={location}>
-                  {location}
-                </option>
+                <li key={index}>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      handleUserTypeChange({ target: { value: location } });
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {location}
+                  </button>
+                </li>
               ))}
-            </select>
-          </div>
+            </ul>
+          )}
         </div>
+      </div>
+    </div>
       </div>
 
       {/* Card Section */}
