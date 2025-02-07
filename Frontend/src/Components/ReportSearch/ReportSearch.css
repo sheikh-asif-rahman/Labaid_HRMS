@@ -1,11 +1,143 @@
 /* Main container styling */
+.custom-report-search-container{
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;  
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 8% auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative; /* Ensures bubbles don't overlap the form */
+
+}
 .reportsearch-container {
-  max-width: 800px; /* Limit container width */
-  margin: 0 auto; /* Center the container */
-  margin-top: 90px; /* Space from the top to avoid navbar overlap */
-  padding: 5% 15px; /* Padding on the left and right */
+  position: relative;
+  min-height: 100vh; /* Ensure the page takes up the full height of the viewport */
+  background-color: #adceff;
+  overflow: hidden;
 }
 
+
+.custom-bubbles-reportsearch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Prevent bubbles from blocking interaction */
+}
+
+.custom-bubble-reportsearch {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(1, 99, 204, 0.5);
+  animation: bubbleAnimation 6s infinite;
+  opacity: 0.8;
+  pointer-events: none; /* Prevent bubbles from blocking interaction */
+}
+
+/* Define the size and positions of bubbles */
+.custom-bubble-reportsearch:nth-child(1) {
+  width: 60px;
+  height: 60px;
+  animation-delay: 0s;
+  top: 10%;
+  left: 15%;
+}
+
+.custom-bubble-reportsearch:nth-child(2) {
+  width: 100px;
+  height: 100px;
+  animation-delay: 1s;
+  top: 20%;
+  left: 70%;
+}
+
+.custom-bubble-reportsearch:nth-child(3) {
+  width: 80px;
+  height: 80px;
+  animation-delay: 2s;
+  top: 30%;
+  left: 50%;
+}
+
+.custom-bubble-reportsearch:nth-child(4) {
+  width: 90px;
+  height: 90px;
+  animation-delay: 3s;
+  top: 50%;
+  left: 20%;
+}
+
+.custom-bubble-reportsearch:nth-child(5) {
+  width: 110px;
+  height: 110px;
+  animation-delay: 4s;
+  top: 60%;
+  left: 80%;
+}
+
+.custom-bubble-reportsearch:nth-child(6) {
+  width: 70px;
+  height: 70px;
+  animation-delay: 5s;
+  top: 70%;
+  left: 10%;
+}
+
+.custom-bubble-reportsearch:nth-child(7) {
+  width: 120px;
+  height: 120px;
+  animation-delay: 0s;
+  top: 80%;
+  left: 30%;
+}
+
+.custom-bubble-reportsearch:nth-child(8) {
+  width: 90px;
+  height: 90px;
+  animation-delay: 1s;
+  top: 90%;
+  left: 60%;
+}
+
+.custom-bubble-reportsearch:nth-child(9) {
+  width: 80px;
+  height: 80px;
+  animation-delay: 2s;
+  top: 10%;
+  left: 90%;
+}
+
+.custom-bubble-reportsearch:nth-child(10) {
+  width: 100px;
+  height: 100px;
+  animation-delay: 3s;
+  top: 40%;
+  left: 10%;
+}
+
+/* Bubble animation (floating and scaling) */
+@keyframes bubbleAnimation {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.5) translateY(-200px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 0.8;
+  }
+}
+.custom-report-form-container{
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
 /* Label styling */
 .reportsearch-label {
   font-size: 1rem;
@@ -139,7 +271,7 @@
 /* Responsive adjustments for mobile */
 @media (max-width: 767px) {
   .reportsearch-container {
-    margin-top: 80px; /* Adjust top margin for smaller screens */
+    margin-top: 50px; /* Adjust top margin for smaller screens */
     padding: 10%; /* Reduce side padding */
   }
 

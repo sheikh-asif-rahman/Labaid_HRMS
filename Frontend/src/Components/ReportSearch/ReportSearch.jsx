@@ -259,121 +259,152 @@ const handleGetData = async () => {
 
   return (
     <div className="reportsearch-container">
-      <div className="reportsearch-form">
-        <h2>Report Search</h2>
-        <form>
-          <div className="reportsearch-row">
+      {/* Bubbles in the background */}
+      <div className="custom-bubbles-reportsearch">
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+        <div className="custom-bubble-reportsearch"></div>
+      </div>
+      
+      {/* Main content */}
+      <div className="custom-report-search-container">
+        <div className="reportsearch-form">
+          
+          {/* Title and Report Type Selection */}
+          <div className="custom-report-title reportsearch-row">
             <div className="reportsearch-col-md-6">
-              <label className="reportsearch-label">Location</label>
-              <select
-                className="reportsearch-select"
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-              >
-                <option value="">Select Location</option>
-                {locations.map((location, index) => (
-                  <option key={index} value={location}>
-                    {location}
-                  </option>
-                ))}
+              <h2>Report Search</h2>
+            </div>
+            <div className="reportsearch-col-md-6">
+              <select className="reportsearch-select">
+                <option value="attendance" selected>Attendance Report</option>
+                <option value="leave" disabled>Leave Report - not ready</option>
+                <option value="absent" disabled>Absent Report - not ready</option>
               </select>
             </div>
+          </div>
 
-            <div className="reportsearch-col-md-6">
-              <label className="reportsearch-label">User ID</label>
-              <div className="input-container">
-                <input
-                  type="text"
-                  className="reportsearch-input"
-                  value={userId}
-                  onChange={handleUserIdChange}
-                  placeholder="Search User ID"
-                />
-                {userIdSuggestions.length > 0 && (
-                  <ul className="suggestions-list">
-                    {userIdSuggestions.map((suggestion, index) => (
-                      <li
-                        key={index}
-                        className="suggestion-item"
-                        onClick={() => handleSuggestionClick(suggestion)}
-                      >
-                        {suggestion}
-                      </li>
+          <div className="custom-report-form-container">
+            <form>
+              <div className="reportsearch-row">
+                <div className="reportsearch-col-md-6">
+                  <label className="reportsearch-label">Location</label>
+                  <select
+                    className="reportsearch-select"
+                    value={userType}
+                    onChange={(e) => setUserType(e.target.value)}
+                  >
+                    <option value="">Select Location</option>
+                    {locations.map((location, index) => (
+                      <option key={index} value={location}>
+                        {location}
+                      </option>
                     ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-          </div>
+                  </select>
+                </div>
 
-          <div className="reportsearch-row">
-            <div className="reportsearch-col-md-6">
-              <label className="reportsearch-label">From Date</label>
-              <input
-                type="date"
-                className="reportsearch-input"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
-            <div className="reportsearch-col-md-6">
-              <label className="reportsearch-label">To Date</label>
-              <input
-                type="date"
-                className="reportsearch-input"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="reportsearch-row">
-            <div className="col-md-12">
-              <div className="d-flex justify-content-center">
-                <div className="col-md-6">
-                  <div className="d-flex justify-content-between align-items-center gap-3 button-container">
-                    {!isDataFetched ? (
-                      <button
-                        type="button"
-                        className="reportsearch-btn reportsearch-get-data-btn"
-                        onClick={handleGetData}
-                      >
-                        Get Data
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="reportsearch-btn reportsearch-download-btn"
-                        onClick={handleDownload}
-                      >
-                        Download CSV
-                      </button>
+                <div className="reportsearch-col-md-6">
+                  <label className="reportsearch-label">User ID</label>
+                  <div className="input-container">
+                    <input
+                      type="text"
+                      className="reportsearch-input"
+                      value={userId}
+                      onChange={handleUserIdChange}
+                      placeholder="Search User ID"
+                    />
+                    {userIdSuggestions.length > 0 && (
+                      <ul className="suggestions-list">
+                        {userIdSuggestions.map((suggestion, index) => (
+                          <li
+                            key={index}
+                            className="suggestion-item"
+                            onClick={() => handleSuggestionClick(suggestion)}
+                          >
+                            {suggestion}
+                          </li>
+                        ))}
+                      </ul>
                     )}
-                    <button
-                      type="button"
-                      className="reportsearch-btn reportsearch-reset-btn"
-                      onClick={handleReset}
-                    >
-                      Reset
-                    </button>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </form>
-      </div>
 
-      {/* Modal */}
+              <div className="reportsearch-row">
+                <div className="reportsearch-col-md-6">
+                  <label className="reportsearch-label">From Date</label>
+                  <input
+                    type="date"
+                    className="reportsearch-input"
+                    value={fromDate}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  />
+                </div>
+                <div className="reportsearch-col-md-6">
+                  <label className="reportsearch-label">To Date</label>
+                  <input
+                    type="date"
+                    className="reportsearch-input"
+                    value={toDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="reportsearch-row">
+                <div className="col-md-12">
+                  <div className="d-flex justify-content-center">
+                    <div className="col-md-6">
+                      <div className="d-flex justify-content-between align-items-center gap-3 button-container">
+                        {!isDataFetched ? (
+                          <button
+                            type="button"
+                            className="reportsearch-btn reportsearch-get-data-btn"
+                            onClick={handleGetData}
+                          >
+                            Get Data
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="reportsearch-btn reportsearch-download-btn"
+                            onClick={handleDownload}
+                          >
+                            Download CSV
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="reportsearch-btn reportsearch-reset-btn"
+                          onClick={handleReset}
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
       {/* Modal */}
       {isModalOpen && (
         <div
           className="modal show"
           style={{
             display: "block",
-            backdropFilter: "blur(5px)" /* Apply blur effect */,
-            backgroundColor:
-              "rgba(0, 0, 0, 0.5)" /* Dark overlay with opacity */,
+            backdropFilter: "blur(5px)", /* Apply blur effect */
+            backgroundColor: "rgba(0, 0, 0, 0.5)", /* Dark overlay with opacity */
           }}
         >
           <div className="modal-dialog modal-dialog-centered">
@@ -419,6 +450,8 @@ const handleGetData = async () => {
       )}
     </div>
   );
+
+
 };
 
 export default ReportSearch;
