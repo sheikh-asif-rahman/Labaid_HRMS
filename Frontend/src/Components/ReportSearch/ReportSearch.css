@@ -418,3 +418,70 @@
     font-size: 12px;
   }
 }
+
+
+
+/* Responsive adjustments for mobile */
+@media (max-width: 767px) {
+  /* Adjust container and page layout for smaller screens */
+  .custom-report-search-container {
+    margin-top: 50px; /* Adjust top margin for smaller screens */
+    padding: 5%; /* Reduced padding for better fit */
+  }
+
+  .reportsearch-container {
+    padding: 0 5%; /* Reduced side padding */
+  }
+
+  /* Stack the table and other elements vertically */
+  .custom-report-search-container h2 {
+    font-size: 1.5rem; /* Smaller heading for mobile */
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* Adjust table styles for mobile */
+  .table {
+    font-size: 14px; /* Smaller font size for table */
+    overflow-x: auto; /* Allow horizontal scroll on smaller screens */
+    width: 100%;
+    display: block;
+  }
+
+  .table th, .table td {
+    padding: 12px 8px; /* Add padding for better touch targets */
+    text-align: left; /* Left-align text for readability */
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination button, .pagination span {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+
+  .pagination button {
+    margin: 5px;
+  }
+
+  .pagination span {
+    font-size: 16px;
+  }
+
+  /* Adjust buttons for mobile */
+  .reportsearch-btn,
+  .reportsearch-reset-btn {
+    max-width: 100%; /* Make buttons full-width */
+    padding: 1rem; /* Increase padding for touch targets */
+    font-size: 1rem; /* Larger font size for readability */
+    margin-bottom: 10px; /* Space between buttons */
+  }
+
+  .reportsearch-buttons {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 15px; /* Add more spacing between stacked buttons */
+  }
+}
