@@ -409,10 +409,7 @@ const handleSave = async () => {
                 onChange={(e) => setPermission(e.target.value)}
               >
                 <option value="Admin">Admin</option>
-                <option value="HR">HR</option>
-                <option value="User">User</option>
-                <option value="Branch IT">Branch IT</option>
-                
+                <option value="User">User</option>                
               </select>
             </div>
           </div>

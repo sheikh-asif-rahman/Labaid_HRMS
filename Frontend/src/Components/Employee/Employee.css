@@ -285,12 +285,38 @@
 
 
 
+/* Calendar tile colors based on status */
+.react-calendar__tile.attended {
+  background-color: #28a745; /* Green for attended */
+  color: white;
+}
+
+.react-calendar__tile.absent {
+  background-color: #dc3545; /* Red for absent */
+  color: white;
+}
+
+.react-calendar__tile.holiday {
+  background-color: #6f42c1; /* Purple for holiday */
+  color: white;
+}
+
+.react-calendar__tile.leave {
+  background-color: #d1ce00; /* Blue for leave */
+  color: white;
+}
+
+
+/* Remove default background for today's tile and add a transparent background with a border */
+.react-calendar__tile.today {
+  border: 2px solid #000000; /* Add a solid black border */
+  box-shadow: none !important; /* Remove any shadow effect */
+}
 /* Legend */
 .custom-employee-calendar-legend {
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
-
 }
 
 .legend-item {
@@ -320,7 +346,7 @@
 }
 
 .leave {
-  background-color: #007bff; /* Blue */
+  background-color: #d1ce00; /* Blue */
 }
 
 /* Adding space between the two sections */

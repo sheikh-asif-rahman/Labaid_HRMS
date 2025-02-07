@@ -6,6 +6,7 @@ import { BASE_URL } from "/src/constants/constant.jsx";
 
 
 const ReportSearch = () => {
+  
   const currentUserId = localStorage.getItem("userId");
 
   const [locations, setLocations] = useState([]);
@@ -22,6 +23,10 @@ const ReportSearch = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFetchingData, setIsFetchingData] = useState(false);
   const [fetchSuccess, setFetchSuccess] = useState(null);
+  const [showTable, setShowTable] = useState(false);
+  const rowsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -86,6 +91,7 @@ const ReportSearch = () => {
     setUserIdSuggestions([]);
     setFetchSuccess(null);
     setIsFetchingData(false);
+    setShowTable(false);
   };
 
   const handleUserIdChange = (e) => {
@@ -255,7 +261,18 @@ const handleGetData = async () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+    if (fetchSuccess) setShowTable(true); // Show table only if fetching was successful
   };
+
+  const changePage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const totalPages = Math.ceil(fetchedData.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const currentData = fetchedData.slice(startIndex, startIndex + rowsPerPage);
 
   return (
     <div className="reportsearch-container">
@@ -442,12 +459,78 @@ const handleGetData = async () => {
                       OK
                     </button>
                   </div>
-                )}
+                )}                
               </div>
             </div>
           </div>
         </div>
       )}
+      {/* Hidden Table (Appears After Closing Modal) */}
+      {showTable && (
+        <div className="custom-report-search-container">
+        <h2>Preview</h2>
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th>SL</th>
+              <th>Branch Name</th>
+              <th>User ID</th>
+              <th>Date</th>
+              <th>In Time</th>
+              <th>Out Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentData.map((row, index) => (
+              <tr key={row.sl}>
+                <td>{startIndex + index + 1}</td>
+                <td>{row.branchName}</td>
+                <td>{row.userId}</td>
+                <td>{row.date}</td>
+                <td>{row.inTime}</td>
+                <td>{row.outTime}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+  
+        {/* Pagination Controls */}
+        <div className="pagination">
+          {currentPage > 1 && (
+            <button onClick={() => changePage(currentPage - 1)}>{"<< "}Previous</button>
+          )}
+  
+          {[...Array(totalPages).keys()].map((page) => {
+            if (
+              page + 1 === 1 || // Always show first page
+              page + 1 === totalPages || // Always show last page
+              Math.abs(page + 1 - currentPage) <= 2 // Show nearby pages
+            ) {
+              return (
+                <button
+                  key={page}
+                  onClick={() => changePage(page + 1)}
+                  className={currentPage === page + 1 ? "active" : ""}
+                >
+                  {page + 1}
+                </button>
+              );
+            } else if (
+              (page === 1 && currentPage > 4) ||
+              (page === totalPages - 2 && currentPage < totalPages - 3)
+            ) {
+              return <span key={page}>...</span>;
+            }
+            return null;
+          })}
+  
+          {currentPage < totalPages && (
+            <button onClick={() => changePage(currentPage + 1)}>Next{" >>"}</button>
+          )}
+        </div>
+      </div>
+      )}
+
     </div>
   );
 

@@ -7,23 +7,31 @@ import 'react-calendar/dist/Calendar.css'; // Import the calendar styles
 const Employee = () => {
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState(new Date());
-
-  // Sample data for leave, present, absent, and holiday
-  const leaveDates = ['2025-02-06'];
-  const presentDates = ['2025-02-07'];
-  const absentDates = ['2025-02-08'];
-  const holidayDates = ['2025-02-14'];
-
-  // Function to add custom classes to the dates
+  
   const tileClassName = ({ date, view }) => {
-    const dateStr = date.toISOString().split('T')[0]; // Get date in YYYY-MM-DD format
-    if (leaveDates.includes(dateStr)) {
+    const presentDates = [3, 5, 9]; // Example attended dates (just the day numbers)
+    const absentDates = [4, 10]; // Example absent dates (just the day numbers)
+    const holidayDates = [6]; // Example holiday dates (just the day numbers)
+    const leaveDates = [12]; // Example leave dates (just the day numbers)
+  
+    const day = date.getDate(); // Get the day of the month
+    const today = new Date();
+    const currentMonth = today.getMonth(); // Get the current month (0-based)
+    const todayDate = today.getDate(); // Get today's day number
+  
+    // Check if the date is in the current month and if it's today's date
+    if (date.getMonth() === currentMonth && date.getDate() === todayDate) {
+      return 'today'; // Add a specific class for today's date
+    }
+  
+    // Apply other date styles based on the dates
+    if (leaveDates.includes(day)) {
       return 'leave';
-    } else if (presentDates.includes(dateStr)) {
-      return 'present';
-    } else if (absentDates.includes(dateStr)) {
+    } else if (presentDates.includes(day)) {
+      return 'attended';
+    } else if (absentDates.includes(day)) {
       return 'absent';
-    } else if (holidayDates.includes(dateStr)) {
+    } else if (holidayDates.includes(day)) {
       return 'holiday';
     }
   };
@@ -273,6 +281,7 @@ const Employee = () => {
       onChange={setDate} // Handle date change
       value={date} // Set the current selected date
       tileClassName={tileClassName} // Apply custom classes based on dates
+      showNeighboringMonth={false} // Hide previous/next month's dates
     />
 
     {/* Legend */}
