@@ -1,6 +1,6 @@
 /* Main container styling */
-.custom-report-search-container{
-  padding: 20px;
+.custom-report-search-container {
+  padding: 30px; /* Increase padding around the container */
   font-family: Arial, sans-serif;
   background-color: #ebebeb;  
   border-radius: 8px;
@@ -8,16 +8,18 @@
   margin: 8% auto;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   position: relative; /* Ensures bubbles don't overlap the form */
-
 }
+
+/* Report search container */
 .reportsearch-container {
   position: relative;
   min-height: 100vh; /* Ensure the page takes up the full height of the viewport */
   background-color: #adceff;
   overflow: hidden;
+  padding: 30px; /* Add padding to the container */
 }
 
-
+/* Custom bubbles inside the report search */
 .custom-bubbles-reportsearch {
   position: absolute;
   top: 0;
@@ -27,6 +29,7 @@
   pointer-events: none; /* Prevent bubbles from blocking interaction */
 }
 
+/* Styling for bubbles */
 .custom-bubble-reportsearch {
   position: absolute;
   border-radius: 50%;
@@ -132,12 +135,15 @@
     opacity: 0.8;
   }
 }
-.custom-report-form-container{
+
+/* Form container inside report search */
+.custom-report-form-container {
   background-color: white;
-  padding: 20px;
+  padding: 30px; /* Add padding to the form */
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 /* Label styling */
 .reportsearch-label {
   font-size: 1rem;
@@ -155,9 +161,9 @@
   font-size: 1rem;
   border: 1px solid #000000;
   border-radius: 5px;
-  width: 100%; /* Make fields take full width */
-  box-sizing: border-box; /* Ensure padding and border don't overflow */
-  height: 48px; /* Consistent height for all elements */
+  width: 100%; /* Full width */
+  box-sizing: border-box;
+  height: 48px; /* Consistent height */
 }
 
 /* Dropdown (select) field specific */
@@ -270,9 +276,13 @@
 
 /* Responsive adjustments for mobile */
 @media (max-width: 767px) {
-  .reportsearch-container {
+  .custom-report-search-container {
     margin-top: 50px; /* Adjust top margin for smaller screens */
-    padding: 10%; /* Reduce side padding */
+    padding: 10%; /* Adjust padding for smaller screens */
+  }
+
+  .reportsearch-container {
+    padding: 10%; /* Add padding for better layout on smaller screens */
   }
 
   .reportsearch-row {
@@ -345,19 +355,6 @@
   filter: brightness(0.9);
 }
 
-/* Responsive styling */
-@media (max-width: 767px) {
-  .button-container {
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 10px; /* Add space between stacked buttons */
-  }
-
-  .reportsearch-btn {
-    width: 100%; /* Make buttons full width */
-  }
-}
-
-
 /* Pagination container */
 .pagination {
   display: flex;
@@ -404,84 +401,75 @@
   cursor: not-allowed;
 }
 
-/* Ellipsis (three dots) styling */
-.pagination span {
-  font-size: 18px;
-  color: #555;
+/* General Table Styling */
+.custom-report-table {
+  width: 100%;
+  min-width: 600px; /* Ensure table has a minimum width for scrolling */
+  border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
-/* Optional: Pagination button on small screens */
-@media (max-width: 576px) {
-  .pagination button,
-  .pagination span {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
+.custom-report-table-container {
+  width: 100%;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
 }
 
+/* Table Header Styling */
+.custom-report-table th {
+  background-color: #f4f4f4;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #ddd;
+}
 
+/* Table Data Cell Styling */
+.custom-report-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
 
-/* Responsive adjustments for mobile */
+/* Responsive table on mobile */
 @media (max-width: 767px) {
-  /* Adjust container and page layout for smaller screens */
-  .custom-report-search-container {
-    margin-top: 50px; /* Adjust top margin for smaller screens */
-    padding: 5%; /* Reduced padding for better fit */
-  }
-
-  .reportsearch-container {
-    padding: 0 5%; /* Reduced side padding */
-  }
-
-  /* Stack the table and other elements vertically */
-  .custom-report-search-container h2 {
-    font-size: 1.5rem; /* Smaller heading for mobile */
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  /* Adjust table styles for mobile */
-  .table {
-    font-size: 14px; /* Smaller font size for table */
-    overflow-x: auto; /* Allow horizontal scroll on smaller screens */
-    width: 100%;
+  /* Ensure table is scrollable on small screens */
+  .custom-report-table {
     display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
-  .table th, .table td {
-    padding: 12px 8px; /* Add padding for better touch targets */
-    text-align: left; /* Left-align text for readability */
+  /* Stack rows vertically for mobile */
+  .custom-report-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: right;
+    padding-left: 50%; /* Adjust padding for labels */
   }
 
-  .pagination {
-    flex-wrap: wrap;
-    justify-content: center;
+  /* Add labels before data in mobile view */
+  .custom-report-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-right: 10px;
+    display: inline-block;
+    text-align: left;
   }
 
-  .pagination button, .pagination span {
-    padding: 8px 15px;
-    font-size: 14px;
+  /* Style for table headers in mobile view */
+  .custom-report-table th {
+    display: none; /* Hide table headers */
   }
+}
 
-  .pagination button {
-    margin: 5px;
-  }
+/* Table Row Styling */
+.custom-report-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
 
-  .pagination span {
-    font-size: 16px;
-  }
-
-  /* Adjust buttons for mobile */
-  .reportsearch-btn,
-  .reportsearch-reset-btn {
-    max-width: 100%; /* Make buttons full-width */
-    padding: 1rem; /* Increase padding for touch targets */
-    font-size: 1rem; /* Larger font size for readability */
-    margin-bottom: 10px; /* Space between buttons */
-  }
-
-  .reportsearch-buttons {
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 15px; /* Add more spacing between stacked buttons */
-  }
+/* Hover effect for rows */
+.custom-report-table tr:hover {
+  background-color: #f1f1f1;
 }

@@ -177,6 +177,15 @@
   font-weight: bold;
   cursor: pointer;
 }
+.custom-employee-update-button{
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
 .custom-employee-new-button {
   background-color: #fd5858;
@@ -239,7 +248,7 @@
 /* Calendar Container */
 .custom-employee-container-calendar {
   position: relative;
-  z-index: 10;
+  z-index: 1; /* Keep it below modal */
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -376,4 +385,131 @@
       flex: 0 0 100%; /* Stack performance cards on mobile */
       margin-bottom: 20px; /* Add space between cards */
   }
+  .custom-employee-col-md-4 {
+    width: 100%;
+  }
+
+  .custom-employee-row {
+    flex-direction: column;
+  }
+  .custom-employee-modal {
+    padding: 10% 10% !important;
+  }
+}
+
+
+/* Modal Backdrop Styling */
+.custom-employee-modal.fade.show {
+  z-index: 1050 !important;
+  background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
+  backdrop-filter: blur(5px); /* Apply blur effect */
+  -webkit-backdrop-filter: blur(5px); /* For Safari compatibility */
+  display: block; /* Ensure it appears */
+
+}
+
+.custom-employee-modal-dialog {
+  z-index: 1060 !important;
+  position: relative;
+}
+.custom-employee-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0% 10%;
+}
+
+
+
+/* Modal content styling */
+.custom-employee-modal-content {
+  margin-top: 10%;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  padding: 15px;
+}
+
+/* Modal header styling */
+.custom-employee-modal-header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-employee-modal-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Modal body styling */
+.custom-employee-modal-body {
+  padding: 15px;
+}
+
+/* Branch selection layout */
+.custom-employee-container-fluid {
+  padding: 0;
+}
+
+.custom-employee-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Checkbox styling */
+.custom-employee-col-md-4 label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.custom-employee-col-md-4 input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Modal footer styling */
+.custom-employee-modal-footer {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Buttons inside modal */
+.custom-employee-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.custom-employee-btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.custom-employee-btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.custom-employee-btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.custom-employee-btn-secondary:hover {
+  background-color: #545b62;
 }

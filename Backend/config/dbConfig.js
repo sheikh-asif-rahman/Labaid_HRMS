@@ -8,7 +8,7 @@ const dbConfig = {
     options: {
         trustServerCertificate: true,
         trustedConnection: false,
-        enableArithAbort: true,
+        enableArithAbort: true, 
         instancename: "SQLEXPRESS",
     },
     port: 1433,

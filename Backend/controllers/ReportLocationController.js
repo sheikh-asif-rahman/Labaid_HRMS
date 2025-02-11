@@ -19,7 +19,7 @@ const getReportLocation = async (req, res) => {
             FROM dbo.UserLogin
             WHERE LTRIM(RTRIM(UserId)) = @UserId
         `;
-
+  
         // Create a new SQL request
         const request = new sql.Request();
 

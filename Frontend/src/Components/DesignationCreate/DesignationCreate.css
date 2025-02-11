@@ -1,0 +1,219 @@
+/* Main container styling */
+.custom-designation-create-container {
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background-color: #ebebeb;  
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 8% auto;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  /* designation create container */
+  .designation-create-container {
+    position: relative;
+    min-height: 100vh;
+    background-color: #adceff;
+    overflow: hidden;
+    padding: 30px;
+  }
+  
+  /* Custom bubbles inside the designation create */
+  .custom-designation-create-bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  
+  /* Styling for bubbles */
+  .custom-designation-create-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(1, 99, 204, 0.5);
+    animation: bubbleAnimation 6s infinite;
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  
+  /* Define the size and positions of bubbles */
+  .custom-designation-create-bubble:nth-child(1) {
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    top: 10%;
+    left: 15%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(2) {
+    width: 100px;
+    height: 100px;
+    animation-delay: 1s;
+    top: 20%;
+    left: 70%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(3) {
+    width: 80px;
+    height: 80px;
+    animation-delay: 2s;
+    top: 30%;
+    left: 50%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(4) {
+    width: 90px;
+    height: 90px;
+    animation-delay: 3s;
+    top: 50%;
+    left: 20%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(5) {
+    width: 110px;
+    height: 110px;
+    animation-delay: 4s;
+    top: 60%;
+    left: 80%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(6) {
+    width: 70px;
+    height: 70px;
+    animation-delay: 5s;
+    top: 70%;
+    left: 10%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(7) {
+    width: 120px;
+    height: 120px;
+    animation-delay: 0s;
+    top: 80%;
+    left: 30%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(8) {
+    width: 90px;
+    height: 90px;
+    animation-delay: 1s;
+    top: 90%;
+    left: 60%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(9) {
+    width: 80px;
+    height: 80px;
+    animation-delay: 2s;
+    top: 10%;
+    left: 90%;
+  }
+  
+  .custom-designation-create-bubble:nth-child(10) {
+    width: 100px;
+    height: 100px;
+    animation-delay: 3s;
+    top: 40%;
+    left: 10%;
+  }
+  
+  /* Form container inside designation create */
+  .custom-designation-create-form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Label styling */
+  .custom-designation-create-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  /* Input and select field styling */
+  .custom-designation-create-input,
+  .custom-designation-create-select {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    height: 48px;
+  }
+  
+  /* Button container styling */
+  .custom-designation-create-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  /* Common button styling */
+  .custom-designation-create-btn,
+  .custom-designation-create-reset-btn {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    height: 48px;
+    width: 48%;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  /* Specific button colors */
+  .custom-designation-create-btn {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .custom-designation-create-reset-btn {
+    background-color: #ffcc00;
+    color: white;
+  }
+  
+  /* Table Styling */
+  .custom-designation-create-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .custom-designation-create-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .custom-designation-create-table th {
+    background-color: #f4f4f4;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  .custom-designation-create-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .custom-designation-create-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .custom-designation-create-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  

@@ -10,7 +10,6 @@ import {
 } from "react-icons/bs";
 import { RiTeamFill } from "react-icons/ri";
 import { SiAdblock } from "react-icons/si";
-import { LiaUserShieldSolid } from "react-icons/lia";
 
 const Dashboard = () => {
   const navigate = useNavigate(); // Create a navigate function
@@ -35,10 +34,7 @@ const Dashboard = () => {
       navigate("/admin"); // Navigate to the Admin page when the Admin card is clicked
     }  else if (cardName === "Employee") {
       navigate("/employeepage"); // Navigate to the Employee page when the Employee card is clicked
-    } 
-    else if (cardName === "Rules and Permission") {
-      navigate("/rulespermission"); // Navigate to the Rules permission page when card is clicked
-    } else if (cardName === "underDevelopmentModal") {
+    }  else if (cardName === "underDevelopmentModal") {
       setModalMessage("Under Development");
       setShowModal(true);
     }
@@ -129,26 +125,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Card 5: Rules and Permission */}
-        {permission === "Admin" && (<div className="col-md-4 mb-4">
-          <div
-            className="card custom-card card-rules-permission"
-            onClick={() => handleCardClick("Rules and Permission")}
-          >
-            <div className="row g-0">
-              <div className="col-md-8">
-                <div className="card-body">
-                  <h5 className="card-title">Rules and Permission</h5>
-                </div>
-              </div>
-              <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <LiaUserShieldSolid className="card-icon" />
-              </div>
-            </div>
-          </div>
-        </div>)}
-
-        {/* Card 6: Leave Management */}
+        {/* Card 5: Leave Management */}
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-leave-management"
@@ -167,7 +144,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Card 7: Onboarding/Offboarding */}
+        {/* Card 6: Onboarding/Offboarding */}
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-employee-onboarding"
@@ -186,7 +163,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Card 8: Holiday Calendar */}
+        {/* Card 7: Holiday Calendar */}
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-holiday-calendar"

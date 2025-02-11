@@ -1,331 +1,114 @@
-/* Container styling */
-.custom-access-admin-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;  
-  border-radius: 8px;
-  max-width: 800px;
-  margin: 10% auto;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  position: relative; /* Ensures bubbles don't overlap the form */
-}
-
-/* Bubbles in the background */
-.custom-access-admin-page {
-  position: relative;
-  min-height: 100vh; /* Ensure the page takes up the full height of the viewport */
-  background-color: #98cbff;
-  overflow: hidden;
-}
-
-.custom-bubbles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* Prevent bubbles from blocking interaction */
-}
-
-.custom-bubble {
-  position: absolute;
-  border-radius: 50%;
-  background-color: rgba(1, 99, 204, 0.5);
-  animation: bubbleAnimation 6s infinite;
-  opacity: 0.8;
-  pointer-events: none; /* Prevent bubbles from blocking interaction */
-}
-
-/* Define the size and positions of bubbles */
-.custom-bubble:nth-child(1) {
-  width: 60px;
-  height: 60px;
-  animation-delay: 0s;
-  top: 10%;
-  left: 15%;
-}
-
-.custom-bubble:nth-child(2) {
-  width: 100px;
-  height: 100px;
-  animation-delay: 1s;
-  top: 20%;
-  left: 70%;
-}
-
-.custom-bubble:nth-child(3) {
-  width: 80px;
-  height: 80px;
-  animation-delay: 2s;
-  top: 30%;
-  left: 50%;
-}
-
-.custom-bubble:nth-child(4) {
-  width: 90px;
-  height: 90px;
-  animation-delay: 3s;
-  top: 50%;
-  left: 20%;
-}
-
-.custom-bubble:nth-child(5) {
-  width: 110px;
-  height: 110px;
-  animation-delay: 4s;
-  top: 60%;
-  left: 80%;
-}
-
-.custom-bubble:nth-child(6) {
-  width: 70px;
-  height: 70px;
-  animation-delay: 5s;
-  top: 70%;
-  left: 10%;
-}
-
-.custom-bubble:nth-child(7) {
-  width: 120px;
-  height: 120px;
-  animation-delay: 0s;
-  top: 80%;
-  left: 30%;
-}
-
-.custom-bubble:nth-child(8) {
-  width: 90px;
-  height: 90px;
-  animation-delay: 1s;
-  top: 90%;
-  left: 60%;
-}
-
-.custom-bubble:nth-child(9) {
-  width: 80px;
-  height: 80px;
-  animation-delay: 2s;
-  top: 10%;
-  left: 90%;
-}
-
-.custom-bubble:nth-child(10) {
-  width: 100px;
-  height: 100px;
-  animation-delay: 3s;
-  top: 40%;
-  left: 10%;
-}
-
-/* Bubble animation (floating and scaling) */
-@keyframes bubbleAnimation {
-  0% {
-    transform: scale(1) translateY(0);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.5) translateY(-200px);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1) translateY(0);
-    opacity: 0.8;
-  }
-}
-
-/* Search container */
-.custom-search-container {
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.custom-search-container label {
-  margin-right: 10px;
-  font-weight: bold;
-}
-
-.custom-search-box-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#user-search {
-  padding: 8px;
-  width: 100%;
-  max-width: 300px;
-  border: 1px solid #000000;
-  border-radius: 4px;
-}
-
-/* Dropdown styling */
-.custom-dropdown {
-  position: absolute;
-  top: calc(100% + 5px);
-  left: 0;
-  width: 100%;
-  max-width: 300px;
+/* Styling for the access admin cards */
+.custom-card {
   background-color: white;
-  border: 1px solid #000000;
-  border-radius: 4px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  max-height: 200px;
-  overflow-y: auto;
-  list-style: none;
-  padding: 0;
-  margin-top: 5px;
-}
-
-.custom-dropdown li {
-  padding: 10px;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
-}
-
-.custom-dropdown li:last-child {
-  border-bottom: none;
-}
-
-.custom-dropdown li:hover {
-  background-color: #f0f0f0;
-}
-
-/* Search button styling */
-.custom-search-button {
-  background-color: #28a745; /* Green color for search button */
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-right: 10px; /* Adds spacing between buttons */
-}
-
-.custom-search-button:hover {
-  background-color: #218838; /* Darker green on hover */
-}
-
-/* New button styling */
-.custom-new-button {
-  background-color: #fd5858; /* Yellow color for new button */
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.custom-new-button:hover {
-  background-color: #ff3434; /* Darker yellow on hover */
-}
-
-/* Save button styling (already provided) */
-.custom-save-button {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.custom-save-button:hover {
-  background-color: #0056b3;
-}
-
-
-/* Form styling */
-.custom-form-container {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.custom-form-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-
-.custom-form-group {
+  border: 5px solid transparent; /* Default border is transparent */
+  border-radius: 0; /* Sharp corners */
+  box-shadow: 0px 4px 6px rgba(0, 0, 255, 0.1); /* Blue shadow */
+  padding: 5% 0% !important;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  height: 150px;
   display: flex;
   flex-direction: column;
-  width: 48%;
+  justify-content: space-between;
+  text-align: center;
+  cursor: pointer; /* Pointer on hover */
 }
 
-.custom-form-group label {
-  margin-bottom: 5px;
-  font-weight: bold;
+/* Card hover effect */
+.custom-card:hover {
+  box-shadow: 0px 8px 15px rgba(0, 0, 255, 0.2); /* Deeper blue shadow */
+  transform: scale(1.05); /* Slight scaling */
 }
 
-.custom-form-group input,
-.custom-form-group select {
-  padding: 8px;
-  border: 1px solid #000000;
-  border-radius: 4px;
+/* Default text and icon colors */
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
-/* Permissions Section */
-.custom-permission-section {
-  margin-top: 20px;
+.card-icon {
+  font-size: 70px;
+  transition: color 0.3s ease;
 }
 
-.custom-permission-section h3 {
-  margin-bottom: 15px;
+/* Specific card styles */
+.access-admin-page-card-rules .card-title,
+.access-admin-page-card-rules .card-icon {
+  color: #dc3545; /* Red */
 }
 
-.custom-checkbox-group {
+.access-admin-page-card-designation .card-title,
+.access-admin-page-card-designation .card-icon {
+  color: #007bff; /* Blue */
+}
+
+.access-admin-page-card-department .card-title,
+.access-admin-page-card-department .card-icon {
+  color: #28a745; /* Green */
+}
+
+/* Hover effects */
+.access-admin-page-card-rules:hover {
+  background-color: #dc3545; /* Red background */
+}
+
+.access-admin-page-card-rules:hover .card-title,
+.access-admin-page-card-rules:hover .card-icon {
+  color: white;
+}
+
+.access-admin-page-card-designation:hover {
+  background-color: #007bff; /* Blue background */
+}
+
+.access-admin-page-card-designation:hover .card-title,
+.access-admin-page-card-designation:hover .card-icon {
+  color: white;
+}
+
+.access-admin-page-card-department:hover {
+  background-color: #28a745; /* Green background */
+}
+
+.access-admin-page-card-department:hover .card-title,
+.access-admin-page-card-department:hover .card-icon {
+  color: white;
+}
+
+/* Styles for the container */
+.access-admin-page {
+  background-color: rgb(192, 192, 192);
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.custom-checkbox-group label {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  font-size: 14px;
+  min-height: 110vh;
+  padding: 7% 2% !important;
 }
 
-.custom-checkbox-group input {
-  margin-right: 10px;
-}
-
-/* Modal Backdrop Styling */
-.modal.fade.show {
-  background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
-  backdrop-filter: blur(5px); /* Apply blur effect */
-  -webkit-backdrop-filter: blur(5px); /* For Safari compatibility */
-}
-
-.modal-dialog {
-  z-index: 1050; /* Ensure the modal is above the backdrop */
-}
-
-/* Modal content styling (optional for adjusting the modal itself) */
-.modal-content {
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-
-/* Responsive design for smaller screens */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .custom-form-row {
-    flex-direction: column;
+  .custom-card {
+    padding: 5%;
+    height: 200px;
   }
 
-  .custom-form-group {
-    width: 100%;
-    margin-bottom: 15px;
+  .card-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-card {
+    padding: 3%;
+    height: 250px;
   }
 
-  .custom-checkbox-group {
-    flex-direction: column;
-    gap: 10px;
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-icon {
+    font-size: 80px;
   }
 }

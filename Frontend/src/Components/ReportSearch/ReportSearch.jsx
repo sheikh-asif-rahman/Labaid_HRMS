@@ -289,131 +289,206 @@ const handleGetData = async () => {
         <div className="custom-bubble-reportsearch"></div>
         <div className="custom-bubble-reportsearch"></div>
       </div>
-      
-      {/* Main content */}
-      <div className="custom-report-search-container">
-        <div className="reportsearch-form">
-          
-          {/* Title and Report Type Selection */}
-          <div className="custom-report-title reportsearch-row">
-            <div className="reportsearch-col-md-6">
-              <h2>Report Search</h2>
-            </div>
-            <div className="reportsearch-col-md-6">
-              <select className="reportsearch-select">
-                <option value="attendance" selected>Attendance Report</option>
-                <option value="leave" disabled>Leave Report - not ready</option>
-                <option value="absent" disabled>Absent Report - not ready</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="custom-report-form-container">
-            <form>
-              <div className="reportsearch-row">
+  
+      {/* Main content and preview table side by side */}
+      <div className="row">
+        {/* Main content (form) */}
+        <div className="col-md-6">
+          <div className="custom-report-search-container">
+            <div className="reportsearch-form">
+              {/* Title and Report Type Selection */}
+              <div className="custom-report-title reportsearch-row">
                 <div className="reportsearch-col-md-6">
-                  <label className="reportsearch-label">Location</label>
-                  <select
-                    className="reportsearch-select"
-                    value={userType}
-                    onChange={(e) => setUserType(e.target.value)}
-                  >
-                    <option value="">Select Location</option>
-                    {locations.map((location, index) => (
-                      <option key={index} value={location}>
-                        {location}
-                      </option>
-                    ))}
+                  <h2>Report Search</h2>
+                </div>
+                <div className="reportsearch-col-md-6">
+                  <select className="reportsearch-select">
+                    <option value="attendance" selected>Attendance Report</option>
+                    <option value="leave" disabled>Leave Report - not ready</option>
+                    <option value="absent" disabled>Absent Report - not ready</option>
                   </select>
                 </div>
-
-                <div className="reportsearch-col-md-6">
-                  <label className="reportsearch-label">User ID</label>
-                  <div className="input-container">
-                    <input
-                      type="text"
-                      className="reportsearch-input"
-                      value={userId}
-                      onChange={handleUserIdChange}
-                      placeholder="Search User ID"
-                    />
-                    {userIdSuggestions.length > 0 && (
-                      <ul className="suggestions-list">
-                        {userIdSuggestions.map((suggestion, index) => (
-                          <li
-                            key={index}
-                            className="suggestion-item"
-                            onClick={() => handleSuggestionClick(suggestion)}
-                          >
-                            {suggestion}
-                          </li>
+              </div>
+  
+              <div className="custom-report-form-container">
+                <form>
+                  <div className="reportsearch-row">
+                    <div className="reportsearch-col-md-6">
+                      <label className="reportsearch-label">Location</label>
+                      <select
+                        className="reportsearch-select"
+                        value={userType}
+                        onChange={(e) => setUserType(e.target.value)}
+                      >
+                        <option value="">Select Location</option>
+                        {locations.map((location, index) => (
+                          <option key={index} value={location}>
+                            {location}
+                          </option>
                         ))}
-                      </ul>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="reportsearch-row">
-                <div className="reportsearch-col-md-6">
-                  <label className="reportsearch-label">From Date</label>
-                  <input
-                    type="date"
-                    className="reportsearch-input"
-                    value={fromDate}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  />
-                </div>
-                <div className="reportsearch-col-md-6">
-                  <label className="reportsearch-label">To Date</label>
-                  <input
-                    type="date"
-                    className="reportsearch-input"
-                    value={toDate}
-                    onChange={(e) => setToDate(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="reportsearch-row">
-                <div className="col-md-12">
-                  <div className="d-flex justify-content-center">
-                    <div className="col-md-6">
-                      <div className="d-flex justify-content-between align-items-center gap-3 button-container">
-                        {!isDataFetched ? (
-                          <button
-                            type="button"
-                            className="reportsearch-btn reportsearch-get-data-btn"
-                            onClick={handleGetData}
-                          >
-                            Get Data
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            className="reportsearch-btn reportsearch-download-btn"
-                            onClick={handleDownload}
-                          >
-                            Download CSV
-                          </button>
+                      </select>
+                    </div>
+  
+                    <div className="reportsearch-col-md-6">
+                      <label className="reportsearch-label">User ID</label>
+                      <div className="input-container">
+                        <input
+                          type="text"
+                          className="reportsearch-input"
+                          value={userId}
+                          onChange={handleUserIdChange}
+                          placeholder="Search User ID"
+                        />
+                        {userIdSuggestions.length > 0 && (
+                          <ul className="suggestions-list">
+                            {userIdSuggestions.map((suggestion, index) => (
+                              <li
+                                key={index}
+                                className="suggestion-item"
+                                onClick={() => handleSuggestionClick(suggestion)}
+                              >
+                                {suggestion}
+                              </li>
+                            ))}
+                          </ul>
                         )}
-                        <button
-                          type="button"
-                          className="reportsearch-btn reportsearch-reset-btn"
-                          onClick={handleReset}
-                        >
-                          Reset
-                        </button>
                       </div>
                     </div>
                   </div>
-                </div>
+  
+                  <div className="reportsearch-row">
+                    <div className="reportsearch-col-md-6">
+                      <label className="reportsearch-label">From Date</label>
+                      <input
+                        type="date"
+                        className="reportsearch-input"
+                        value={fromDate}
+                        onChange={(e) => setFromDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="reportsearch-col-md-6">
+                      <label className="reportsearch-label">To Date</label>
+                      <input
+                        type="date"
+                        className="reportsearch-input"
+                        value={toDate}
+                        onChange={(e) => setToDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+  
+                  <div className="reportsearch-row">
+                    <div className="col-md-12">
+                      <div className="d-flex justify-content-center">
+                        <div className="col-md-6">
+                          <div className="d-flex justify-content-between align-items-center gap-3 button-container">
+                            {!isDataFetched ? (
+                              <button
+                                type="button"
+                                className="reportsearch-btn reportsearch-get-data-btn"
+                                onClick={handleGetData}
+                              >
+                                Get Data
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                className="reportsearch-btn reportsearch-download-btn"
+                                onClick={handleDownload}
+                              >
+                                Download
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              className="reportsearch-btn reportsearch-reset-btn"
+                              onClick={handleReset}
+                            >
+                              Reset
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
-            </form>
+            </div>
           </div>
         </div>
+  
+        <div className="col-md-6">
+  <div className="custom-report-search-container">
+    <h2>Preview</h2>
+    
+    {isDataFetched && (
+      <table className="table table-bordered">
+        <thead>
+          <tr>
+            <th>SL</th>
+            <th>Branch Name</th>
+            <th>User ID</th>
+            <th>Date</th>
+            <th>In Time</th>
+            <th>Out Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentData.map((row, index) => (
+            <tr key={row.sl}>
+              <td>{startIndex + index + 1}</td>
+              <td>{row.branchName}</td>
+              <td>{row.userId}</td>
+              <td>{row.date}</td>
+              <td>{row.inTime}</td>
+              <td>{row.outTime}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+
+    {/* Pagination Controls */}
+    {isDataFetched && (
+      <div className="pagination">
+        {currentPage > 1 && (
+          <button onClick={() => changePage(currentPage - 1)}>{"<< "}Previous</button>
+        )}
+
+        {[...Array(totalPages).keys()].map((page) => {
+          if (
+            page + 1 === 1 || // Always show first page
+            page + 1 === totalPages || // Always show last page
+            Math.abs(page + 1 - currentPage) <= 2 // Show nearby pages
+          ) {
+            return (
+              <button
+                key={page}
+                onClick={() => changePage(page + 1)}
+                className={currentPage === page + 1 ? "active" : ""}
+              >
+                {page + 1}
+              </button>
+            );
+          } else if (
+            (page === 1 && currentPage > 4) ||
+            (page === totalPages - 2 && currentPage < totalPages - 3)
+          ) {
+            return <span key={page}>...</span>;
+          }
+          return null;
+        })}
+
+        {currentPage < totalPages && (
+          <button onClick={() => changePage(currentPage + 1)}>Next{" >>"}</button>
+        )}
       </div>
-      
+    )}
+  </div>
+</div>
+
+      </div>
+  
       {/* Modal */}
       {isModalOpen && (
         <div
@@ -459,81 +534,15 @@ const handleGetData = async () => {
                       OK
                     </button>
                   </div>
-                )}                
+                )}
               </div>
             </div>
           </div>
         </div>
       )}
-      {/* Hidden Table (Appears After Closing Modal) */}
-      {showTable && (
-        <div className="custom-report-search-container">
-        <h2>Preview</h2>
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>SL</th>
-              <th>Branch Name</th>
-              <th>User ID</th>
-              <th>Date</th>
-              <th>In Time</th>
-              <th>Out Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentData.map((row, index) => (
-              <tr key={row.sl}>
-                <td>{startIndex + index + 1}</td>
-                <td>{row.branchName}</td>
-                <td>{row.userId}</td>
-                <td>{row.date}</td>
-                <td>{row.inTime}</td>
-                <td>{row.outTime}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-  
-        {/* Pagination Controls */}
-        <div className="pagination">
-          {currentPage > 1 && (
-            <button onClick={() => changePage(currentPage - 1)}>{"<< "}Previous</button>
-          )}
-  
-          {[...Array(totalPages).keys()].map((page) => {
-            if (
-              page + 1 === 1 || // Always show first page
-              page + 1 === totalPages || // Always show last page
-              Math.abs(page + 1 - currentPage) <= 2 // Show nearby pages
-            ) {
-              return (
-                <button
-                  key={page}
-                  onClick={() => changePage(page + 1)}
-                  className={currentPage === page + 1 ? "active" : ""}
-                >
-                  {page + 1}
-                </button>
-              );
-            } else if (
-              (page === 1 && currentPage > 4) ||
-              (page === totalPages - 2 && currentPage < totalPages - 3)
-            ) {
-              return <span key={page}>...</span>;
-            }
-            return null;
-          })}
-  
-          {currentPage < totalPages && (
-            <button onClick={() => changePage(currentPage + 1)}>Next{" >>"}</button>
-          )}
-        </div>
-      </div>
-      )}
-
     </div>
   );
-
+  
 
 };
 

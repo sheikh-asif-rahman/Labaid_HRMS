@@ -13,6 +13,8 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx"; // Import the Prot
 import ChangePasswordPage from "./Page/ChangePasswordPage.jsx";
 import RulesPermissionPage from "./Page/RulesPermissionPage.jsx";
 import EmployeePage from "./Page/EmployeePage.jsx";
+import DepartmentCreatePage from "./Page/DepartmentCreatePage.jsx";
+import DesignationCreatePage from "./Page/DesignationCreatePage.jsx";
 // Define routes
 const router = createBrowserRouter([
   {
@@ -50,6 +52,14 @@ const router = createBrowserRouter([
   {
     path: `/changepasswordpage`,
     element: <ProtectedRoute element={<ChangePasswordPage />}/>, // Protect this route for Admin only
+  },
+  {
+    path: `/departmentcreatepage`,
+    element: <ProtectedRoute element={<DepartmentCreatePage />}/>, // Protect this route for Admin only
+  },
+  {
+    path: `/designationcreatepage`,
+    element: <ProtectedRoute element={<DesignationCreatePage />}/>, // Protect this route for Admin only
   },
 ]);
 
