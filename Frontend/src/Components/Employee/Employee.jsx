@@ -12,32 +12,32 @@ const Employee = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const currentUserId = localStorage.getItem("userId");
+
   //================================================================
   const [designationIds, setDesignationIds] = useState([]);
   const [designationNames, setDesignationNames] = useState([]);
   const [designationOrders, setDesignationOrders] = useState([]);
   const [selectedDesignation, setSelectedDesignation] = useState("");
-  
 
   const fetchDesignations = (departmentId) => {
     // Reset designation arrays to remove previous data
     setDesignationIds([]);
     setDesignationNames([]);
     setDesignationOrders([]);
-  
-    fetch(`http://localhost:3000/api/getdesignationlist?DepartmentId=${departmentId}`)
+
+    fetch(
+      `http://localhost:3000/api/getdesignationlist?DepartmentId=${departmentId}`
+    )
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setDesignationIds(data.map(des => des.Id));
-          setDesignationNames(data.map(des => des.DesignationName));
-          setDesignationOrders(data.map(des => des.DesignationOrder));
+          setDesignationIds(data.map((des) => des.Id));
+          setDesignationNames(data.map((des) => des.DesignationName));
+          setDesignationOrders(data.map((des) => des.DesignationOrder));
         }
       })
       .catch((error) => console.error("Error fetching designations:", error));
   };
-  
-  
 
   //================================================================
   const [departmentIds, setDepartmentIds] = useState([]);
@@ -49,15 +49,14 @@ const Employee = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched Departments:", data);
-  
+
         if (Array.isArray(data) && data.length > 0) {
-          // Extract Id and DepartmentName correctly
-          const ids = data.map((dept) => dept.Id); // Capital "I"
-          const names = data.map((dept) => dept.DepartmentName); // Capital "D"
-  
+          const ids = data.map((dept) => dept.Id);
+          const names = data.map((dept) => dept.DepartmentName);
+
           console.log("Department IDs:", ids);
           console.log("Department Names:", names);
-  
+
           setDepartmentIds(ids);
           setDepartmentNames(names);
         } else {
@@ -66,50 +65,71 @@ const Employee = () => {
       })
       .catch((error) => console.error("Error fetching departments:", error));
   }, []);
+
   const handleDepartmentChange = (event) => {
     const departmentId = event.target.value;
-    
     if (departmentId) {
       fetchDesignations(departmentId); // Fetch new designations for the selected department
     } else {
-      // If no department is selected, clear designation data
       setDesignationIds([]);
       setDesignationNames([]);
       setDesignationOrders([]);
     }
   };
-  
-  
-  
-  //=======================================================
 
+  //=======================================================
   const [showBranchModal, setShowBranchModal] = useState(false);
   const [selectedBranches, setSelectedBranches] = useState([]);
   const [permission, setPermission] = useState("user");
 
-  const [branches, setBranches] = useState([
-    { id: 1, name: "Branch 1" },
-    { id: 2, name: "Branch 2" },
-    { id: 3, name: "Branch 3" },
-  ]);
+  const [branches, setBranches] = useState([]);
 
+  const fetchBranches = () => {
+    axios
+      .get("http://localhost:3000/api/locations")
+      .then((response) => {
+        const branchData = response.data;
+        const branchIds = branchData.map((branch) => branch.id);
+        const branchNames = branchData.map((branch) => branch.name);
+        setBranches(branchData); // Set complete branch data (id and name)
+      })
+      .catch((error) => console.error("Error fetching branches:", error));
+  };
+
+  useEffect(() => {
+    fetchBranches(); // Call fetchBranches on component mount
+  }, []);
 
   const toggleBranchModal = () => {
     setShowBranchModal(!showBranchModal);
   };
-  
+
   const handleBranchCheckboxChange = (e) => {
     const { value, checked, dataset } = e.target;
     if (checked) {
-      setSelectedBranches([...selectedBranches, { id: value, name: dataset.name }]);
+      setSelectedBranches([
+        ...selectedBranches,
+        { id: value, name: dataset.name },
+      ]);
     } else {
       setSelectedBranches(selectedBranches.filter((b) => b.id !== value));
     }
   };
-  
+
   const handleOkBranches = () => {
     toggleBranchModal();
   };
+  const handleCheckAll = () => {
+    // Select all branches
+    const allBranches = branches.map((branch) => ({ id: branch.id, name: branch.name }));
+    setSelectedBranches(allBranches);
+  };
+  
+  const handleReset = () => {
+    // Reset selection
+    setSelectedBranches([]);
+  };
+  
 
   //=======================================================
 
@@ -124,12 +144,10 @@ const Employee = () => {
     const currentMonth = today.getMonth(); // Get the current month (0-based)
     const todayDate = today.getDate(); // Get today's day number
 
-    // Check if the date is in the current month and if it's today's date
     if (date.getMonth() === currentMonth && date.getDate() === todayDate) {
       return "today"; // Add a specific class for today's date
     }
 
-    // Apply other date styles based on the dates
     if (leaveDates.includes(day)) {
       return "leave";
     } else if (presentDates.includes(day)) {
@@ -228,11 +246,18 @@ const Employee = () => {
 
       {/* Main content */}
       <div className="custom-employee-container">
-      <div className="custom-employee-search-container">
+        <div className="custom-employee-search-container">
           <label htmlFor="employee-search">Search Employee ID:</label>
           <div className="custom-employee-search-box-wrapper">
-            <input id="employee-search" type="number" placeholder="Enter Employee ID" />
-            <button className="custom-employee-search-button" onClick={handleSearch}>
+            <input
+              id="employee-search"
+              type="number"
+              placeholder="Enter Employee ID"
+            />
+            <button
+              className="custom-employee-search-button"
+              onClick={handleSearch}
+            >
               <FaSearch />
             </button>
             <button className="custom-employee-save-button">Save</button>
@@ -264,31 +289,36 @@ const Employee = () => {
 
           <div className="custom-employee-form-row">
             <div className="custom-employee-form-group">
-            <label htmlFor="designation">Designation:</label>
-  <select
-    id="designation"
-    value={selectedDesignation}
-    onChange={(e) => setSelectedDesignation(e.target.value)}
-  >
-    <option value="">Select Designation</option>
-    {designationNames.map((name, index) => (
-      <option key={designationIds[index]} value={designationIds[index]}>
-        {name}
-      </option>
-    ))}
-  </select>
+              <label htmlFor="designation">Designation:</label>
+              <select
+                id="designation"
+                value={selectedDesignation}
+                onChange={(e) => setSelectedDesignation(e.target.value)}
+              >
+                <option value="">Select Designation</option>
+                {designationNames.map((name, index) => (
+                  <option
+                    key={designationIds[index]}
+                    value={designationIds[index]}
+                  >
+                    {name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="custom-employee-form-group">
-            <label htmlFor="department">Department:</label>
-            <select onChange={handleDepartmentChange}>
-  <option value="">Select Department</option>
-  {departmentNames.map((name, index) => (
-    <option key={departmentIds[index]} value={departmentIds[index]}>
-      {name}
-    </option>
-  ))}
-</select>
-
+              <label htmlFor="department">Department:</label>
+              <select onChange={handleDepartmentChange}>
+                <option value="">Select Department</option>
+                {departmentNames.map((name, index) => (
+                  <option
+                    key={departmentIds[index]}
+                    value={departmentIds[index]}
+                  >
+                    {name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -312,31 +342,37 @@ const Employee = () => {
           </div>
 
           <div className="custom-employee-form-row">
-          {permission === "admin" ? (
-            <div className="custom-employee-form-group">
-            <label htmlFor="date-of-resign">Branch</label>
-            <button className="btn btn-primary" onClick={toggleBranchModal}>
-        Select Branch
-      </button>
-          </div>
-    ) : (
-      <div className="custom-employee-form-group">
-        <label htmlFor="branch">Branch:</label>
-        <select id="branch">
-          <option value="">Select Branch</option>
-          {branches.map((branch) => (
-            <option key={branch.id} value={branch.id}>{branch.name}</option>
-          ))}
-        </select>
-      </div>
-    )}
-
-{showBranchModal && (
+            {/* Branch Selection */}
+            {permission === "admin" ? (
+              <div className="custom-employee-form-group">
+                <label htmlFor="branch">Branch</label>
+                <button className="btn btn-primary" onClick={toggleBranchModal}>
+                  Select Branch
+                </button>
+              </div>
+            ) : (
+              <div className="custom-employee-form-group">
+                <label htmlFor="branch">Branch:</label>
+                <select id="branch">
+                  <option value="">Select Branch</option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            {showBranchModal && (
   <div className="custom-employee-modal fade show" style={{ display: "block" }}>
     <div className="custom-employee-modal-dialog modal-lg">
       <div className="custom-employee-modal-content">
         <div className="custom-employee-modal-header">
           <h5 className="custom-employee-modal-title">Available Branches</h5>
+          <div className="modal-header-buttons">
+            <button className="btn btn" onClick={handleCheckAll}>Check All</button>
+            <button className="btn btn" onClick={handleReset}>Reset</button>
+          </div>
         </div>
         <div className="custom-employee-modal-body">
           <div className="custom-employee-container-fluid">
@@ -366,6 +402,7 @@ const Employee = () => {
     </div>
   </div>
 )}
+
 
             <div className="custom-employee-form-group">
               <label htmlFor="phone">Phone:</label>
@@ -467,26 +504,32 @@ const Employee = () => {
                 <option value="inactive">Inactive</option>
               </select>
             </div>
-            
           </div>
           <div className="custom-employee-form-row">
-          <div className="custom-employee-form-group">
+            <div className="custom-employee-form-group">
               <label htmlFor="password">Password:</label>
-              <input id="password" type="password" placeholder="Enter Password" />
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter Password"
+              />
             </div>
             <div className="custom-employee-form-group">
-      <label htmlFor="permission">Permission:</label>
-      <select id="permission" value={permission} onChange={(e) => setPermission(e.target.value)}>
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
-    </div>
-            
+              <label htmlFor="permission">Permission:</label>
+              <select
+                id="permission"
+                value={permission}
+                onChange={(e) => setPermission(e.target.value)}
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
           </div>
-          
         </div>
       </div>
-      <div className="custom-employee-container-calendar">
+      {/* just remove hidden to show */}
+      <div hidden="true" className="custom-employee-container-calendar">
         {/* Left Column for Calendar */}
         <div className="custom-employee-container-calendar-left">
           <Calendar

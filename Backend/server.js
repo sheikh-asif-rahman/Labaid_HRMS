@@ -13,8 +13,8 @@ const loginUser = require('./routes/LoginRoute');
 const OverViewOneRoute = require('./routes/OverViewOneRoute');
 const changeThePassword = require('./routes/ChangePasswordRoute');
 const searchEmployee = require('./routes/EmployeeSearchRoute');
-const getdepartmentlist  = require('./routes/DepartmentRoute');
-const getdesignationlist  = require('./routes/DesignationRoute');
+const departmentCreateRoute = require('./routes/DepartmentCreateRoute');
+const loadDepartments = require('./routes/LoadDepartmentRoute');
 
 
 
@@ -46,8 +46,10 @@ app.use('/api', reportLocationRoutes);
 app.use('/api', OverViewOneRoute);
 app.use('/api', changeThePassword);
 app.use('/api', searchEmployee);
-app.use('/api', getdepartmentlist);
-app.use('/api', getdesignationlist);
+app.use('/api', departmentCreateRoute);
+app.use('/api', loadDepartments);
+
+
 
 
 

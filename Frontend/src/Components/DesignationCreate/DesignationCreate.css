@@ -1,219 +1,626 @@
 /* Main container styling */
 .custom-designation-create-container {
-    padding: 30px;
-    font-family: Arial, sans-serif;
-    background-color: #ebebeb;  
-    border-radius: 8px;
-    max-width: 800px;
-    margin: 8% auto;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+  background-color: #ebebeb;  
+  border-radius: 8px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+/* Apply the same top margin to both columns */
+.custom-col-md-4 {
+  width: 33.33%; /* 4 columns out of 12 in the grid */
+  margin-top: 5%; /* Adjust as needed */
+}
+
+.custom-col-md-8 {
+  width: 66.66%; /* 8 columns out of 12 in the grid */
+  margin-top: 5%; /* Adjust as needed */
+}
+
+/* For responsiveness if needed */
+@media (max-width: 767px) {
+  .custom-col-md-4,
+  .custom-col-md-8 {
+    width: 100%; /* Make the columns stack on smaller screens */
+    margin-top: 15%; /* Optionally remove top margin for smaller screens */
   }
-  
-  /* designation create container */
-  .designation-create-container {
-    position: relative;
-    min-height: 100vh;
-    background-color: #adceff;
-    overflow: hidden;
-    padding: 30px;
+}
+
+
+
+/* designation create container */
+.designation-create-container {
+  position: relative;
+  min-height: 100vh;
+  background-color: #adceff;
+  overflow: hidden;
+  padding: 30px;
+}
+
+/* Left Table Styling */
+.custom-designation-create-left-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+/* Remove all table borders for left table */
+.custom-designation-create-left-table th,
+.custom-designation-create-left-table td {
+  padding: 12px;
+  text-align: left;
+  border: none; /* Removes borders */
+}
+
+/* Left Table Header */
+.custom-designation-create-left-table th {
+  background-color: #98c5ff;
+  font-weight: 600;
+}
+
+/* Alternate row styling for left table */
+.custom-designation-create-left-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Hover effect for left table */
+.custom-designation-create-left-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Table Name Column for left table */
+.custom-designation-create-left-table td:nth-child(1) {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 70%;
+  display: block;
+}
+
+/* Adjust column widths for left table */
+.custom-designation-create-left-table th:nth-child(2),
+.custom-designation-create-left-table td:nth-child(2) {
+  width: 20%;
+}
+
+.custom-designation-create-left-table th:nth-child(3),
+.custom-designation-create-left-table td:nth-child(3) {
+  width: 10%;
+}
+
+/* ========================================================== */
+
+/* Right Table Styling */
+.custom-designation-create-right-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+/* Remove all table borders for right table */
+.custom-designation-create-right-table th,
+.custom-designation-create-right-table td {
+  padding: 12px;
+  text-align: left;
+  border: none; /* Removes borders */
+}
+
+/* Right Table Header */
+.custom-designation-create-right-table th {
+  background-color: #76baff;
+  font-weight: 600;
+}
+
+/* Alternate row styling for right table */
+.custom-designation-create-right-table tr:nth-child(even) {
+  background-color: #f4f4f4;
+}
+
+/* Hover effect for right table */
+.custom-designation-create-right-table tr:hover {
+  background-color: #e8f0ff;
+}
+
+/* SL Column (First column in the right table) */
+.custom-designation-create-right-table td:nth-child(1) {
+  width: 10%;
+  text-align: center;
+}
+
+/* designation Name Column for right table */
+.custom-designation-create-right-table td:nth-child(2) {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 50%;
+}
+
+/* Status Column for right table */
+.custom-designation-create-right-table td:nth-child(3) {
+  width: 20%;
+}
+
+/* Action Column for right table */
+.custom-designation-create-right-table td:nth-child(4) {
+  width: 20%;
+  text-align: center;
+}
+
+
+/* Button container styling */
+.custom-designation-create-buttons {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  margin-top: 10px;
+}
+
+ /* Custom bubbles inside the designation create */
+ .custom-designation-create-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Styling for bubbles */
+.custom-designation-create-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(1, 99, 204, 0.5);
+  animation: bubbleAnimation 6s infinite;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Define the size and positions of bubbles */
+.custom-designation-create-bubble:nth-child(1) {
+  width: 60px;
+  height: 60px;
+  animation-delay: 0s;
+  top: 10%;
+  left: 15%;
+}
+
+.custom-designation-create-bubble:nth-child(2) {
+  width: 100px;
+  height: 100px;
+  animation-delay: 1s;
+  top: 20%;
+  left: 70%;
+}
+
+.custom-designation-create-bubble:nth-child(3) {
+  width: 80px;
+  height: 80px;
+  animation-delay: 2s;
+  top: 30%;
+  left: 50%;
+}
+
+.custom-designation-create-bubble:nth-child(4) {
+  width: 90px;
+  height: 90px;
+  animation-delay: 3s;
+  top: 50%;
+  left: 20%;
+}
+
+.custom-designation-create-bubble:nth-child(5) {
+  width: 110px;
+  height: 110px;
+  animation-delay: 4s;
+  top: 60%;
+  left: 80%;
+}
+
+.custom-designation-create-bubble:nth-child(6) {
+  width: 70px;
+  height: 70px;
+  animation-delay: 5s;
+  top: 70%;
+  left: 10%;
+}
+
+.custom-designation-create-bubble:nth-child(7) {
+  width: 120px;
+  height: 120px;
+  animation-delay: 0s;
+  top: 80%;
+  left: 30%;
+}
+
+.custom-designation-create-bubble:nth-child(8) {
+  width: 90px;
+  height: 90px;
+  animation-delay: 1s;
+  top: 90%;
+  left: 60%;
+}
+
+.custom-designation-create-bubble:nth-child(9) {
+  width: 80px;
+  height: 80px;
+  animation-delay: 2s;
+  top: 10%;
+  left: 90%;
+}
+
+.custom-designation-create-bubble:nth-child(10) {
+  width: 100px;
+  height: 100px;
+  animation-delay: 3s;
+  top: 40%;
+  left: 10%;
+}
+
+
+
+/* Main container styling */
+.custom-designation-create-container {
+  padding: 30px;
+  font-family: Arial, sans-serif;
+  background-color: #ebebeb;  
+  border-radius: 8px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+/* Apply the same top margin to both columns */
+.custom-col-md-4 {
+  width: 33.33%; /* 4 columns out of 12 in the grid */
+  margin-top: 5%; /* Adjust as needed */
+}
+
+.custom-col-md-8 {
+  width: 66.66%; /* 8 columns out of 12 in the grid */
+  margin-top: 5%; /* Adjust as needed */
+}
+
+/* For responsiveness if needed */
+@media (max-width: 767px) {
+  .custom-col-md-4,
+  .custom-col-md-8 {
+    width: 100%; /* Make the columns stack on smaller screens */
+    margin-top: 15%; /* Optionally remove top margin for smaller screens */
   }
-  
-  /* Custom bubbles inside the designation create */
-  .custom-designation-create-bubbles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-  
-  /* Styling for bubbles */
-  .custom-designation-create-bubble {
-    position: absolute;
-    border-radius: 50%;
-    background-color: rgba(1, 99, 204, 0.5);
-    animation: bubbleAnimation 6s infinite;
-    opacity: 0.8;
-    pointer-events: none;
-  }
-  
-  /* Define the size and positions of bubbles */
-  .custom-designation-create-bubble:nth-child(1) {
-    width: 60px;
-    height: 60px;
-    animation-delay: 0s;
-    top: 10%;
-    left: 15%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(2) {
-    width: 100px;
-    height: 100px;
-    animation-delay: 1s;
-    top: 20%;
-    left: 70%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(3) {
-    width: 80px;
-    height: 80px;
-    animation-delay: 2s;
-    top: 30%;
-    left: 50%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(4) {
-    width: 90px;
-    height: 90px;
-    animation-delay: 3s;
-    top: 50%;
-    left: 20%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(5) {
-    width: 110px;
-    height: 110px;
-    animation-delay: 4s;
-    top: 60%;
-    left: 80%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(6) {
-    width: 70px;
-    height: 70px;
-    animation-delay: 5s;
-    top: 70%;
-    left: 10%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(7) {
-    width: 120px;
-    height: 120px;
-    animation-delay: 0s;
-    top: 80%;
-    left: 30%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(8) {
-    width: 90px;
-    height: 90px;
-    animation-delay: 1s;
-    top: 90%;
-    left: 60%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(9) {
-    width: 80px;
-    height: 80px;
-    animation-delay: 2s;
-    top: 10%;
-    left: 90%;
-  }
-  
-  .custom-designation-create-bubble:nth-child(10) {
-    width: 100px;
-    height: 100px;
-    animation-delay: 3s;
-    top: 40%;
-    left: 10%;
-  }
-  
-  /* Form container inside designation create */
-  .custom-designation-create-form-container {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Label styling */
-  .custom-designation-create-label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-  
-  /* Input and select field styling */
-  .custom-designation-create-input,
-  .custom-designation-create-select {
-    padding: 0.75rem;
-    font-size: 1rem;
-    border: 1px solid #000000;
-    border-radius: 5px;
-    width: 100%;
-    box-sizing: border-box;
-    height: 48px;
-  }
-  
-  /* Button container styling */
-  .custom-designation-create-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  
-  /* Common button styling */
-  .custom-designation-create-btn,
-  .custom-designation-create-reset-btn {
-    padding: 0.75rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    height: 48px;
-    width: 48%;
-    box-sizing: border-box;
-    text-align: center;
-    cursor: pointer;
-  }
-  
-  /* Specific button colors */
-  .custom-designation-create-btn {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .custom-designation-create-reset-btn {
-    background-color: #ffcc00;
-    color: white;
-  }
-  
-  /* Table Styling */
-  .custom-designation-create-table {
-    width: 100%;
-    min-width: 600px;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  
-  .custom-designation-create-table-container {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .custom-designation-create-table th {
-    background-color: #f4f4f4;
-    padding: 12px;
-    text-align: left;
-    font-weight: 600;
-    border-bottom: 2px solid #ddd;
-  }
-  
-  .custom-designation-create-table td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .custom-designation-create-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .custom-designation-create-table tr:hover {
-    background-color: #f1f1f1;
-  }
-  
+}
+
+
+
+/* designation create container */
+.designation-create-container {
+  position: relative;
+  min-height: 100vh;
+  background-color: #adceff;
+  overflow: hidden;
+  padding: 30px;
+}
+
+/* Left Table Styling */
+.custom-designation-create-left-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+/* Remove all table borders for left table */
+.custom-designation-create-left-table th,
+.custom-designation-create-left-table td {
+  padding: 12px;
+  text-align: left;
+  border: none; /* Removes borders */
+}
+
+/* Left Table Header */
+.custom-designation-create-left-table th {
+  background-color: #98c5ff;
+  font-weight: 600;
+}
+
+/* Alternate row styling for left table */
+.custom-designation-create-left-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Hover effect for left table */
+.custom-designation-create-left-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Table Name Column for left table */
+.custom-designation-create-left-table td:nth-child(1) {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 70%;
+  display: block;
+}
+
+/* Adjust column widths for left table */
+.custom-designation-create-left-table th:nth-child(2),
+.custom-designation-create-left-table td:nth-child(2) {
+  width: 20%;
+}
+
+.custom-designation-create-left-table th:nth-child(3),
+.custom-designation-create-left-table td:nth-child(3) {
+  width: 10%;
+}
+
+/* ========================================================== */
+
+/* Right Table Styling */
+.custom-designation-create-right-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+/* Remove all table borders for right table */
+.custom-designation-create-right-table th,
+.custom-designation-create-right-table td {
+  padding: 12px;
+  text-align: left;
+  border: none; /* Removes borders */
+}
+
+/* Right Table Header */
+.custom-designation-create-right-table th {
+  background-color: #76baff;
+  font-weight: 600;
+}
+
+/* Alternate row styling for right table */
+.custom-designation-create-right-table tr:nth-child(even) {
+  background-color: #f4f4f4;
+}
+
+/* Hover effect for right table */
+.custom-designation-create-right-table tr:hover {
+  background-color: #e8f0ff;
+}
+
+/* SL Column (First column in the right table) */
+.custom-designation-create-right-table td:nth-child(1) {
+  width: 10%;
+  text-align: center;
+}
+
+/* designation Name Column for right table */
+.custom-designation-create-right-table td:nth-child(2) {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 50%;
+}
+
+/* Status Column for right table */
+.custom-designation-create-right-table td:nth-child(3) {
+  width: 20%;
+}
+
+/* Action Column for right table */
+.custom-designation-create-right-table td:nth-child(4) {
+  width: 20%;
+  text-align: center;
+}
+
+
+/* Button container styling */
+.custom-designation-create-buttons {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  margin-top: 10px;
+}
+
+ /* Custom bubbles inside the designation create */
+ .custom-designation-create-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Styling for bubbles */
+.custom-designation-create-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(1, 99, 204, 0.5);
+  animation: bubbleAnimation 6s infinite;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Define the size and positions of bubbles */
+.custom-designation-create-bubble:nth-child(1) {
+  width: 60px;
+  height: 60px;
+  animation-delay: 0s;
+  top: 10%;
+  left: 15%;
+}
+
+.custom-designation-create-bubble:nth-child(2) {
+  width: 100px;
+  height: 100px;
+  animation-delay: 1s;
+  top: 20%;
+  left: 70%;
+}
+
+.custom-designation-create-bubble:nth-child(3) {
+  width: 80px;
+  height: 80px;
+  animation-delay: 2s;
+  top: 30%;
+  left: 50%;
+}
+
+.custom-designation-create-bubble:nth-child(4) {
+  width: 90px;
+  height: 90px;
+  animation-delay: 3s;
+  top: 50%;
+  left: 20%;
+}
+
+.custom-designation-create-bubble:nth-child(5) {
+  width: 110px;
+  height: 110px;
+  animation-delay: 4s;
+  top: 60%;
+  left: 80%;
+}
+
+.custom-designation-create-bubble:nth-child(6) {
+  width: 70px;
+  height: 70px;
+  animation-delay: 5s;
+  top: 70%;
+  left: 10%;
+}
+
+.custom-designation-create-bubble:nth-child(7) {
+  width: 120px;
+  height: 120px;
+  animation-delay: 0s;
+  top: 80%;
+  left: 30%;
+}
+
+.custom-designation-create-bubble:nth-child(8) {
+  width: 90px;
+  height: 90px;
+  animation-delay: 1s;
+  top: 90%;
+  left: 60%;
+}
+
+.custom-designation-create-bubble:nth-child(9) {
+  width: 80px;
+  height: 80px;
+  animation-delay: 2s;
+  top: 10%;
+  left: 90%;
+}
+
+.custom-designation-create-bubble:nth-child(10) {
+  width: 100px;
+  height: 100px;
+  animation-delay: 3s;
+  top: 40%;
+  left: 10%;
+}
+
+/* Overlay for modal */
+.custom-designation-create-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1050;
+  display: none; /* Initially hidden */
+}
+
+.custom-designation-create-modal.show {
+  display: block;
+}
+
+/* Modal dialog */
+.custom-designation-create-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 10% auto;
+  z-index: 1051;
+}
+
+/* Modal content */
+.custom-designation-create-modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 5% 15%;
+  margin: 10%;
+}
+
+/* Modal header */
+.custom-designation-create-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.custom-designation-create-modal-header .modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Modal body */
+.custom-designation-create-modal-body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.custom-designation-create-modal-body p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Modal button */
+.custom-designation-create-modal-body .btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.custom-designation-create-modal-body .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.custom-designation-create-modal-body .btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.custom-designation-create-modal-body .btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.custom-designation-create-modal-body .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.custom-designation-create-modal-body .btn-danger:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
+
+.custom-designation-create-modal-body .btn-danger:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Optional: Dark backdrop effect */
+.custom-designation-create-modal {
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
