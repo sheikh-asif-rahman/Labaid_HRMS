@@ -4,11 +4,12 @@ const { sql } = require("../config/dbConfig");
 const loadDepartments = async (req, res) => {
     try {
         const query = `
-            SELECT DepartmentName, Status, BranchId FROM dbo.Department
+            SELECT Id, DepartmentName, Status, BranchId FROM dbo.Department
         `;
         const request = new sql.Request();
         const result = await request.query(query);
         res.json(result.recordset.map((item) => ({ 
+            id:item.Id,
             departmentName: item.DepartmentName, 
             status: item.Status,
             branchid: item.BranchId 

@@ -20,16 +20,35 @@ const DepartmentCreate = () => {
 
   const fetchLocationsAndDepartments = async () => {
     try {
-      const locationsResponse = await fetch(
-        "http://localhost:3000/api/locations"
-      );
-      const locationsData = await locationsResponse.json();
+      const locationsResponse = await fetch("http://localhost:3000/api/locations");
+      const locationsText = await locationsResponse.text(); // Get raw text
+      console.log("Locations raw response:", locationsText); // Log the response to inspect it
+
+      let locationsData;
+      try {
+        locationsData = JSON.parse(locationsText); // Manually parse if valid JSON
+      } catch (error) {
+        console.error("Failed to parse locations data as JSON:", error);
+        setModalMessage("Failed to load locations data.");
+        setIsModalOpen(true);
+        return;
+      }
+
       setLocations(locationsData);
 
-      const departmentsResponse = await fetch(
-        "http://localhost:3000/api/loaddepartments"
-      );
-      const departmentsData = await departmentsResponse.json();
+      const departmentsResponse = await fetch("http://localhost:3000/api/loaddepartments");
+      const departmentsText = await departmentsResponse.text(); // Get raw text
+      console.log("Departments raw response:", departmentsText); // Log the response to inspect it
+
+      let departmentsData;
+      try {
+        departmentsData = JSON.parse(departmentsText); // Manually parse if valid JSON
+      } catch (error) {
+        console.error("Failed to parse departments data as JSON:", error);
+        setModalMessage("Failed to load departments data.");
+        setIsModalOpen(true);
+        return;
+      }
 
       const branchMap = locationsData.reduce((map, location) => {
         map[location.id] = location.name;
@@ -44,6 +63,8 @@ const DepartmentCreate = () => {
       setLoadDepartments(updatedDepartments);
     } catch (error) {
       console.error("Error fetching locations or departments:", error);
+      setModalMessage("Error fetching data.");
+      setIsModalOpen(true);
     }
   };
 
@@ -59,7 +80,6 @@ const DepartmentCreate = () => {
       return;
     }
 
-    // ✅ Find branch object by its ID
     const selectedBranchObj = locations.find((loc) => loc.id === branchName);
     if (!selectedBranchObj) {
       setModalMessage("Invalid branch selected.");
@@ -87,16 +107,16 @@ const DepartmentCreate = () => {
       setIsModalOpen(true); // Ensure modal stays open
       return;
     }
-  
+
     const currentUserId = localStorage.getItem("userId");
     if (!currentUserId) {
       setModalMessage("User ID is missing. Please log in again.");
       setIsModalOpen(true); // Ensure modal stays open
       return;
     }
-  
+
     setShowSave(false); // Temporarily hide save button
-  
+
     try {
       for (let dept of departments) {
         if (!dept.name.trim()) {
@@ -105,30 +125,34 @@ const DepartmentCreate = () => {
         if (!["active", "inactive"].includes(dept.status)) {
           throw new Error("Status is invalid.");
         }
-  
+
         const requestData = {
           DepartmentName: dept.name.trim(),
           BranchId: dept.branchId, // ✅ Use correct branch ID
           Status: dept.status === "active",
           CreatedBy: String(currentUserId),
         };
-  
-        const response = await fetch(
-          "http://localhost:3000/api/department/create",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(requestData),
-          }
-        );
-  
-        const responseData = await response.json();
-  
+
+        const response = await fetch("http://localhost:3000/api/department/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestData),
+        });
+
+        const responseText = await response.text(); // Get raw response text
+        let responseData;
+        try {
+          responseData = JSON.parse(responseText); // Manually parse if valid JSON
+        } catch (error) {
+          console.error("Failed to parse response data as JSON:", error);
+          throw new Error("Failed to save department.");
+        }
+
         if (!response.ok) {
           throw new Error(responseData.message || "Failed to save department.");
         }
       }
-  
+
       // ✅ Refresh departments after saving
       setModalMessage("Saved successfully!");
       setDepartments([]); // Clear saved departments
@@ -137,17 +161,16 @@ const DepartmentCreate = () => {
       setModalMessage(error.message || "An error occurred while saving.");
       setShowSave(true); // Show save button again if error
     }
-  
+
     // Ensure modal stays open after save
     setIsModalOpen(true); // Show modal message
   };
-  // Filter departments based on selected branch
+
   const filteredDepartments =
     selectedBranch === "All"
       ? loadDepartments
       : loadDepartments.filter((dept) => dept.branchName === selectedBranch);
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredDepartments.length / rowsPerPage);
   const paginatedDepartments = filteredDepartments.slice(
     (currentPage - 1) * rowsPerPage,
@@ -155,93 +178,89 @@ const DepartmentCreate = () => {
   );
 
   const handleEdit = (dept) => {
-    // Load the existing department details into the form
-    setDepartmentName(dept.departmentName); // Set department name
+    setDepartmentName(dept.departmentName);
     setStatus(dept.status ? "active" : "inactive");
-    setBranchName(dept.branchName); // Directly use the branch name from the department object
-    setIsEditing(true); // Set edit mode flag
-    setEditingDeptId(dept.id); // Store the department ID being edited
-    setShowSave(false); // Hide save button while in edit mode
+  
+    // Find the branch by name (for displaying the name in the UI)
+    const branch = locations.find((loc) => loc.name === dept.branchName);
+    
+    // Set branch name for display in the frontend and branch id for backend
+    setBranchName(branch ? branch.id : ""); // For internal use, we store the ID
+    setIsEditing(true);
+    setEditingDeptId(dept.id);
+    setShowSave(false);
   };
+  
   const handleUpdate = async (e) => {
-    e.preventDefault(); // Prevent page refresh (form submission)
+    e.preventDefault();
   
     if (departmentName.trim() === "" || branchName === "") {
       setModalMessage("Department Name and Branch are required!");
-      setIsModalOpen(true); // Open modal with message
+      setIsModalOpen(true);
       return;
     }
   
-    // Check for duplicate department
-    const duplicateDept = loadDepartments.find(
-      (dept) =>
-        dept.name === departmentName &&
-        dept.branchName === branchName &&
-        dept.id !== editingDeptId // Exclude the department being edited
-    );
-  
-    if (duplicateDept) {
-      setModalMessage("A department with the same name already exists in this branch.");
-      setIsModalOpen(true); // Open modal with error message
-      return;
-    }
-  
-    // Find the selected branch object
     const selectedBranchObj = locations.find((loc) => loc.id === branchName);
     if (!selectedBranchObj) {
       setModalMessage("Invalid branch selected.");
-      setIsModalOpen(true); // Open modal with error message
+      setIsModalOpen(true);
       return;
     }
   
-    // Prepare the updated department object
     const updatedDepartment = {
-      name: departmentName,
-      status,
-      branchId: selectedBranchObj.id, // Store ID for API request
-      branchName: selectedBranchObj.name, // Store name for UI display
+      Id: editingDeptId, // Use the id of the department being updated
+      DepartmentName: departmentName,
+      BranchId: selectedBranchObj.id,
+      Status: status === "active" ? 1 : 0, // Use 1 for active, 0 for inactive
+      UpdatedBy: localStorage.getItem("userId") || "Admin",
     };
   
-    // Send the updated department data to the server
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/department/update",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedDepartment),
-        }
-      );
+      const response = await fetch("http://localhost:3000/api/department/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedDepartment),
+      });
   
-      const responseData = await response.json();
+      // Check if the response is OK
       if (!response.ok) {
-        throw new Error(responseData.message || "Failed to update department.");
+        throw new Error("Failed to update department. Server responded with an error.");
       }
   
-      // Show success message in modal
-      setModalMessage("Department updated successfully!");
-      
-      // Update the department list to reflect the changes
-      fetchLocationsAndDepartments();
+      const responseText = await response.text(); // Get raw response text
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText); // Manually parse if valid JSON
+      } catch (error) {
+        console.error("Failed to parse response data as JSON:", error);
+        responseData = { message: responseText }; // Fallback to raw response if not JSON
+      }
   
-      // Clear the form
+      console.log('API response:', responseData); // Log the response to debug
+  
+      // If the server returns a message, display it
+      setModalMessage(responseData.message || "Department updated successfully!");
+      setIsModalOpen(true); // Show modal with success message
+  
+      // Reset form and close modal
       setDepartmentName("");
       setStatus("active");
       setBranchName("");
-      setIsEditing(false); // Exit edit mode
+      setIsEditing(false); // Reset edit mode
+  
+      // Fetch updated department list and locations
+      fetchLocationsAndDepartments(); // Refresh the department list
   
     } catch (error) {
+      console.error('Error during update:', error); // Log error for debugging
       setModalMessage(error.message || "An error occurred while updating.");
+      setIsModalOpen(true); // Show modal with error message
     }
-  
-    // The modal will stay open after the update action, for the user to see the success/error message
-    setIsModalOpen(true);
   };
   
   
   
   
-
   const handleDelete = (index) => {
     setDepartments(departments.filter((_, i) => i !== index));
   };
@@ -249,6 +268,7 @@ const DepartmentCreate = () => {
   const handleModalClose = () => {
     setIsModalOpen(false); // Close modal only when the user clicks "OK"
   };
+
   
   return (
     <div className="department-create-container">
@@ -293,7 +313,7 @@ const DepartmentCreate = () => {
                     <input
                       type="text"
                       className="form-control"
-                      value={branchName} // Display branch name (as text)
+                      value={branchName ? locations.find(loc => loc.id === branchName)?.name : ''} // Display branch name (as text)
                       disabled
                     />
                   </div>

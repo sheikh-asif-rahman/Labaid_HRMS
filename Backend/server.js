@@ -15,6 +15,7 @@ const changeThePassword = require('./routes/ChangePasswordRoute');
 const searchEmployee = require('./routes/EmployeeSearchRoute');
 const departmentCreateRoute = require('./routes/DepartmentCreateRoute');
 const loadDepartments = require('./routes/LoadDepartmentRoute');
+const departmentupdate = require('./routes/DepartmentUpdateRoute');
 
 
 
@@ -48,6 +49,8 @@ app.use('/api', changeThePassword);
 app.use('/api', searchEmployee);
 app.use('/api', departmentCreateRoute);
 app.use('/api', loadDepartments);
+app.use('/api', departmentupdate);
+
 
 
 

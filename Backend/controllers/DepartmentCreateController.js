@@ -9,6 +9,24 @@ const departmentCreate = async (req, res) => {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
+        // Check if the department name already exists in the same branch
+        const checkQuery = `
+            SELECT COUNT(*) AS count
+            FROM dbo.Department
+            WHERE DepartmentName = @DepartmentName AND BranchId = @BranchId
+        `;
+        
+        const checkRequest = new sql.Request();
+        checkRequest.input("DepartmentName", sql.NVarChar, DepartmentName);
+        checkRequest.input("BranchId", sql.NVarChar, BranchId);
+
+        const checkResult = await checkRequest.query(checkQuery);
+
+        if (checkResult.recordset[0].count > 0) {
+            return res.status(400).json({ message: "Department name already exists under the same branch." });
+        }
+
+        // Proceed with the insert if the department name is unique within the branch
         const query = `
             INSERT INTO dbo.Department (DepartmentName, BranchId, Status, CreatedBy, CreatedDate)
             OUTPUT INSERTED.*
