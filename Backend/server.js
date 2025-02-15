@@ -16,6 +16,7 @@ const searchEmployee = require('./routes/EmployeeSearchRoute');
 const departmentCreateRoute = require('./routes/DepartmentCreateRoute');
 const loadDepartments = require('./routes/LoadDepartmentRoute');
 const departmentupdate = require('./routes/DepartmentUpdateRoute');
+const loadDesignation = require('./routes/LoadDesignationRoute');
 
 
 
@@ -50,6 +51,8 @@ app.use('/api', searchEmployee);
 app.use('/api', departmentCreateRoute);
 app.use('/api', loadDepartments);
 app.use('/api', departmentupdate);
+app.use('/api', loadDesignation);
+
 
 
 

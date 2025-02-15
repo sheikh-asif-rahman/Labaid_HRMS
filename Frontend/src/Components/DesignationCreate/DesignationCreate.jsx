@@ -1,30 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './DesignationCreate.css';
 
 const DesignationCreate = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [designationName, setDesignationName] = useState("");
   const [status, setStatus] = useState("active");
-  const [selectedDepartment, setSelectedDepartment] = useState(""); // State for selected department in left container
-  const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState(""); // State for selected department in right container
-  const [designations, setDesignations] = useState([]);
-  const [showSave, setShowSave] = useState(false);
-  const [showAdd, setShowAdd] = useState(true);
-  const [showUpdate, setShowUpdate] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedBranchLeft, setSelectedBranchLeft] = useState(""); // Left side branch
+  const [selectedBranchRight, setSelectedBranchRight] = useState(""); // Right side branch
+  const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState(""); 
+  const [designations, setDesignations] = useState([]); // Store designation data here
+  const [branches, setBranches] = useState([]); 
+  const [departments, setDepartments] = useState([]); 
+  const [leftTableData, setLeftTableData] = useState([]); // Store left table data
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const rowsPerPage = 10; // Rows per page for pagination
 
-  const [departments] = useState([
-    { id: 1, name: "Human Resources" },
-    { id: 2, name: "Engineering" },
-    { id: 3, name: "Sales" },
-    { id: 4, name: "Marketing" }
-  ]);
+  const fetchBranches = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/locations");
+      const data = await response.json();
+      setBranches(data); 
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+    }
+  };
+    // Fetch designation data from the API
+    const fetchDesignations = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/loaddesignation");
+        const data = await response.json();
+        setDesignations(data); // Set all designations data for right side table
+      } catch (error) {
+        console.error("Error fetching designations:", error);
+      }
+    };
+    const fetchDepartments = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/loaddepartments");
+        const data = await response.json();
+        console.log("Fetched departments:", data);  // Add logging to check data
+        setDepartments(data); // Set all departments
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+    
+    useEffect(() => {
+      fetchBranches(); // Fetch branches when the component mounts
+      fetchDesignations(); // Fetch designations when the component mounts
+      fetchDepartments(); // Fetch all departments regardless of branch selection
+    }, []); // Only run on component mount
+    
+// Left side branch effect - when left branch changes
+useEffect(() => {
+  if (selectedBranchLeft) {
+    const filteredDepartments = departments.filter(
+      (department) => department.branchid === selectedBranchLeft
+    );
+    setDepartments(filteredDepartments); // Filter departments for the left side branch
+  } else {
+    fetchDepartments(); // If no branch is selected, fetch all departments
+  }
+}, [selectedBranchLeft]); // Re-run when selectedBranchLeft changes
 
-  const [dummyDesignations] = useState([
-    { name: "Manager", status: "active", department: "Engineering" },
-    { name: "Developer", status: "inactive", department: "Engineering" },
-    { name: "Analyst", status: "active", department: "Sales" }
-  ]);
+// Right side branch effect - when right branch changes
+useEffect(() => {
+  if (selectedBranchRight) {
+    const filteredDepartments = departments.filter(
+      (department) => department.branchid === selectedBranchRight
+    );
+    setDepartments(filteredDepartments); // Filter departments for the right side branch
+  } else {
+    fetchDepartments(); // If no branch is selected, fetch all departments
+  }
+}, [selectedBranchRight]); // Re-run when selectedBranchRight changes
 
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -32,58 +82,68 @@ const DesignationCreate = () => {
 
   const handleAdd = (e) => {
     e.preventDefault();
-    if (designationName.trim() === "" || !selectedDepartment) return;
+    if (designationName.trim() === "" || !selectedDepartment || !selectedBranchLeft) return;
 
-    setDesignations([...designations, { name: designationName, status, department: selectedDepartment }]);
+    // Add the new designation to left table data
+    const newDesignation = {
+      name: designationName,
+      status,
+      department: selectedDepartment,
+      branch: selectedBranchLeft,
+    };
+
+    setLeftTableData([...leftTableData, newDesignation]); // Add new data to the left table
     setDesignationName("");
     setStatus("active");
-    setSelectedDepartment(""); // Clear department after adding
-
-    setShowSave(true); // Show Save button after adding an item
+    setSelectedDepartment("");
+    setSelectedBranchLeft(""); // Clear selected branch after adding
   };
 
   const handleEdit = (dept) => {
     setDesignationName(dept.name);
     setStatus(dept.status);
-    setSelectedDepartment(dept.department); // Set department when editing
-
-    setShowSave(false); // Hide Save button when editing
-    setShowAdd(false); // Hide Add button
-    setShowUpdate(true); // Show Update button
+    setSelectedDepartment(dept.department);
+    setSelectedBranchLeft(dept.branch); 
   };
 
   const handleDelete = (index) => {
-    const updatedDesignations = designations.filter((_, i) => i !== index);
-    setDesignations(updatedDesignations);
+    const updatedData = [...leftTableData];
+    updatedData.splice(index, 1);
+    setLeftTableData(updatedData);
   };
 
-  // Handle Save button click
-  const handleSave = () => {
-    setModalMessage("Designation saved successfully!");
-    setIsModalOpen(true);
-  };
+  // Right table filtering logic (showing all when no filter is applied)
+  const filteredDesignations = designations
+    .map((designation) => {
+      // Only find the department and branch if the data is available
+      const department = departments.length > 0 ? departments.find((dept) => dept.id === designation.departmentId) : null;
+      const branch = branches.length > 0 ? branches.find((branch) => branch.id === designation.branchId) : null;
 
-  // Handle Update button click
-  const handleUpdate = () => {
-    setModalMessage("Designation updated successfully!");
-    setIsModalOpen(true);
-  };
+      return {
+        ...designation,
+        departmentName: department ? department.departmentName : "Unknown",
+        branchName: branch ? branch.name : "Unknown",
+      };
+    })
+    .filter((designation) => {
+      // Apply branch filter only if selectedBranchRight is set, otherwise show all
+      const matchesBranch = !selectedBranchRight || designation.branchId === selectedBranchRight;
+      const matchesDepartment = !selectedDepartmentFilter || designation.departmentId === selectedDepartmentFilter;
+      return matchesBranch && matchesDepartment;
+    });
+
+  // If no branch is selected, display all designations initially
+  const allDesignations = selectedBranchRight === "" ? designations : filteredDesignations;
+
+  // Paginate the data
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = allDesignations.slice(indexOfFirstRow, indexOfLastRow);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="designation-create-container">
-      <div className="custom-designation-create-bubbles">
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-        <div className="custom-designation-create-bubble"></div>
-      </div>
-
       <div className="row">
         {/* Left Form & Table */}
         <div className="custom-col-md-4">
@@ -113,7 +173,29 @@ const DesignationCreate = () => {
                     </select>
                   </div>
 
-                  {/* Department Dropdown in the left container */}
+                  {/* Left Side Branch Dropdown */}
+                  <div className="mb-3">
+                    <label className="form-label">Select Branch</label>
+                    <select
+                      className="form-control"
+                      value={selectedBranchLeft}
+                      onChange={(e) => setSelectedBranchLeft(e.target.value)}
+                      required
+                    >
+                      <option value="">Select Branch</option>
+                      {branches.length > 0 ? (
+                        branches.map((branch) => (
+                          <option key={branch.id} value={branch.id}>
+                            {branch.name}
+                          </option>
+                        ))
+                      ) : (
+                        <option>No branches available</option>
+                      )}
+                    </select>
+                  </div>
+
+                  {/* Department Dropdown */}
                   <div className="mb-3">
                     <label className="form-label">Department</label>
                     <select
@@ -121,62 +203,47 @@ const DesignationCreate = () => {
                       value={selectedDepartment}
                       onChange={(e) => setSelectedDepartment(e.target.value)}
                       required
+                      disabled={!selectedBranchLeft} // Disable if no branch is selected
                     >
                       <option value="">Select Department</option>
-                      {departments.map((dept) => (
-                        <option key={dept.id} value={dept.name}>
-                          {dept.name}
-                        </option>
-                      ))}
+                      {departments.length > 0 ? (
+                        departments.map((dept, index) => (
+                          <option key={index} value={dept.departmentName}>
+                            {dept.departmentName}
+                          </option>
+                        ))
+                      ) : (
+                        <option>No departments available</option>
+                      )}
                     </select>
                   </div>
 
-                  {/* Buttons Row */}
-                  <div className="custom-designation-create-buttons">
-                    {showAdd && (
-                      <button type="submit" className="btn btn-primary">
-                        Add
-                      </button>
-                    )}
-                    {showSave && (
-                      <button
-                        type="button"
-                        className="btn btn-success"
-                        onClick={handleSave}
-                      >
-                        Save
-                      </button>
-                    )}
-                    {showUpdate && (
-                      <button
-                        type="button"
-                        className="btn btn-warning"
-                        onClick={handleUpdate}
-                      >
-                        Update
-                      </button>
-                    )}
-                  </div>
+                  {/* Add Designation Button */}
+                  <button type="submit" className="btn btn-primary">
+                    Add
+                  </button>
                 </form>
               </div>
 
-              {/* Table for added designations */}
-              {designations.length > 0 && (
+              {/* Left Table for added designations */}
+              {leftTableData.length > 0 && (
                 <table className="custom-designation-create-left-table mt-3">
                   <thead>
                     <tr>
                       <th>Name</th>
                       <th>Status</th>
                       <th>Department</th>
+                      <th>Branch</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {designations.map((dept, index) => (
+                    {leftTableData.map((dept, index) => (
                       <tr key={index}>
                         <td>{dept.name}</td>
                         <td>{dept.status}</td>
                         <td>{dept.department}</td>
+                        <td>{dept.branch}</td>
                         <td>
                           <button
                             className="btn btn-danger"
@@ -195,88 +262,115 @@ const DesignationCreate = () => {
         </div>
 
         {/* Right Table */}
-        <div className="custom-col-md-8">
-          <div className="custom-designation-create-container">
-            <h5>Designation List</h5>
+<div className="custom-col-md-8">
+  <div className="custom-designation-create-container">
+    <h5>Designation List</h5>
 
-            {/* Department Dropdown in the right container */}
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <select
-                className="form-control w-auto"
-                value={selectedDepartmentFilter}
-                onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
+    {/* Right Side Branch Dropdown */}
+    <div className="d-flex justify-content-between align-items-center mb-3">
+      <select
+        className="form-control w-auto"
+        value={selectedBranchRight}
+        onChange={(e) => setSelectedBranchRight(e.target.value)}
+      >
+        <option value="">Select Branch</option>
+        {branches.length > 0 ? (
+          branches.map((branch) => (
+            <option key={branch.id} value={branch.id}>
+              {branch.name}
+            </option>
+          ))
+        ) : (
+          <option>No branches available</option>
+        )}
+      </select>
+    </div>
+
+    {/* Right Table */}
+    <table className="custom-designation-create-right-table">
+      <thead>
+        <tr>
+          <th>Sl</th>
+          <th>Designation</th>
+          <th>Department</th>
+          <th>Status</th>
+          <th>Branch</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredDesignations.length > 0 ? (
+          filteredDesignations.slice(indexOfFirstRow, indexOfLastRow).map((designation, index) => (
+            <tr key={index}>
+              <td>{indexOfFirstRow + index + 1}</td>
+              <td>{designation.designationName}</td>
+              <td>{designation.departmentName}</td>
+              <td>{designation.status ? "Active" : "Inactive"}</td>
+              <td>{designation.branchName}</td>
+              <td>
+                <button
+                  className="btn btn-warning"
+                  onClick={() => handleEdit(designation)}
+                >
+                  Edit
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr><td colSpan="6">No designations found</td></tr>
+        )}
+      </tbody>
+    </table>
+
+    {/* Pagination */}
+    <div className="pagination-container">
+      <nav aria-label="Page navigation example">
+        <ul className="pagination">
+          <li className="page-item">
+            <button
+              className="page-link"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+          </li>
+          {[...Array(Math.ceil(filteredDesignations.length / rowsPerPage))].map((_, pageIndex) => (
+            <li key={pageIndex + 1} className="page-item">
+              <button
+                className="page-link"
+                onClick={() => paginate(pageIndex + 1)}
               >
-                <option value="">Select Department</option>
-                {departments.map((dept) => (
-                  <option key={dept.id} value={dept.name}>
-                    {dept.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                {pageIndex + 1}
+              </button>
+            </li>
+          ))}
+          <li className="page-item">
+            <button
+              className="page-link"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === Math.ceil(filteredDesignations.length / rowsPerPage)}
+            >
+              Next
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
 
-            {/* Table for designation list */}
-            <table className="custom-designation-create-right-table mt-3">
-              <thead>
-                <tr>
-                  <th>SL</th>
-                  <th>Designation Name</th>
-                  <th>Status</th>
-                  <th>Department</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dummyDesignations
-                  .filter((dept) =>
-                    selectedDepartmentFilter
-                      ? dept.department === selectedDepartmentFilter
-                      : true
-                  )
-                  .map((dept, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{dept.name}</td>
-                      <td>{dept.status}</td>
-                      <td>{dept.department}</td>
-                      <td>
-                        <button
-                          className="btn btn-warning"
-                          onClick={() => handleEdit(dept)}
-                        >
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal for save or update confirmation */}
       {isModalOpen && (
-        <div
-          className="custom-designation-create-modal show"
-          style={{
-            display: "block",
-            backdropFilter: "blur(5px)", /* Apply blur effect */
-            backgroundColor: "rgba(0, 0, 0, 0.5)", /* Dark overlay with opacity */
-          }}
-        >
-          <div className="custom-designation-create-modal-dialog modal-dialog-centered">
-            <div className="custom-designation-create-modal-content">
-              <div className="custom-designation-create-modal-header">
-                <h5 className="modal-title">Information</h5>
-              </div>
-              <div className="custom-designation-create-modal-body text-center">
-                <p>{modalMessage}</p>
-                <button className="btn btn-primary" onClick={handleModalClose}>
-                  OK
-                </button>
-              </div>
-            </div>
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={handleModalClose}>
+              &times;
+            </span>
+            <p>Designation saved successfully!</p>
           </div>
         </div>
       )}
