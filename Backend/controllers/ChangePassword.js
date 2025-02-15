@@ -18,7 +18,6 @@ const changePassword = async (req, res) => {
 
   // Ensure that userId is a string
   const trimmedUserId = String(userId).trim();
-
   // Hash the current and new passwords
   const hashedCurrentPassword = hashPassword(currentPassword);
   const hashedNewPassword = hashPassword(newPassword);
