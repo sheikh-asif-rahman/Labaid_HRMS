@@ -9,72 +9,68 @@ const DesignationCreate = () => {
   const [selectedBranchLeft, setSelectedBranchLeft] = useState(""); // Left side branch
   const [selectedBranchRight, setSelectedBranchRight] = useState(""); // Right side branch
   const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState(""); 
-  const [designations, setDesignations] = useState([]); // Store designation data here
-  const [branches, setBranches] = useState([]); 
+  const [designations, setDesignations] = useState([]); // All designations
+  const [branches, setBranches] = useState([]);
+  // Keep full list of departments separately
+  const [allDepartments, setAllDepartments] = useState([]); 
+  // For dropdowns if you want filtering, you can use `departments` state; otherwise, you can use allDepartments directly.
   const [departments, setDepartments] = useState([]); 
-  const [leftTableData, setLeftTableData] = useState([]); // Store left table data
-  const [currentPage, setCurrentPage] = useState(1); // Track the current page
-  const rowsPerPage = 10; // Rows per page for pagination
+  const [leftTableData, setLeftTableData] = useState([]); // Left table data
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
 
+  // Fetch branches
   const fetchBranches = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/locations");
       const data = await response.json();
-      setBranches(data); 
+      setBranches(data);
     } catch (error) {
       console.error("Error fetching branches:", error);
     }
   };
-    // Fetch designation data from the API
-    const fetchDesignations = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/loaddesignation");
-        const data = await response.json();
-        setDesignations(data); // Set all designations data for right side table
-      } catch (error) {
-        console.error("Error fetching designations:", error);
-      }
-    };
-    const fetchDepartments = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/loaddepartments");
-        const data = await response.json();
-        console.log("Fetched departments:", data);  // Add logging to check data
-        setDepartments(data); // Set all departments
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
-    
-    useEffect(() => {
-      fetchBranches(); // Fetch branches when the component mounts
-      fetchDesignations(); // Fetch designations when the component mounts
-      fetchDepartments(); // Fetch all departments regardless of branch selection
-    }, []); // Only run on component mount
-    
-// Left side branch effect - when left branch changes
-useEffect(() => {
-  if (selectedBranchLeft) {
-    const filteredDepartments = departments.filter(
-      (department) => department.branchid === selectedBranchLeft
-    );
-    setDepartments(filteredDepartments); // Filter departments for the left side branch
-  } else {
-    fetchDepartments(); // If no branch is selected, fetch all departments
-  }
-}, [selectedBranchLeft]); // Re-run when selectedBranchLeft changes
 
-// Right side branch effect - when right branch changes
-useEffect(() => {
-  if (selectedBranchRight) {
-    const filteredDepartments = departments.filter(
-      (department) => department.branchid === selectedBranchRight
-    );
-    setDepartments(filteredDepartments); // Filter departments for the right side branch
-  } else {
-    fetchDepartments(); // If no branch is selected, fetch all departments
-  }
-}, [selectedBranchRight]); // Re-run when selectedBranchRight changes
+  // Fetch all departments without filtering
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/loaddepartments");
+      const data = await response.json();
+      console.log("Fetched departments:", data);
+      setAllDepartments(data); 
+      setDepartments(data); // For dropdown use; can be filtered later if needed.
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
+
+  // Fetch designations
+  const fetchDesignations = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/loaddesignation");
+      const data = await response.json();
+      setDesignations(data);
+    } catch (error) {
+      console.error("Error fetching designations:", error);
+    }
+  };
+
+  // On component mount, fetch everything
+  useEffect(() => {
+    fetchBranches();
+    fetchDesignations();
+    fetchDepartments();
+  }, []);
+
+  // (Optional) If you want to filter departments for the left dropdown based on selectedBranchLeft,
+  // you can compute a filtered list without modifying allDepartments:
+  const leftDropdownDepartments = selectedBranchLeft 
+    ? allDepartments.filter(dept => dept.branchid === selectedBranchLeft)
+    : allDepartments;
+
+  // Similarly for right dropdown if needed:
+  const rightDropdownDepartments = selectedBranchRight 
+    ? allDepartments.filter(dept => dept.branchid === selectedBranchRight)
+    : allDepartments;
 
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -83,27 +79,24 @@ useEffect(() => {
   const handleAdd = (e) => {
     e.preventDefault();
     if (designationName.trim() === "" || !selectedDepartment || !selectedBranchLeft) return;
-
-    // Add the new designation to left table data
     const newDesignation = {
       name: designationName,
       status,
       department: selectedDepartment,
       branch: selectedBranchLeft,
     };
-
-    setLeftTableData([...leftTableData, newDesignation]); // Add new data to the left table
+    setLeftTableData([...leftTableData, newDesignation]);
     setDesignationName("");
     setStatus("active");
     setSelectedDepartment("");
-    setSelectedBranchLeft(""); // Clear selected branch after adding
+    setSelectedBranchLeft("");
   };
 
   const handleEdit = (dept) => {
     setDesignationName(dept.name);
     setStatus(dept.status);
     setSelectedDepartment(dept.department);
-    setSelectedBranchLeft(dept.branch); 
+    setSelectedBranchLeft(dept.branch);
   };
 
   const handleDelete = (index) => {
@@ -112,13 +105,16 @@ useEffect(() => {
     setLeftTableData(updatedData);
   };
 
-  // Right table filtering logic (showing all when no filter is applied)
+  // Right table filtering logic:
+  // When mapping, use `allDepartments` for a reliable lookup.
   const filteredDesignations = designations
     .map((designation) => {
-      // Only find the department and branch if the data is available
-      const department = departments.length > 0 ? departments.find((dept) => dept.id === designation.departmentId) : null;
-      const branch = branches.length > 0 ? branches.find((branch) => branch.id === designation.branchId) : null;
-
+      const department = allDepartments.length > 0 
+        ? allDepartments.find((dept) => dept.id === designation.departmentId)
+        : null;
+      const branch = branches.length > 0 
+        ? branches.find((b) => b.id === designation.branchId)
+        : null;
       return {
         ...designation,
         departmentName: department ? department.departmentName : "Unknown",
@@ -126,22 +122,35 @@ useEffect(() => {
       };
     })
     .filter((designation) => {
-      // Apply branch filter only if selectedBranchRight is set, otherwise show all
+      // Apply filters only if they are set.
       const matchesBranch = !selectedBranchRight || designation.branchId === selectedBranchRight;
       const matchesDepartment = !selectedDepartmentFilter || designation.departmentId === selectedDepartmentFilter;
       return matchesBranch && matchesDepartment;
     });
 
-  // If no branch is selected, display all designations initially
-  const allDesignations = selectedBranchRight === "" ? designations : filteredDesignations;
+  // Use filteredDesignations for pagination if a filter is applied,
+  // otherwise show all designations.
+  const allDesignationsForTable = (selectedBranchRight || selectedDepartmentFilter)
+    ? filteredDesignations
+    : designations.map(designation => {
+        const department = allDepartments.length > 0 
+          ? allDepartments.find((dept) => dept.id === designation.departmentId)
+          : null;
+        const branch = branches.length > 0 
+          ? branches.find((b) => b.id === designation.branchId)
+          : null;
+        return {
+          ...designation,
+          departmentName: department ? department.departmentName : "Unknown",
+          branchName: branch ? branch.name : "Unknown",
+        };
+      });
 
-  // Paginate the data
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = allDesignations.slice(indexOfFirstRow, indexOfLastRow);
+  const currentRows = allDesignationsForTable.slice(indexOfFirstRow, indexOfLastRow);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   return (
     <div className="designation-create-container">
       <div className="row">
