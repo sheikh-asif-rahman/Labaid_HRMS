@@ -2,20 +2,36 @@ import React, { useState, useEffect } from "react";
 import "./DesignationCreate.css";
 
 const DesignationCreate = () => {
+  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  // Form states
   const [designationName, setDesignationName] = useState("");
   const [status, setStatus] = useState("active");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedBranchLeft, setSelectedBranchLeft] = useState("");
+
+  // Right table filtering states
   const [selectedBranchRight, setSelectedBranchRight] = useState("");
   const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState("");
+
+  // API data
   const [designations, setDesignations] = useState([]);
   const [branches, setBranches] = useState([]);
   const [allDepartments, setAllDepartments] = useState([]);
   const [departments, setDepartments] = useState([]);
+
+  // Left table data (unsaved new records)
   const [leftTableData, setLeftTableData] = useState([]);
+
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
+
+  // Editing mode state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   // Fetch branches
   const fetchBranches = async () => {
@@ -28,14 +44,14 @@ const DesignationCreate = () => {
     }
   };
 
-  // Fetch all departments without filtering
+  // Fetch all departments
   const fetchDepartments = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/loaddepartments");
       const data = await response.json();
       console.log("Fetched departments:", data);
       setAllDepartments(data);
-      setDepartments(data); // Initially set all departments (before filtering)
+      setDepartments(data);
     } catch (error) {
       console.error("Error fetching departments:", error);
     }
@@ -59,13 +75,13 @@ const DesignationCreate = () => {
     fetchDepartments();
   }, []);
 
-  // Filter departments based on selected branch (Fix for the issue)
+  // Filter departments based on selected branch (for left form)
   useEffect(() => {
     if (selectedBranchLeft) {
-      const filteredDepartments = allDepartments.filter(
+      const filtered = allDepartments.filter(
         (dept) => dept.branchid === selectedBranchLeft
       );
-      setDepartments(filteredDepartments);
+      setDepartments(filtered);
     } else {
       setDepartments(allDepartments);
     }
@@ -74,6 +90,8 @@ const DesignationCreate = () => {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
+
+  // Add new (unsaved) designation to left table
   const handleAdd = (e) => {
     e.preventDefault();
     if (
@@ -93,7 +111,7 @@ const DesignationCreate = () => {
 
     setLeftTableData((prevData) => {
       const updatedData = [...prevData, newDesignation];
-      console.log("Updated Table Data:", updatedData); // Log updated table data
+      console.log("Updated Table Data:", updatedData);
       return updatedData;
     });
 
@@ -104,22 +122,27 @@ const DesignationCreate = () => {
     setSelectedBranchLeft("");
   };
 
+  // Save new (unsaved) designations
   const handleSave = async () => {
     const userId = localStorage.getItem("userId");
     if (!userId) {
-      alert("User not found! Please log in.");
+      setModalMessage("User not found! Please log in.");
+      setIsModalOpen(true);
       return;
     }
-  
+
     if (leftTableData.length === 0) {
-      alert("No data to save.");
+      setModalMessage("No data to save.");
+      setIsModalOpen(true);
       return;
     }
-  
+
     const payload = leftTableData.map((item) => {
       const branch = branches.find((b) => b.name === item.branch);
-      const department = allDepartments.find((dept) => dept.departmentName === item.department);
-  
+      const department = allDepartments.find(
+        (dept) => dept.departmentName === item.department
+      );
+
       return {
         DesignationName: item.name,
         DepartmentId: department ? String(department.id) : null,
@@ -128,40 +151,99 @@ const DesignationCreate = () => {
         CreatedBy: userId,
       };
     });
-  
-    // 🔥 Log the final payload before sending
+
     console.log("🚀 Sending data to API:");
-    console.log(JSON.stringify(payload, null, 2)); // Pretty-print JSON
-  
+    console.log(JSON.stringify(payload, null, 2));
+
     try {
       const response = await fetch("http://localhost:3000/api/designation/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-  
       if (!response.ok) throw new Error("Failed to save designations.");
-  
       const responseData = await response.json();
-      console.log("✅ API Response:", JSON.stringify(responseData, null, 2)); // Log API response
-  
-      alert("Designations saved successfully!");
+      console.log("✅ API Response:", JSON.stringify(responseData, null, 2));
+      setModalMessage("Designations saved successfully!");
       setLeftTableData([]); // Clear table after saving
     } catch (error) {
       console.error("❌ Error saving designations:", error);
-      alert("An error occurred while saving.");
+      setModalMessage("An error occurred while saving. Please try again.");
+    }
+    setIsModalOpen(true);
+  };
+
+  // Update an existing designation when in edit mode
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (
+      designationName.trim() === "" ||
+      !selectedDepartment ||
+      !selectedBranchLeft
+    )
+      return;
+
+    // Find branch and department objects
+    const branch = branches.find((b) => b.id === selectedBranchLeft);
+    const department = allDepartments.find(
+      (dept) => dept.departmentName === selectedDepartment
+    );
+    const userId = localStorage.getItem("userId");
+
+    const payload = {
+      Id: editingId,
+      DesignationName: designationName,
+      DepartmentId: department ? String(department.id) : null,
+      BranchId: branch ? String(branch.id) : null,
+      Status: status === "active" ? 1 : 0,
+      UpdatedBy: userId,
+    };
+
+    console.log("🚀 Updating designation with payload:");
+    console.log(JSON.stringify(payload, null, 2));
+
+    try {
+      const response = await fetch("http://localhost:3000/api/designation/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) throw new Error("Failed to update designation.");
+      const updatedData = await response.json();
+      console.log("Updated designation:", updatedData);
+
+      // After updating, refresh the designations from the server
+      await fetchDesignations();
+
+      // Reset form and exit edit mode
+      setDesignationName("");
+      setStatus("active");
+      setSelectedDepartment("");
+      setSelectedBranchLeft("");
+      setIsEditing(false);
+      setEditingId(null);
+
+      setModalMessage("Designation updated successfully!");
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error updating designation:", error);
+      setModalMessage("An error occurred while updating. Please try again.");
+      setIsModalOpen(true);
     }
   };
-  
-  
 
+  // When user clicks Edit, load the data into the left form,
+  // disable branch and department dropdowns, and switch to edit mode
   const handleEdit = (dept) => {
-    setDesignationName(dept.name);
-    setStatus(dept.status);
-    setSelectedDepartment(dept.department);
-    setSelectedBranchLeft(dept.branch);
+    setDesignationName(dept.designationName || dept.name);
+    setStatus(dept.status ? "active" : "inactive");
+    setSelectedDepartment(dept.departmentName || dept.department);
+    setSelectedBranchLeft(dept.branchId || dept.branch);
+    setIsEditing(true);
+    setEditingId(dept.id);
   };
 
+  // Delete an unsaved designation from the left table
   const handleDelete = (index) => {
     const updatedData = [...leftTableData];
     updatedData.splice(index, 1);
@@ -213,15 +295,22 @@ const DesignationCreate = () => {
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="designation-create-container">
+      {/* Background Bubbles */}
+      <div className="custom-department-create-bubbles">
+        {[...Array(10)].map((_, i) => (
+          <div key={i} className="custom-department-create-bubble"></div>
+        ))}
+      </div>
       <div className="row">
-        {/* Left Form & Table */}
+        {/* Left Form & Unsaved Table */}
         <div className="custom-col-md-5">
           <div className="custom-designation-create-container">
             <div className="custom-designation-create-form">
               <div className="custom-designation-create-form-container">
-                <form onSubmit={handleAdd}>
+                <form onSubmit={isEditing ? handleUpdate : handleAdd}>
                   <div className="mb-3">
                     <label className="form-label">Designation Name</label>
                     <input
@@ -243,7 +332,6 @@ const DesignationCreate = () => {
                       <option value="inactive">Inactive</option>
                     </select>
                   </div>
-
                   {/* Left Side Branch Dropdown */}
                   <div className="mb-3">
                     <label className="form-label">Select Branch</label>
@@ -252,6 +340,7 @@ const DesignationCreate = () => {
                       value={selectedBranchLeft}
                       onChange={(e) => setSelectedBranchLeft(e.target.value)}
                       required
+                      disabled={isEditing} // Disable in edit mode
                     >
                       <option value="">Select Branch</option>
                       {branches.length > 0 ? (
@@ -265,7 +354,6 @@ const DesignationCreate = () => {
                       )}
                     </select>
                   </div>
-
                   {/* Department Dropdown */}
                   <div className="mb-3">
                     <label className="form-label">Department</label>
@@ -274,7 +362,7 @@ const DesignationCreate = () => {
                       value={selectedDepartment}
                       onChange={(e) => setSelectedDepartment(e.target.value)}
                       required
-                      disabled={!selectedBranchLeft} // Disable if no branch is selected
+                      disabled={isEditing || !selectedBranchLeft} // Disable in edit mode
                     >
                       <option value="">Select Department</option>
                       {departments.length > 0 ? (
@@ -288,23 +376,32 @@ const DesignationCreate = () => {
                       )}
                     </select>
                   </div>
-
                   <div className="custom-designation-create-buttons">
-                    {/* Add Designation Button */}
-                    <button type="submit" className="btn btn-primary">
-                      Add
-                    </button>
-                    {leftTableData.length > 0 && (
-                      <button className="btn btn-success" onClick={handleSave}>
-                        Save
+                    {isEditing ? (
+                      <button type="submit" className="btn btn-primary">
+                        Update
                       </button>
+                    ) : (
+                      <>
+                        <button type="submit" className="btn btn-primary">
+                          Add
+                        </button>
+                        {leftTableData.length > 0 && (
+                          <button
+                            type="button"
+                            className="btn btn-success"
+                            onClick={handleSave}
+                          >
+                            Save
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
                 </form>
               </div>
-
-              {/* Left Table for added designations */}
-              {leftTableData.length > 0 && (
+              {/* Show unsaved designations table only if not editing */}
+              {!isEditing && leftTableData.length > 0 && (
                 <table className="custom-designation-create-left-table mt-3">
                   <thead>
                     <tr>
@@ -338,12 +435,10 @@ const DesignationCreate = () => {
             </div>
           </div>
         </div>
-
         {/* Right Table */}
         <div className="custom-col-md-7">
           <div className="custom-designation-create-container">
             <h5>Designation List</h5>
-
             {/* Right Side Branch Dropdown */}
             <div className="d-flex justify-content-between align-items-center mb-3">
               <select
@@ -363,7 +458,6 @@ const DesignationCreate = () => {
                 )}
               </select>
             </div>
-
             {/* Right Table */}
             <table className="custom-designation-create-right-table">
               <thead>
@@ -404,7 +498,6 @@ const DesignationCreate = () => {
                 )}
               </tbody>
             </table>
-
             {/* Pagination */}
             <div className="pagination-container">
               <nav aria-label="Page navigation example">
@@ -419,9 +512,7 @@ const DesignationCreate = () => {
                     </button>
                   </li>
                   {[
-                    ...Array(
-                      Math.ceil(filteredDesignations.length / rowsPerPage)
-                    ),
+                    ...Array(Math.ceil(filteredDesignations.length / rowsPerPage)),
                   ].map((_, pageIndex) => (
                     <li key={pageIndex + 1} className="page-item">
                       <button
@@ -450,15 +541,21 @@ const DesignationCreate = () => {
           </div>
         </div>
       </div>
-
-      {/* Modal for save or update confirmation */}
+      {/* Modal for notifications */}
       {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={handleModalClose}>
-              &times;
-            </span>
-            <p>Designation saved successfully!</p>
+        <div className="custom-designation-create-modal show">
+          <div className="custom-designation-create-modal-dialog">
+            <div className="custom-designation-create-modal-content">
+              <div className="custom-designation-create-modal-header">
+                {/* Optionally add a title */}
+              </div>
+              <div className="custom-designation-create-modal-body">
+                <p>{modalMessage}</p>
+                <button className="btn btn-primary" onClick={handleModalClose}>
+                  OK
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

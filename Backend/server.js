@@ -18,6 +18,7 @@ const loadDepartments = require('./routes/LoadDepartmentRoute');
 const departmentupdate = require('./routes/DepartmentUpdateRoute');
 const loadDesignation = require('./routes/LoadDesignationRoute');
 const designationcreate = require('./routes/DesignationCreateRoute');
+const designationupdate = require('./routes/DesignationUpdateRoute');
 
 
 
@@ -54,6 +55,8 @@ app.use('/api', loadDepartments);
 app.use('/api', departmentupdate);
 app.use('/api', loadDesignation);
 app.use('/api', designationcreate);
+app.use('/api', designationupdate);
+
 
 
 
