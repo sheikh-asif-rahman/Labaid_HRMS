@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./DepartmentCreate.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { BASE_URL } from "/src/constants/constant.jsx";
+
 
 const DepartmentCreate = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +22,7 @@ const DepartmentCreate = () => {
 
   const fetchLocationsAndDepartments = async () => {
     try {
-      const locationsResponse = await fetch("http://localhost:3000/api/locations");
+      const locationsResponse = await fetch(`${BASE_URL}locations`);
       const locationsText = await locationsResponse.text(); // Get raw text
       console.log("Locations raw response:", locationsText); // Log the response to inspect it
 
@@ -36,7 +38,7 @@ const DepartmentCreate = () => {
 
       setLocations(locationsData);
 
-      const departmentsResponse = await fetch("http://localhost:3000/api/loaddepartments");
+      const departmentsResponse = await fetch(`${BASE_URL}loaddepartments`);
       const departmentsText = await departmentsResponse.text(); // Get raw text
       console.log("Departments raw response:", departmentsText); // Log the response to inspect it
 
@@ -133,7 +135,7 @@ const DepartmentCreate = () => {
           CreatedBy: String(currentUserId),
         };
 
-        const response = await fetch("http://localhost:3000/api/department/create", {
+        const response = await fetch(`${BASE_URL}department/create`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestData),
@@ -216,7 +218,7 @@ const DepartmentCreate = () => {
     };
   
     try {
-      const response = await fetch("http://localhost:3000/api/department/update", {
+      const response = await fetch(`${BASE_URL}department/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedDepartment),

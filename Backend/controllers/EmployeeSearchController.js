@@ -2,40 +2,58 @@ const { sql } = require("../config/dbConfig");
 
 const searchEmployee = async (req, res) => {
     try {
-        let { EmployeeId } = req.query;
+        let { userId } = req.query;
 
-        if (!EmployeeId) {
-            return res.status(400).send("EmployeeId is required");
+        if (!userId) {
+            return res.status(400).send("userId is required");
         }
 
-        EmployeeId = EmployeeId.trim();
-        console.log(`🔍 Searching for EmployeeId: ${EmployeeId}`);
+        userId = userId.trim();
+        console.log(`🔍 Searching for userId: ${userId}`);
 
-        // Query to fetch employee details
+        const request = new sql.Request();
+        request.input("userId", sql.NVarChar, userId);
+
+        // First, search in Employee table
         const employeeQuery = `
             SELECT 
                 EmployeeName, EmployeeId, DepartmentId, DesignationId, BranchId, 
-                DateOfJoin, DateOfResign, PersonalContactNumber, OfficalContactNumber, 
+                DateOfJoin, DateOfResign, NID, PersonalContactNumber, OfficalContactNumber, 
                 Email, EmployeeType, Gender, MaritalStatus, BloodGroup, 
-                FatherName, MotherName, PresentAddress, PermanentAddress, Password
+                FatherName, MotherName, PresentAddress, PermanentAddress, Password, 
+                Image, Status
             FROM dbo.Employee 
-            WHERE LTRIM(RTRIM(EmployeeId)) = @EmployeeId
+            WHERE LTRIM(RTRIM(EmployeeId)) = @userId
         `;
 
-        const request = new sql.Request();
-        request.input("EmployeeId", sql.NVarChar, EmployeeId);
         const employeeResult = await request.query(employeeQuery);
 
-        if (employeeResult.recordset.length === 0) {
-            console.log("❌ No employee found for EmployeeId:", EmployeeId);
-            return res.status(404).send("No employee found.");
+        if (employeeResult.recordset.length > 0) {
+            console.log(`✅ Employee found:`, employeeResult.recordset[0]);
+            return res.json(employeeResult.recordset[0]);
         }
 
-        console.log(`✅ Employee found:`, employeeResult.recordset[0]);
-        return res.json(employeeResult.recordset[0]);
+        console.log("🔄 EmployeeId not found, searching in punchlog...");
+
+        // Search in punchlog table
+        const punchlogQuery = `
+            SELECT user_id, user_name 
+            FROM dbo.punchlog 
+            WHERE LTRIM(RTRIM(user_id)) = @userId
+        `;
+
+        const punchlogResult = await request.query(punchlogQuery);
+
+        if (punchlogResult.recordset.length > 0) {
+            console.log(`✅ Found in punchlog:`, punchlogResult.recordset[0]);
+            return res.json(punchlogResult.recordset[0]);
+        }
+
+        console.log("❌ No record found for userId:", userId);
+        return res.status(404).send("No record found.");
     } catch (err) {
-        console.error("🔥 Error searching employee:", err);
-        res.status(500).send("Error searching employee");
+        console.error("🔥 Error searching user:", err);
+        res.status(500).send("Error searching user");
     }
 };
 

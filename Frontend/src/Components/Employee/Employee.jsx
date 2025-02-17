@@ -11,7 +11,6 @@ const Employee = () => {
   const [searchUserId, setSearchUserId] = useState("");
   const [modalMessage, setModalMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const currentUserId = localStorage.getItem("userId");
 
   //================================================================
   const [designationIds, setDesignationIds] = useState([]);
@@ -19,15 +18,14 @@ const Employee = () => {
   const [designationOrders, setDesignationOrders] = useState([]);
   const [selectedDesignation, setSelectedDesignation] = useState("");
 
-  const fetchDesignations = (departmentId) => {
+  // Updated API endpoint for designations; no parameters needed.
+  const fetchDesignations = () => {
     // Reset designation arrays to remove previous data
     setDesignationIds([]);
     setDesignationNames([]);
     setDesignationOrders([]);
 
-    fetch(
-      `http://localhost:3000/api/getdesignationlist?DepartmentId=${departmentId}`
-    )
+    fetch("http://localhost:3000/api/loaddesignation")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -36,7 +34,9 @@ const Employee = () => {
           setDesignationOrders(data.map((des) => des.DesignationOrder));
         }
       })
-      .catch((error) => console.error("Error fetching designations:", error));
+      .catch((error) =>
+        console.error("Error fetching designations:", error)
+      );
   };
 
   //================================================================
@@ -44,8 +44,9 @@ const Employee = () => {
   const [departmentNames, setDepartmentNames] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
 
+  // Updated API endpoint for departments; no parameters needed.
   useEffect(() => {
-    fetch("http://localhost:3000/api/getdepartmentlist")
+    fetch("http://localhost:3000/api/loaddepartments")
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched Departments:", data);
@@ -63,18 +64,18 @@ const Employee = () => {
           console.error("Invalid API response or empty array");
         }
       })
-      .catch((error) => console.error("Error fetching departments:", error));
+      .catch((error) =>
+        console.error("Error fetching departments:", error)
+      );
   }, []);
 
+  // Optionally, if you still want to load designations on department change,
+  // you can call fetchDesignations() inside this handler. Otherwise, you can remove it.
   const handleDepartmentChange = (event) => {
     const departmentId = event.target.value;
-    if (departmentId) {
-      fetchDesignations(departmentId); // Fetch new designations for the selected department
-    } else {
-      setDesignationIds([]);
-      setDesignationNames([]);
-      setDesignationOrders([]);
-    }
+    setSelectedDepartment(departmentId);
+    // Fetch all designations (the API returns all data regardless of department)
+    fetchDesignations();
   };
 
   //=======================================================
@@ -86,11 +87,9 @@ const Employee = () => {
 
   const fetchBranches = () => {
     axios
-      .get("http://localhost:3000/api/locations")
+      .get("http://localhost:3000/api/locations") // Adjust if needed
       .then((response) => {
         const branchData = response.data;
-        const branchIds = branchData.map((branch) => branch.id);
-        const branchNames = branchData.map((branch) => branch.name);
         setBranches(branchData); // Set complete branch data (id and name)
       })
       .catch((error) => console.error("Error fetching branches:", error));
@@ -112,27 +111,31 @@ const Employee = () => {
         { id: value, name: dataset.name },
       ]);
     } else {
-      setSelectedBranches(selectedBranches.filter((b) => b.id !== value));
+      setSelectedBranches(
+        selectedBranches.filter((b) => b.id !== value)
+      );
     }
   };
 
   const handleOkBranches = () => {
     toggleBranchModal();
   };
+
   const handleCheckAll = () => {
     // Select all branches
-    const allBranches = branches.map((branch) => ({ id: branch.id, name: branch.name }));
+    const allBranches = branches.map((branch) => ({
+      id: branch.id,
+      name: branch.name,
+    }));
     setSelectedBranches(allBranches);
   };
-  
+
   const handleReset = () => {
     // Reset selection
     setSelectedBranches([]);
   };
-  
 
   //=======================================================
-
   const tileClassName = ({ date, view }) => {
     const presentDates = [3, 5, 9]; // Example attended dates (just the day numbers)
     const absentDates = [4, 10]; // Example absent dates (just the day numbers)
@@ -158,33 +161,27 @@ const Employee = () => {
       return "holiday";
     }
   };
-
   const handleSearch = async () => {
-    const searchUserId = document
-      .getElementById("employee-search")
-      .value.trim();
-    const currentUserId = localStorage.getItem("userId");
-
-    if (!currentUserId || !searchUserId) {
-      setModalMessage("UserId and SearchUserId are required.");
+    const userId = Number(document.getElementById("employee-search").value.trim());
+    if (isNaN(userId)) {
+      setModalMessage("Please enter a valid numeric User ID.");
       setShowModal(true);
       return;
     }
-
+    
     setLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/searchemployee?UserId=${currentUserId}&SearchUserId=${searchUserId}`
-      );
-      setModalMessage(response.data.message || "Search successful.");
+      const response = await axios.get(`http://localhost:3000/api/searchemployee?userId=${userId}`);
+      console.log("API Response:", response.data);
+      setModalMessage(response.data.message || "Search completed.");
     } catch (error) {
-      setModalMessage(
-        error.response?.data?.message || "Error searching employee."
-      );
+      console.error("Error searching employee:", error.response?.data || error);
+      setModalMessage(error.response?.data?.message || "Error searching employee.");
     }
     setLoading(false);
     setShowModal(true);
   };
+  
 
   return (
     <div className="custom-employee-page">
@@ -288,6 +285,20 @@ const Employee = () => {
           </div>
 
           <div className="custom-employee-form-row">
+                        <div className="custom-employee-form-group">
+              <label htmlFor="department">Department:</label>
+              <select onChange={handleDepartmentChange}>
+                <option value="">Select Department</option>
+                {departmentNames.map((name, index) => (
+                  <option
+                    key={departmentIds[index]}
+                    value={departmentIds[index]}
+                  >
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="custom-employee-form-group">
               <label htmlFor="designation">Designation:</label>
               <select
@@ -300,20 +311,6 @@ const Employee = () => {
                   <option
                     key={designationIds[index]}
                     value={designationIds[index]}
-                  >
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="department">Department:</label>
-              <select onChange={handleDepartmentChange}>
-                <option value="">Select Department</option>
-                {departmentNames.map((name, index) => (
-                  <option
-                    key={departmentIds[index]}
-                    value={departmentIds[index]}
                   >
                     {name}
                   </option>

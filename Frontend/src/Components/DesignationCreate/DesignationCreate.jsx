@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./DesignationCreate.css";
+import { BASE_URL } from "/src/constants/constant.jsx";
+
 
 const DesignationCreate = () => {
   // Modal state
@@ -36,7 +38,7 @@ const DesignationCreate = () => {
   // Fetch branches
   const fetchBranches = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/locations");
+      const response = await fetch(`${BASE_URL}locations`);
       const data = await response.json();
       setBranches(data);
     } catch (error) {
@@ -47,7 +49,7 @@ const DesignationCreate = () => {
   // Fetch all departments
   const fetchDepartments = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/loaddepartments");
+      const response = await fetch(`${BASE_URL}loaddepartments`);
       const data = await response.json();
       console.log("Fetched departments:", data);
       setAllDepartments(data);
@@ -60,7 +62,7 @@ const DesignationCreate = () => {
   // Fetch designations
   const fetchDesignations = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/loaddesignation");
+      const response = await fetch(`${BASE_URL}loaddesignation`);
       const data = await response.json();
       setDesignations(data);
     } catch (error) {
@@ -156,7 +158,7 @@ const DesignationCreate = () => {
     console.log(JSON.stringify(payload, null, 2));
 
     try {
-      const response = await fetch("http://localhost:3000/api/designation/create", {
+      const response = await fetch(`${BASE_URL}designation/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -203,7 +205,7 @@ const DesignationCreate = () => {
     console.log(JSON.stringify(payload, null, 2));
 
     try {
-      const response = await fetch("http://localhost:3000/api/designation/update", {
+      const response = await fetch(`${BASE_URL}designation/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -438,6 +440,7 @@ const DesignationCreate = () => {
         {/* Right Table */}
         <div className="custom-col-md-7">
           <div className="custom-designation-create-container">
+          <div className="d-flex justify-content-between align-items-center">
             <h5>Designation List</h5>
             {/* Right Side Branch Dropdown */}
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -457,6 +460,7 @@ const DesignationCreate = () => {
                   <option>No branches available</option>
                 )}
               </select>
+            </div>
             </div>
             {/* Right Table */}
             <table className="custom-designation-create-right-table">
