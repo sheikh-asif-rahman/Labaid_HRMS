@@ -8,147 +8,121 @@ import "react-calendar/dist/Calendar.css"; // Import the calendar styles
 const Employee = () => {
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState(new Date());
-  const [searchUserId, setSearchUserId] = useState("");
   const [modalMessage, setModalMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
-  //================================================================
-  const [designationIds, setDesignationIds] = useState([]);
-  const [designationNames, setDesignationNames] = useState([]);
-  const [designationOrders, setDesignationOrders] = useState([]);
-  const [selectedDesignation, setSelectedDesignation] = useState("");
-
-  // Updated API endpoint for designations; no parameters needed.
-  const fetchDesignations = () => {
-    // Reset designation arrays to remove previous data
-    setDesignationIds([]);
-    setDesignationNames([]);
-    setDesignationOrders([]);
-
-    fetch("http://localhost:3000/api/loaddesignation")
-      .then((response) => response.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setDesignationIds(data.map((des) => des.Id));
-          setDesignationNames(data.map((des) => des.DesignationName));
-          setDesignationOrders(data.map((des) => des.DesignationOrder));
-        }
-      })
-      .catch((error) =>
-        console.error("Error fetching designations:", error)
-      );
-  };
-
-  //================================================================
-  const [departmentIds, setDepartmentIds] = useState([]);
-  const [departmentNames, setDepartmentNames] = useState([]);
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-
-  // Updated API endpoint for departments; no parameters needed.
-  useEffect(() => {
-    fetch("http://localhost:3000/api/loaddepartments")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched Departments:", data);
-
-        if (Array.isArray(data) && data.length > 0) {
-          const ids = data.map((dept) => dept.Id);
-          const names = data.map((dept) => dept.DepartmentName);
-
-          console.log("Department IDs:", ids);
-          console.log("Department Names:", names);
-
-          setDepartmentIds(ids);
-          setDepartmentNames(names);
-        } else {
-          console.error("Invalid API response or empty array");
-        }
-      })
-      .catch((error) =>
-        console.error("Error fetching departments:", error)
-      );
-  }, []);
-
-  // Optionally, if you still want to load designations on department change,
-  // you can call fetchDesignations() inside this handler. Otherwise, you can remove it.
-  const handleDepartmentChange = (event) => {
-    const departmentId = event.target.value;
-    setSelectedDepartment(departmentId);
-    // Fetch all designations (the API returns all data regardless of department)
-    fetchDesignations();
-  };
-
-  //=======================================================
-  const [showBranchModal, setShowBranchModal] = useState(false);
-  const [selectedBranches, setSelectedBranches] = useState([]);
   const [permission, setPermission] = useState("user");
 
-  const [branches, setBranches] = useState([]);
+  //================================================================
+  const [selectedDesignation, setSelectedDesignation] = useState("");
 
+  //================================================================
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+
+  //================================================================
+  const [branches, setBranches] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [designations, setDesignations] = useState([]);
+
+  const [filteredDepartments, setFilteredDepartments] = useState([]);
+  const [filteredDesignations, setFilteredDesignations] = useState([]);
+
+  // Add missing selectedBranch state
+  const [selectedBranch, setSelectedBranch] = useState("");
+
+  // Fetch branches
   const fetchBranches = () => {
     axios
-      .get("http://localhost:3000/api/locations") // Adjust if needed
+      .get("http://localhost:3000/api/locations")
       .then((response) => {
         const branchData = response.data;
-        setBranches(branchData); // Set complete branch data (id and name)
+        setBranches(branchData);
       })
       .catch((error) => console.error("Error fetching branches:", error));
   };
 
+  // Fetch departments (without parameters)
+  const fetchDepartments = () => {
+    axios
+      .get("http://localhost:3000/api/loaddepartments")
+      .then((response) => {
+        const data = response.data;
+        setDepartments(data); // Save all departments
+        console.log("Fetched departments:", data); // Log to see the structure
+      })
+      .catch((error) => console.error("Error fetching departments:", error));
+  };
+
+  // Fetch designations (without parameters)
+  const fetchDesignations = () => {
+    axios
+      .get("http://localhost:3000/api/loaddesignation")
+      .then((response) => {
+        const data = response.data;
+        setDesignations(data); // Save all designations
+        console.log("Fetched designations:", data); // Log all designations
+      })
+      .catch((error) => console.error("Error fetching designations:", error));
+  };
+
   useEffect(() => {
     fetchBranches(); // Call fetchBranches on component mount
+    fetchDepartments(); // Fetch all departments on component mount
+    fetchDesignations(); // Fetch all designations on component mount
   }, []);
 
-  const toggleBranchModal = () => {
-    setShowBranchModal(!showBranchModal);
-  };
-
-  const handleBranchCheckboxChange = (e) => {
-    const { value, checked, dataset } = e.target;
-    if (checked) {
-      setSelectedBranches([
-        ...selectedBranches,
-        { id: value, name: dataset.name },
-      ]);
-    } else {
-      setSelectedBranches(
-        selectedBranches.filter((b) => b.id !== value)
+  // Filter departments based on selected branch
+  useEffect(() => {
+    if (selectedBranch) {
+      // Convert selectedBranch to a string to match the branchid format
+      const filtered = departments.filter(
+        (department) => department.branchid === String(selectedBranch) // Ensure both are strings
       );
+      setFilteredDepartments(filtered);
+      console.log("Filtered departments by selected branch:", filtered); // Log the filtered result
     }
+  }, [selectedBranch, departments]);
+
+  // Filter designations based on selected department
+  useEffect(() => {
+    if (selectedDepartment) {
+      // Ensure both are numbers for comparison
+      const filtered = designations.filter(
+        (designation) =>
+          Number(designation.departmentId) === Number(selectedDepartment)
+      );
+      setFilteredDesignations(filtered);
+      console.log("Filtered designations by selected department:", filtered); // Log filtered designations
+    }
+  }, [selectedDepartment, designations]);
+
+  const handleBranchChange = (event) => {
+    const branchId = event.target.value;
+    setSelectedBranch(branchId); // Set selected branch and filter departments
+    setSelectedDepartment(""); // Reset department selection
+    setSelectedDesignation(""); // Reset designation selection
+    console.log("Branch selected:", branchId); // Log branch ID
   };
 
-  const handleOkBranches = () => {
-    toggleBranchModal();
+  const handleDepartmentChange = (event) => {
+    const departmentId = event.target.value;
+    setSelectedDepartment(departmentId); // Set selected department and filter designations
+    setSelectedDesignation(""); // Reset designation selection
+    console.log("Department selected:", departmentId); // Log department ID
   };
 
-  const handleCheckAll = () => {
-    // Select all branches
-    const allBranches = branches.map((branch) => ({
-      id: branch.id,
-      name: branch.name,
-    }));
-    setSelectedBranches(allBranches);
-  };
-
-  const handleReset = () => {
-    // Reset selection
-    setSelectedBranches([]);
-  };
-
-  //=======================================================
   const tileClassName = ({ date, view }) => {
-    const presentDates = [3, 5, 9]; // Example attended dates (just the day numbers)
-    const absentDates = [4, 10]; // Example absent dates (just the day numbers)
-    const holidayDates = [6]; // Example holiday dates (just the day numbers)
-    const leaveDates = [12]; // Example leave dates (just the day numbers)
+    const presentDates = [3, 5, 9]; // Example attended dates
+    const absentDates = [4, 10]; // Example absent dates
+    const holidayDates = [6]; // Example holiday dates
+    const leaveDates = [12]; // Example leave dates
 
-    const day = date.getDate(); // Get the day of the month
+    const day = date.getDate();
     const today = new Date();
-    const currentMonth = today.getMonth(); // Get the current month (0-based)
-    const todayDate = today.getDate(); // Get today's day number
+    const currentMonth = today.getMonth();
+    const todayDate = today.getDate();
 
     if (date.getMonth() === currentMonth && date.getDate() === todayDate) {
-      return "today"; // Add a specific class for today's date
+      return "today";
     }
 
     if (leaveDates.includes(day)) {
@@ -161,28 +135,31 @@ const Employee = () => {
       return "holiday";
     }
   };
+
   const handleSearch = async () => {
-    const userId = Number(document.getElementById("employee-search").value.trim());
+    const userId = Number(
+      document.getElementById("employee-search").value.trim()
+    );
     if (isNaN(userId)) {
       setModalMessage("Please enter a valid numeric User ID.");
       setShowModal(true);
       return;
     }
-    
+
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:3000/api/searchemployee?userId=${userId}`);
-      console.log("API Response:", response.data);
+      const response = await axios.get(
+        `http://localhost:3000/api/searchemployee?userId=${userId}`
+      );
       setModalMessage(response.data.message || "Search completed.");
     } catch (error) {
-      console.error("Error searching employee:", error.response?.data || error);
-      setModalMessage(error.response?.data?.message || "Error searching employee.");
+      setModalMessage(
+        error.response?.data?.message || "Error searching employee."
+      );
     }
     setLoading(false);
     setShowModal(true);
   };
-  
-
   return (
     <div className="custom-employee-page">
       {/* Loading Modal */}
@@ -283,22 +260,42 @@ const Employee = () => {
               />
             </div>
           </div>
-
           <div className="custom-employee-form-row">
-                        <div className="custom-employee-form-group">
-              <label htmlFor="department">Department:</label>
-              <select onChange={handleDepartmentChange}>
-                <option value="">Select Department</option>
-                {departmentNames.map((name, index) => (
-                  <option
-                    key={departmentIds[index]}
-                    value={departmentIds[index]}
-                  >
-                    {name}
+            <div className="custom-employee-form-group">
+              <label htmlFor="branch">Branch:</label>
+              <select id="branch" onChange={handleBranchChange}>
+                <option value="">Select Branch</option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.name}
                   </option>
                 ))}
               </select>
             </div>
+
+            <div className="custom-employee-form-group">
+              <label htmlFor="phone">Phone:</label>
+              <input id="phone" type="tel" placeholder="Enter Phone Number" />
+            </div>
+          </div>
+
+          <div className="custom-employee-form-row">
+            <div className="custom-employee-form-group">
+              <label htmlFor="department">Department:</label>
+              <select onChange={handleDepartmentChange}>
+                <option value="">Select Department</option>
+                {filteredDepartments.length > 0 ? (
+                  filteredDepartments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.departmentName}
+                    </option>
+                  ))
+                ) : (
+                  <option value="">No departments available</option> // In case there are no filtered departments
+                )}
+              </select>
+            </div>
+
             <div className="custom-employee-form-group">
               <label htmlFor="designation">Designation:</label>
               <select
@@ -307,14 +304,15 @@ const Employee = () => {
                 onChange={(e) => setSelectedDesignation(e.target.value)}
               >
                 <option value="">Select Designation</option>
-                {designationNames.map((name, index) => (
-                  <option
-                    key={designationIds[index]}
-                    value={designationIds[index]}
-                  >
-                    {name}
-                  </option>
-                ))}
+                {filteredDesignations.length > 0 ? (
+                  filteredDesignations.map((designation) => (
+                    <option key={designation.id} value={designation.id}>
+                      {designation.designationName}
+                    </option>
+                  ))
+                ) : (
+                  <option value="">No Designations Available</option>
+                )}
               </select>
             </div>
           </div>
@@ -338,74 +336,6 @@ const Employee = () => {
             </div>
           </div>
 
-          <div className="custom-employee-form-row">
-            {/* Branch Selection */}
-            {permission === "admin" ? (
-              <div className="custom-employee-form-group">
-                <label htmlFor="branch">Branch</label>
-                <button className="btn btn-primary" onClick={toggleBranchModal}>
-                  Select Branch
-                </button>
-              </div>
-            ) : (
-              <div className="custom-employee-form-group">
-                <label htmlFor="branch">Branch:</label>
-                <select id="branch">
-                  <option value="">Select Branch</option>
-                  {branches.map((branch) => (
-                    <option key={branch.id} value={branch.id}>
-                      {branch.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            {showBranchModal && (
-  <div className="custom-employee-modal fade show" style={{ display: "block" }}>
-    <div className="custom-employee-modal-dialog modal-lg">
-      <div className="custom-employee-modal-content">
-        <div className="custom-employee-modal-header">
-          <h5 className="custom-employee-modal-title">Available Branches</h5>
-          <div className="modal-header-buttons">
-            <button className="btn btn" onClick={handleCheckAll}>Check All</button>
-            <button className="btn btn" onClick={handleReset}>Reset</button>
-          </div>
-        </div>
-        <div className="custom-employee-modal-body">
-          <div className="custom-employee-container-fluid">
-            <div className="custom-employee-row">
-              {branches.map((branch) => (
-                <div className="custom-employee-col-md-4" key={branch.id}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      value={branch.id}
-                      data-name={branch.name}
-                      checked={selectedBranches.some((b) => b.id === branch.id)}
-                      onChange={handleBranchCheckboxChange}
-                    />
-                    {branch.name}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="custom-employee-modal-footer">
-          <button className="custom-employee-btn custom-employee-btn-secondary" onClick={toggleBranchModal}>Cancel</button>
-          <button className="custom-employee-btn custom-employee-btn-primary" onClick={handleOkBranches}>OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-
-
-            <div className="custom-employee-form-group">
-              <label htmlFor="phone">Phone:</label>
-              <input id="phone" type="tel" placeholder="Enter Phone Number" />
-            </div>
-          </div>
 
           <div className="custom-employee-form-row">
             <div className="custom-employee-form-group">
