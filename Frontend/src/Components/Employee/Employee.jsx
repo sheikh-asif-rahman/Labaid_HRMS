@@ -10,23 +10,41 @@ const Employee = () => {
   const [date, setDate] = useState(new Date());
   const [modalMessage, setModalMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [permission, setPermission] = useState("user");
+  const [searchCompleted, setSearchCompleted] = useState(false);
 
-  //================================================================
+  // Separate state for the search input
+  const [searchUserId, setSearchUserId] = useState("");
+
+  // Employee form state (controlled)
+  const [employeeForm, setEmployeeForm] = useState({
+    user_id: "",
+    user_name: "",
+    branch_id: "",
+    phone: "",
+    department_id: "",
+    designation_id: "",
+    date_of_joining: "",
+    date_of_resign: "",
+    email: "",
+    employee_type: "",
+    gender: "",
+    marital_status: "",
+    blood_group: "",
+    fathers_name: "",
+    mothers_name: "",
+    present_address: "",
+    permanent_address: "",
+    nid: "",
+    status: "active"
+  });
+
   const [selectedDesignation, setSelectedDesignation] = useState("");
-
-  //================================================================
   const [selectedDepartment, setSelectedDepartment] = useState("");
-
-  //================================================================
   const [branches, setBranches] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [designations, setDesignations] = useState([]);
-
   const [filteredDepartments, setFilteredDepartments] = useState([]);
   const [filteredDesignations, setFilteredDesignations] = useState([]);
-
-  // Add missing selectedBranch state
   const [selectedBranch, setSelectedBranch] = useState("");
 
   // Fetch branches
@@ -34,80 +52,96 @@ const Employee = () => {
     axios
       .get("http://localhost:3000/api/locations")
       .then((response) => {
-        const branchData = response.data;
-        setBranches(branchData);
+        console.log("Fetched branches:", response.data);
+        setBranches(response.data);
       })
       .catch((error) => console.error("Error fetching branches:", error));
   };
 
-  // Fetch departments (without parameters)
+  // Fetch departments
   const fetchDepartments = () => {
     axios
       .get("http://localhost:3000/api/loaddepartments")
       .then((response) => {
-        const data = response.data;
-        setDepartments(data); // Save all departments
-        console.log("Fetched departments:", data); // Log to see the structure
+        console.log("Fetched departments:", response.data);
+        setDepartments(response.data);
       })
       .catch((error) => console.error("Error fetching departments:", error));
   };
 
-  // Fetch designations (without parameters)
+  // Fetch designations
   const fetchDesignations = () => {
     axios
       .get("http://localhost:3000/api/loaddesignation")
       .then((response) => {
-        const data = response.data;
-        setDesignations(data); // Save all designations
-        console.log("Fetched designations:", data); // Log all designations
+        console.log("Fetched designations:", response.data);
+        setDesignations(response.data);
       })
       .catch((error) => console.error("Error fetching designations:", error));
   };
 
   useEffect(() => {
-    fetchBranches(); // Call fetchBranches on component mount
-    fetchDepartments(); // Fetch all departments on component mount
-    fetchDesignations(); // Fetch all designations on component mount
+    fetchBranches();
+    fetchDepartments();
+    fetchDesignations();
   }, []);
 
   // Filter departments based on selected branch
   useEffect(() => {
     if (selectedBranch) {
-      // Convert selectedBranch to a string to match the branchid format
       const filtered = departments.filter(
-        (department) => department.branchid === String(selectedBranch) // Ensure both are strings
+        (department) => department.branchid === String(selectedBranch)
       );
       setFilteredDepartments(filtered);
-      console.log("Filtered departments by selected branch:", filtered); // Log the filtered result
+      console.log("Filtered departments by selected branch:", filtered);
     }
   }, [selectedBranch, departments]);
 
   // Filter designations based on selected department
   useEffect(() => {
     if (selectedDepartment) {
-      // Ensure both are numbers for comparison
       const filtered = designations.filter(
         (designation) =>
           Number(designation.departmentId) === Number(selectedDepartment)
       );
       setFilteredDesignations(filtered);
-      console.log("Filtered designations by selected department:", filtered); // Log filtered designations
+      console.log("Filtered designations by selected department:", filtered);
     }
   }, [selectedDepartment, designations]);
 
   const handleBranchChange = (event) => {
     const branchId = event.target.value;
-    setSelectedBranch(branchId); // Set selected branch and filter departments
-    setSelectedDepartment(""); // Reset department selection
-    setSelectedDesignation(""); // Reset designation selection
-    console.log("Branch selected:", branchId); // Log branch ID
+    setSelectedBranch(branchId);
+    setSelectedDepartment("");
+    setSelectedDesignation("");
+    setEmployeeForm((prev) => ({
+      ...prev,
+      branch_id: branchId
+    }));
   };
 
   const handleDepartmentChange = (event) => {
     const departmentId = event.target.value;
-    setSelectedDepartment(departmentId); // Set selected department and filter designations
-    setSelectedDesignation(""); // Reset designation selection
-    console.log("Department selected:", departmentId); // Log department ID
+    setSelectedDepartment(departmentId);
+    setSelectedDesignation("");
+    setEmployeeForm((prev) => ({
+      ...prev,
+      department_id: departmentId
+    }));
+  };
+
+  // Handle input changes for controlled form fields
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setEmployeeForm((prev) => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
+  // Handle change for search input separately
+  const handleSearchInputChange = (e) => {
+    setSearchUserId(e.target.value);
   };
 
   const tileClassName = ({ date, view }) => {
@@ -136,30 +170,83 @@ const Employee = () => {
     }
   };
 
+  const mapEmployeeDataToForm = (data) => {
+    // Filter the branches, departments, and designations based on the mapped data
+    const filteredBranches = branches.filter(branch => branch.id === data.BranchId);
+    const filteredDepartments = departments.filter(department => department.id === data.DepartmentId);
+    const filteredDesignations = designations.filter(designation => designation.id === data.DesignationId);
+  
+    return {
+      user_id: data.EmployeeId || data.user_id || '',  // Both EmployeeId and user_id can be used
+      user_name: data.EmployeeName || data.user_name || '',  // Both EmployeeName and user_name can be used
+      branch_id: data.BranchId || '',
+      personal_phone: data.PersonalContactNumber || '',  // Mapping for personal phone number
+      official_phone: data.OfficalContactNumber || '',  // Mapping for official phone number
+      department_id: data.DepartmentId || '',
+      designation_id: data.DesignationId || '',
+      date_of_joining: data.DateOfJoin ? new Date(data.DateOfJoin).toISOString().split('T')[0] : '',
+      date_of_resign: data.DateOfResign ? new Date(data.DateOfResign).toISOString().split('T')[0] : '',
+      email: data.Email || '',
+      employee_type: data.EmployeeType || '',
+      gender: data.Gender || '',
+      marital_status: data.MaritalStatus || '',
+      blood_group: data.BloodGroup || '',
+      fathers_name: data.FatherName || '',
+      mothers_name: data.MotherName || '',
+      present_address: data.PresentAddress || '',
+      permanent_address: data.PermanentAddress || '',
+      nid: data.NID || '',
+      status: data.Status ? 'active' : 'inactive',
+      filteredBranches,
+      filteredDepartments,
+      filteredDesignations
+    };
+  };
+  
+  
   const handleSearch = async () => {
-    const userId = Number(
-      document.getElementById("employee-search").value.trim()
-    );
+    const trimmedUserId = searchUserId.trim();
+    const userId = Number(trimmedUserId);
     if (isNaN(userId)) {
       setModalMessage("Please enter a valid numeric User ID.");
       setShowModal(true);
       return;
     }
-
+  
     setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:3000/api/searchemployee?userId=${userId}`
       );
+      console.log("Search response:", response.data);
+  
+      if (response.data) {
+        // If we get full employee data
+        setSearchCompleted(true);
+        const mappedData = mapEmployeeDataToForm(response.data);
+        console.log("Mapped form data:", mappedData);
+        setEmployeeForm(mappedData);
+        setFilteredDepartments(mappedData.filteredDepartments); // Update filtered departments
+        setFilteredDesignations(mappedData.filteredDesignations); // Update filtered designations
+      } else {
+        // If the data is incomplete (only user_id and user_name)
+        setEmployeeForm({
+          user_id: response.data.user_id,
+          user_name: response.data.user_name || ''
+        });
+        setSearchCompleted(false);
+      }
+  
       setModalMessage(response.data.message || "Search completed.");
     } catch (error) {
-      setModalMessage(
-        error.response?.data?.message || "Error searching employee."
-      );
+      console.error("Search error:", error);
+      setModalMessage(error.response?.data?.message || "Error searching employee.");
     }
     setLoading(false);
     setShowModal(true);
   };
+  
+
   return (
     <div className="custom-employee-page">
       {/* Loading Modal */}
@@ -220,253 +307,354 @@ const Employee = () => {
 
       {/* Main content */}
       <div className="custom-employee-container">
-        <div className="custom-employee-search-container">
-          <label htmlFor="employee-search">Search Employee ID:</label>
-          <div className="custom-employee-search-box-wrapper">
-            <input
-              id="employee-search"
-              type="number"
-              placeholder="Enter Employee ID"
-            />
-            <button
-              className="custom-employee-search-button"
-              onClick={handleSearch}
-            >
-              <FaSearch />
-            </button>
-            <button className="custom-employee-save-button">Save</button>
-            <button className="custom-employee-update-button">Update</button>
-            <button className="custom-employee-new-button">New</button>
-          </div>
-        </div>
+  <div className="custom-employee-search-container">
+    <label htmlFor="employee-search">Search Employee ID:</label>
+    <div className="custom-employee-search-box-wrapper">
+      <input
+        id="employee-search"
+        type="number"
+        placeholder="Enter Employee ID"
+        value={searchUserId}
+        onChange={handleSearchInputChange}
+      />
+      {!searchCompleted ? (
+        <button
+          className="custom-employee-search-button"
+          onClick={handleSearch}
+        >
+          <FaSearch />
+        </button>
+      ) : (
+        <>
+          <button className="custom-employee-save-button">Save</button>
+          <button className="custom-employee-new-button">New</button>
+        </>
+      )}
+    </div>
+  </div>
 
-        {/* Form to display employee details */}
-        <div className="custom-employee-form-container">
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="employee-id">Employee ID:</label>
-              <input
-                id="employee-id"
-                type="text"
-                placeholder="Enter Employee ID"
-              />
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="employee-name">Employee Name:</label>
-              <input
-                id="employee-name"
-                type="text"
-                placeholder="Enter Employee Name"
-              />
-            </div>
-          </div>
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="branch">Branch:</label>
-              <select id="branch" onChange={handleBranchChange}>
-                <option value="">Select Branch</option>
-                {branches.map((branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="custom-employee-form-group">
-              <label htmlFor="phone">Phone:</label>
-              <input id="phone" type="tel" placeholder="Enter Phone Number" />
-            </div>
-          </div>
-
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="department">Department:</label>
-              <select onChange={handleDepartmentChange}>
-                <option value="">Select Department</option>
-                {filteredDepartments.length > 0 ? (
-                  filteredDepartments.map((department) => (
-                    <option key={department.id} value={department.id}>
-                      {department.departmentName}
-                    </option>
-                  ))
-                ) : (
-                  <option value="">No departments available</option> // In case there are no filtered departments
-                )}
-              </select>
-            </div>
-
-            <div className="custom-employee-form-group">
-              <label htmlFor="designation">Designation:</label>
-              <select
-                id="designation"
-                value={selectedDesignation}
-                onChange={(e) => setSelectedDesignation(e.target.value)}
-              >
-                <option value="">Select Designation</option>
-                {filteredDesignations.length > 0 ? (
-                  filteredDesignations.map((designation) => (
-                    <option key={designation.id} value={designation.id}>
-                      {designation.designationName}
-                    </option>
-                  ))
-                ) : (
-                  <option value="">No Designations Available</option>
-                )}
-              </select>
-            </div>
-          </div>
-
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="date-of-joining">Date of Joining:</label>
-              <input
-                id="date-of-joining"
-                type="date"
-                placeholder="Select Date of Joining"
-              />
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="date-of-resign">Date of Resign:</label>
-              <input
-                id="date-of-resign"
-                type="date"
-                placeholder="Select Date of Resign"
-              />
-            </div>
-          </div>
-
-
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="email">Email:</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="Enter Email Address"
-              />
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="employee-type">Employee Type:</label>
-              <input
-                id="employee-type"
-                type="text"
-                placeholder="Enter Employee Type"
-              />
-            </div>
-          </div>
-
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="gender">Gender:</label>
-              <input id="gender" type="text" placeholder="Enter Gender" />
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="marital-status">Marital Status:</label>
-              <input
-                id="marital-status"
-                type="text"
-                placeholder="Enter Marital Status"
-              />
-            </div>
-          </div>
-
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="blood-group">Blood Group:</label>
-              <select id="blood-group">
-                <option value="">Select Blood Group</option>
-                <option value="A+">A+</option>
-                <option value="B+">B+</option>
-                <option value="O+">O+</option>
-                <option value="AB+">AB+</option>
-                <option value="A-">A-</option>
-                <option value="B-">B-</option>
-                <option value="O-">O-</option>
-                <option value="AB-">AB-</option>
-              </select>
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="fathers-name">Father's Name:</label>
-              <input
-                id="fathers-name"
-                type="text"
-                placeholder="Enter Father's Name"
-              />
-            </div>
-          </div>
-
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="mothers-name">Mother's Name:</label>
-              <input
-                id="mothers-name"
-                type="text"
-                placeholder="Enter Mother's Name"
-              />
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="present-address">Present Address:</label>
-              <input
-                id="present-address"
-                type="text"
-                placeholder="Enter Present Address"
-              />
-            </div>
-          </div>
-
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="permanent-address">Permanent Address:</label>
-              <input
-                id="permanent-address"
-                type="text"
-                placeholder="Enter Permanent Address"
-              />
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="status">Status:</label>
-              <select id="status">
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-          </div>
-          <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="password">Password:</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Enter Password"
-              />
-            </div>
-            <div className="custom-employee-form-group">
-              <label htmlFor="permission">Permission:</label>
-              <select
-                id="permission"
-                value={permission}
-                onChange={(e) => setPermission(e.target.value)}
-              >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-          </div>
-        </div>
+  {/* Form to display employee details */}
+  <div className="custom-employee-form-container">
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="user_id">Employee ID:</label>
+        <input
+          id="user_id"
+          type="text"
+          placeholder="Enter Employee ID"
+          value={employeeForm.user_id}
+          onChange={handleInputChange}
+        />
       </div>
-      {/* just remove hidden to show */}
+      <div className="custom-employee-form-group">
+        <label htmlFor="user_name">Employee Name:</label>
+        <input
+          id="user_name"
+          type="text"
+          placeholder="Enter Employee Name"
+          value={employeeForm.user_name}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="branch_id">Branch:</label>
+        <select
+          id="branch_id"
+          value={employeeForm.branch_id}
+          onChange={(e) => {
+            handleBranchChange(e);
+            handleInputChange(e);
+          }}
+        >
+          <option value="">Select Branch</option>
+          {branches.map((branch) => (
+            <option key={branch.id} value={branch.id}>
+              {branch.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="personal_phone">Personal Phone Number:</label>
+        <input
+          id="personal_phone"
+          type="tel"
+          placeholder="Enter Personal Phone Number"
+          value={employeeForm.personal_phone}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="department_id">Department:</label>
+        <select
+          id="department_id"
+          value={employeeForm.department_id}
+          onChange={(e) => {
+            handleDepartmentChange(e);
+            handleInputChange(e);
+          }}
+        >
+          <option value="">Select Department</option>
+          {filteredDepartments.length > 0 ? (
+            filteredDepartments.map((department) => (
+              <option key={department.id} value={department.id}>
+                {department.departmentName}
+              </option>
+            ))
+          ) : (
+            <option value="">No departments available</option>
+          )}
+        </select>
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="official_phone">Official Phone Number:</label>
+        <input
+          id="official_phone"
+          type="tel"
+          placeholder="Enter Official Phone Number"
+          value={employeeForm.official_phone}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="designation_id">Designation:</label>
+        <select
+          id="designation_id"
+          value={employeeForm.designation_id}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Designation</option>
+          {filteredDesignations.length > 0 ? (
+            filteredDesignations.map((designation) => (
+              <option key={designation.id} value={designation.id}>
+                {designation.designationName}
+              </option>
+            ))
+          ) : (
+            <option value="">No Designations Available</option>
+          )}
+        </select>
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="date_of_joining">Date of Joining:</label>
+        <input
+          id="date_of_joining"
+          type="date"
+          value={employeeForm.date_of_joining}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="date_of_resign">Date of Resign:</label>
+        <input
+          id="date_of_resign"
+          type="date"
+          value={employeeForm.date_of_resign}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="email">Email:</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Enter Email Address"
+          value={employeeForm.email}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="employee_type">Employee Type:</label>
+        <select
+          id="employee_type"
+          value={employeeForm.employee_type}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Employee Type</option>
+          <option value="admin">Admin</option>
+          <option value="staff">Staff</option>
+          <option value="contract">Contract</option>
+        </select>
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="gender">Gender:</label>
+        <select
+          id="gender"
+          value={employeeForm.gender}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="marital_status">Marital Status:</label>
+        <select
+          id="marital_status"
+          value={employeeForm.marital_status}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Marital Status</option>
+          <option value="Single">Single</option>
+          <option value="Married">Married</option>
+          <option value="Divorced">Divorced</option>
+          <option value="Widowed">Widowed</option>
+        </select>
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="blood_group">Blood Group:</label>
+        <select
+          id="blood_group"
+          value={employeeForm.blood_group}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Blood Group</option>
+          <option value="A+">A+</option>
+          <option value="B+">B+</option>
+          <option value="O+">O+</option>
+          <option value="AB+">AB+</option>
+          <option value="A-">A-</option>
+          <option value="B-">B-</option>
+          <option value="O-">O-</option>
+          <option value="AB-">AB-</option>
+        </select>
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="fathers_name">Father's Name:</label>
+        <input
+          id="fathers_name"
+          type="text"
+          placeholder="Enter Father's Name"
+          value={employeeForm.fathers_name}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="mothers_name">Mother's Name:</label>
+        <input
+          id="mothers_name"
+          type="text"
+          placeholder="Enter Mother's Name"
+          value={employeeForm.mothers_name}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="present_address">Present Address:</label>
+        <input
+          id="present_address"
+          type="text"
+          placeholder="Enter Present Address"
+          value={employeeForm.present_address}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="permanent_address">Permanent Address:</label>
+        <input
+          id="permanent_address"
+          type="text"
+          placeholder="Enter Permanent Address"
+          value={employeeForm.permanent_address}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="nid">NID:</label>
+        <input
+          id="nid"
+          type="number"
+          placeholder="Enter NID number"
+          value={employeeForm.nid}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="status">Status:</label>
+        <select
+          id="status"
+          value={employeeForm.status}
+          onChange={handleInputChange}
+        >
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <div className="custom-employee-form-row">
+      <div className="custom-employee-form-group">
+        <label htmlFor="password">Password:</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Enter Password"
+          value={employeeForm.password}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="custom-employee-form-group">
+        <label htmlFor="confirm_password">Confirm Password:</label>
+        <input
+          id="confirm_password"
+          type="password"
+          placeholder="Confirm Password"
+          value={employeeForm.confirm_password}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+      {/* Hidden Calendar Section */}
       <div hidden="true" className="custom-employee-container-calendar">
-        {/* Left Column for Calendar */}
         <div className="custom-employee-container-calendar-left">
           <Calendar
-            onChange={setDate} // Handle date change
-            value={date} // Set the current selected date
-            tileClassName={tileClassName} // Apply custom classes based on dates
-            showNeighboringMonth={false} // Hide previous/next month's dates
+            onChange={setDate}
+            value={date}
+            tileClassName={tileClassName}
+            showNeighboringMonth={false}
           />
-
-          {/* Legend */}
           <div className="custom-employee-calendar-legend">
             <div className="legend-item">
               <div className="legend-color attended"></div>
@@ -486,8 +674,6 @@ const Employee = () => {
             </div>
           </div>
         </div>
-
-        {/* Right Column for Performance */}
         <div className="custom-employee-container-calendar-right">
           <h3>Performance</h3>
           <div className="custom-employee-performance-cards">

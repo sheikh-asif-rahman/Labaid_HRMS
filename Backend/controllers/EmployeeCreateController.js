@@ -1,6 +1,6 @@
 const { sql } = require("../config/dbConfig");
 
-const searchEmployee = async (req, res) => {
+const employeeCreate = async (req, res) => {
     try {
         let { userId } = req.query;
 
@@ -20,7 +20,7 @@ const searchEmployee = async (req, res) => {
                 EmployeeName, EmployeeId, DepartmentId, DesignationId, BranchId, 
                 DateOfJoin, DateOfResign, NID, PersonalContactNumber, OfficalContactNumber, 
                 Email, EmployeeType, Gender, MaritalStatus, BloodGroup, 
-                FatherName, MotherName, PresentAddress, PermanentAddress, 
+                FatherName, MotherName, PresentAddress, PermanentAddress, Password, 
                 Image, Status
             FROM dbo.Employee 
             WHERE LTRIM(RTRIM(EmployeeId)) = @userId
@@ -57,4 +57,4 @@ const searchEmployee = async (req, res) => {
     }
 };
 
-module.exports = { searchEmployee };
+module.exports = { employeeCreate };
