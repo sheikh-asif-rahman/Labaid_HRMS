@@ -19,7 +19,7 @@ const departmentupdate = require('./routes/DepartmentUpdateRoute');
 const loadDesignation = require('./routes/LoadDesignationRoute');
 const designationcreate = require('./routes/DesignationCreateRoute');
 const designationupdate = require('./routes/DesignationUpdateRoute');
-
+const employeeCreate = require('./routes/EmployeeCreateRoute');
 
 
 const app = express();
@@ -56,6 +56,8 @@ app.use('/api', departmentupdate);
 app.use('/api', loadDesignation);
 app.use('/api', designationcreate);
 app.use('/api', designationupdate);
+app.use('/api', employeeCreate);
+
 
 
 
