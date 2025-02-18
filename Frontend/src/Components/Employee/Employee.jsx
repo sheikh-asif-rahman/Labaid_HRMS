@@ -830,32 +830,36 @@ const Employee = () => {
           </div>
 
           <div className="custom-employee-form-row">
-  <div className="custom-employee-form-group">
-    <label htmlFor="password">Password:</label>
-    <input
-      id="password"
-      type="password"
-      placeholder="Enter Password"
-      value={employeeForm.password}
-      onChange={handleInputChange}
-    />
-  </div>
+      <div className="custom-employee-form-group">
+        <label htmlFor="password">Password:</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Enter Password"
+          value={employeeForm.password}
+          onChange={handleInputChange}
+          style={{
+            borderColor: passwordMismatch ? 'red' : 'initial',
+            backgroundColor: passwordMismatch ? '#fdd' : 'initial'
+          }}
+        />
+      </div>
 
-  <div className="custom-employee-form-group">
-    <label htmlFor="confirm_password">Confirm Password:</label>
-    <input
-      id="confirm_password"
-      type="password"
-      placeholder="Confirm Password"
-      value={employeeForm.confirm_password}
-      onChange={handleInputChange}
-    />
-  </div>
-
-  {passwordMismatch && (
-    <p style={{ color: "red" }}>Passwords do not match.</p>
-  )}
-</div>
+      <div className="custom-employee-form-group">
+        <label htmlFor="confirm_password">Confirm Password:</label>
+        <input
+          id="confirm_password"
+          type="password"
+          placeholder="Confirm Password"
+          value={employeeForm.confirm_password}
+          onChange={handleInputChange}
+          style={{
+            borderColor: passwordMismatch ? 'red' : 'initial',
+            backgroundColor: passwordMismatch ? '#fdd' : 'initial'
+          }}
+        />
+      </div>
+    </div>
 
         </div>
       </div>
