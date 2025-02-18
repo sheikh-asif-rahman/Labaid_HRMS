@@ -34,7 +34,7 @@ const Employee = () => {
     nid: "",
     status: "active"
   });
-
+  const [isFormFilled, setIsFormFilled] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [branches, setBranches] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -213,19 +213,20 @@ const Employee = () => {
   const handleSearch = async () => {
     const trimmedUserId = searchUserId.trim();
     const userId = Number(trimmedUserId);
+    
     if (isNaN(userId)) {
       setModalMessage("Please enter a valid numeric User ID.");
       setShowModal(true);
       return;
     }
-
+  
     setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:3000/api/searchemployee?userId=${userId}`
       );
       console.log("Search response:", response.data);
-
+  
       if (response.data) {
         // If we get full employee data
         setSearchCompleted(true);
@@ -234,6 +235,13 @@ const Employee = () => {
         setEmployeeForm(mappedData);
         setFilteredDepartments(mappedData.filteredDepartments); // Update filtered departments
         setFilteredDesignations(mappedData.filteredDesignations); // Update filtered designations
+  
+        // Check if all necessary fields are available for updating
+        if (mappedData.branch_id && mappedData.department_id && mappedData.designation_id) {
+          setIsFormFilled(true);  // Set to true if data is complete
+        } else {
+          setIsFormFilled(false); // Set to false if any required data is missing
+        }
       } else {
         // If the data is incomplete (only user_id and user_name)
         setEmployeeForm({
@@ -241,8 +249,9 @@ const Employee = () => {
           user_name: response.data.user_name || ""
         });
         setSearchCompleted(false);
+        setIsFormFilled(false); // Set to false since data is incomplete
       }
-
+  
       setModalMessage(response.data.message || "Search completed.");
     } catch (error) {
       console.error("Search error:", error);
@@ -253,6 +262,7 @@ const Employee = () => {
     setLoading(false);
     setShowModal(true);
   };
+  
 
   const handlePageRefresh = () => {
     window.location.reload();
@@ -400,19 +410,28 @@ const Employee = () => {
               value={searchUserId}
               onChange={handleSearchInputChange}
             />
-            {!searchCompleted ? (
-              <button
-                className="custom-employee-search-button"
-                onClick={handleSearch}
-              >
-                <FaSearch />
-              </button>
-            ) : (
-              <>
-                <button className="custom-employee-save-button" onClick={handleSave}>Save</button>
-                <button className="custom-employee-new-button" onClick={handlePageRefresh}>New</button>
-              </>
-            )}
+{!searchCompleted ? (
+  <button
+    className="custom-employee-search-button"
+    onClick={handleSearch}
+  >
+    <FaSearch />
+  </button>
+) : (
+  <>
+    {isFormFilled ? (
+      // Show Update button if the data is complete
+      <button className="custom-employee-update-button" onClick={""}>Update</button>
+    ) : (
+      // Show Save button if data is incomplete
+      <button className="custom-employee-save-button" onClick={handleSave}>Save</button>
+    )}
+    <button className="custom-employee-new-button" onClick={handlePageRefresh}>New</button>
+  </>
+)}
+
+
+
           </div>
         </div>
 

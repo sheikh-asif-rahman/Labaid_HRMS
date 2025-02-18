@@ -1,4 +1,10 @@
 const { sql } = require("../config/dbConfig");
+const crypto = require('crypto'); // Importing the crypto module
+
+// Function to hash a password using SHA-256
+const hashPassword = (password) => {
+  return crypto.createHash('sha256').update(password).digest('hex');
+};
 
 const employeeCreate = async (req, res) => {
   let transaction; // Declare transaction here
@@ -54,6 +60,9 @@ const employeeCreate = async (req, res) => {
       imageBuffer = Buffer.from(base64Data, "base64");
     }
 
+    // Hash the password using SHA-256
+    const hashedPassword = hashPassword(password); // Use SHA-256 hashing
+
     // Employee data to insert into the database
     const employeeData = {
       EmployeeId: userId,
@@ -80,11 +89,11 @@ const employeeCreate = async (req, res) => {
       Image: imageBuffer
     };
 
-    // User login data
+    // User login data (with hashed password)
     const userLoginData = {
       UserId: userId,
       UserName: user_name,
-      Password: password,
+      Password: hashedPassword,  // Store the hashed password
       CreatedBy: createdby
     };
 
@@ -131,7 +140,7 @@ const employeeCreate = async (req, res) => {
 
     await employeeRequest.query(employeeInsertQuery);
 
-    // Insert into the UserLogin table
+    // Insert into the UserLogin table with hashed password
     const userLoginInsertQuery = `
       INSERT INTO UserLogin (UserId, UserName, Password, CreatedBy)
       VALUES (@UserId, @UserName, @Password, @CreatedBy)
