@@ -133,13 +133,13 @@ const Employee = () => {
   // Handle input changes for controlled form fields
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-  
+
     setEmployeeForm((prev) => {
       const updatedForm = {
         ...prev,
         [id]: value
       };
-  
+
       // If password or confirm_password changes, check if they match
       if (id === "password" || id === "confirm_password") {
         if (updatedForm.password !== updatedForm.confirm_password) {
@@ -149,11 +149,11 @@ const Employee = () => {
           setPasswordMismatch(false);
         }
       }
-  
+
       return updatedForm;
     });
   };
-  
+
 
   // Handle change for search input separately
   const handleSearchInputChange = (e) => {
@@ -232,20 +232,20 @@ const Employee = () => {
   const handleSearch = async () => {
     const trimmedUserId = searchUserId.trim();
     const userId = Number(trimmedUserId);
-    
+
     if (isNaN(userId)) {
       setModalMessage("Please enter a valid numeric User ID.");
       setShowModal(true);
       return;
     }
-  
+
     setLoading(true);
     try {
       const response = await axios.get(
         `${BASE_URL}searchemployee?userId=${userId}`
       );
       console.log("Search response:", response.data);
-  
+
       if (response.data) {
         // If we get full employee data
         setSearchCompleted(true);
@@ -254,7 +254,7 @@ const Employee = () => {
         setEmployeeForm(mappedData);
         setFilteredDepartments(mappedData.filteredDepartments); // Update filtered departments
         setFilteredDesignations(mappedData.filteredDesignations); // Update filtered designations
-  
+
         // Check if all necessary fields are available for updating
         if (mappedData.branch_id && mappedData.department_id && mappedData.designation_id) {
           setIsFormFilled(true);  // Set to true if data is complete
@@ -270,7 +270,7 @@ const Employee = () => {
         setSearchCompleted(false);
         setIsFormFilled(false); // Set to false since data is incomplete
       }
-  
+
       setModalMessage(response.data.message || "Search completed.");
     } catch (error) {
       console.error("Search error:", error);
@@ -281,26 +281,26 @@ const Employee = () => {
     setLoading(false);
     setShowModal(true);
   };
-  
+
 
   const handlePageRefresh = () => {
     window.location.reload();
   };
-  
+
 
   const handleSave = async () => {
     setLoading(true);
     try {
       // Retrieve the 'userId' from localStorage for the 'createdby' field
       const createdBy = localStorage.getItem("userId");
-  
+
       if (!createdBy) {
         setModalMessage("User is not logged in.");
         setLoading(false);
         setShowModal(true);
         return;
       }
-  
+
       // Check if the password and confirm password match
       if (employeeForm.password !== employeeForm.confirm_password) {
         setModalMessage("Passwords do not match.");
@@ -308,10 +308,10 @@ const Employee = () => {
         setShowModal(true);
         return;
       }
-  
+
       // Trim the status and check if it's exactly 'active' (case-sensitive check)
       const statusValue = employeeForm.status && employeeForm.status.trim().toLowerCase() === "active" ? true : false;
-  
+
       // Prepare the data in the required format
       const formDataToSend = {
         userId: employeeForm.user_id, // Map the user_id field to userId
@@ -338,13 +338,13 @@ const Employee = () => {
         createdby: createdBy, // The 'createdby' comes from localStorage
         image: employeeForm.image || null // Optional image, null if not available
       };
-  
+
       // Log the data to be sent to the API (for debugging)
       console.log("Sending employee data:", JSON.stringify(formDataToSend, null, 2));
-  
+
       // Step 1: Send the employeeForm data to the employeecreate API to save the employee
       const response = await axios.post(`${BASE_URL}employeecreate`, formDataToSend);
-  
+
       // Check for a successful response (201 Created)
       if (response.status === 201) {
         setModalMessage("Employee saved successfully!");
@@ -353,7 +353,7 @@ const Employee = () => {
       }
     } catch (error) {
       console.error("Error saving employee:", error);
-  
+
       // Improved error message handling
       if (error.response) {
         setModalMessage(error.response?.data?.message || "Error saving employee.");
@@ -364,23 +364,23 @@ const Employee = () => {
     setLoading(false);
     setShowModal(true);
   };
-  
+
   const handleUpdate = async () => {
     setLoading(true);
     try {
       // Retrieve the 'userId' from localStorage for the 'createdby' field
       const updatedby = localStorage.getItem("userId");
-  
+
       if (!updatedby) {
         setModalMessage("User is not logged in.");
         setLoading(false);
         setShowModal(true);
         return;
       }
-  
+
       // Trim the status and check if it's exactly 'active' (case-sensitive check)
       const statusValue = employeeForm.status && employeeForm.status.trim().toLowerCase() === "active" ? true : false;
-  
+
       // Password matching logic
       if (employeeForm.password !== employeeForm.confirm_password) {
         setModalMessage("Passwords do not match.");
@@ -388,7 +388,7 @@ const Employee = () => {
         setShowModal(true);
         return;
       }
-  
+
       // Prepare the data in the required format for update
       const formDataToSend = {
         userId: employeeForm.user_id, // Map the user_id field to userId
@@ -415,13 +415,13 @@ const Employee = () => {
         updatedby: updatedby, // The 'createdby' comes from localStorage
         image: employeeForm.image || null // Optional image, null if not available
       };
-  
+
       // Log the data to be sent to the API (for debugging)
       console.log("Sending employee update data:", JSON.stringify(formDataToSend, null, 2));
-  
+
       // Step 1: Send the employeeForm data to the employeeupdate API to update the employee
       const response = await axios.put(`${BASE_URL}employee/${employeeForm.user_id}`, formDataToSend);
-  
+
       // Check for a successful response (200 OK or 204 No Content)
       if (response.status === 200 || response.status === 204) {
         setModalMessage("Employee updated successfully!");
@@ -430,7 +430,7 @@ const Employee = () => {
       }
     } catch (error) {
       console.error("Error updating employee:", error);
-  
+
       // Improved error message handling
       if (error.response) {
         setModalMessage(error.response?.data?.message || "Error updating employee.");
@@ -441,13 +441,13 @@ const Employee = () => {
     setLoading(false);
     setShowModal(true);
   };
-  
-  
+
+
 
 
   return (
     <div className="custom-employee-page">
-      {/* Loading Modal */}     
+      {/* Loading Modal */}
       <div
         className={`modal fade ${loading ? "show d-block" : ""}`}
         style={{ display: loading ? "block" : "none" }}
@@ -515,25 +515,25 @@ const Employee = () => {
               value={searchUserId}
               onChange={handleSearchInputChange}
             />
-{!searchCompleted ? (
-  <button
-    className="custom-employee-search-button"
-    onClick={handleSearch}
-  >
-    <FaSearch />
-  </button>
-) : (
-  <>
-    {isFormFilled ? (
-      // Show Update button if the data is complete
-      <button className="custom-employee-update-button" onClick={handleUpdate}>Update</button>
-    ) : (
-      // Show Save button if data is incomplete
-      <button className="custom-employee-save-button" onClick={handleSave}>Save</button>
-    )}
-    <button className="custom-employee-new-button" onClick={handlePageRefresh}>New</button>
-  </>
-)}
+            {!searchCompleted ? (
+              <button
+                className="custom-employee-search-button"
+                onClick={handleSearch}
+              >
+                <FaSearch />
+              </button>
+            ) : (
+              <>
+                {isFormFilled ? (
+                  // Show Update button if the data is complete
+                  <button className="custom-employee-update-button" onClick={handleUpdate}>Update</button>
+                ) : (
+                  // Show Save button if data is incomplete
+                  <button className="custom-employee-save-button" onClick={handleSave}>Save</button>
+                )}
+                <button className="custom-employee-new-button" onClick={handlePageRefresh}>New</button>
+              </>
+            )}
 
 
 
@@ -830,36 +830,36 @@ const Employee = () => {
           </div>
 
           <div className="custom-employee-form-row">
-      <div className="custom-employee-form-group">
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Enter Password"
-          value={employeeForm.password}
-          onChange={handleInputChange}
-          style={{
-            borderColor: passwordMismatch ? 'red' : 'initial',
-            backgroundColor: passwordMismatch ? '#fdd' : 'initial'
-          }}
-        />
-      </div>
+            <div className="custom-employee-form-group">
+              <label htmlFor="password">Password:</label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter Password"
+                value={employeeForm.password}
+                onChange={handleInputChange}
+                style={{
+                  borderColor: passwordMismatch ? 'red' : 'initial',
+                  backgroundColor: passwordMismatch ? '#fdd' : 'initial'
+                }}
+              />
+            </div>
 
-      <div className="custom-employee-form-group">
-        <label htmlFor="confirm_password">Confirm Password:</label>
-        <input
-          id="confirm_password"
-          type="password"
-          placeholder="Confirm Password"
-          value={employeeForm.confirm_password}
-          onChange={handleInputChange}
-          style={{
-            borderColor: passwordMismatch ? 'red' : 'initial',
-            backgroundColor: passwordMismatch ? '#fdd' : 'initial'
-          }}
-        />
-      </div>
-    </div>
+            <div className="custom-employee-form-group">
+              <label htmlFor="confirm_password">Confirm Password:</label>
+              <input
+                id="confirm_password"
+                type="password"
+                placeholder="Confirm Password"
+                value={employeeForm.confirm_password}
+                onChange={handleInputChange}
+                style={{
+                  borderColor: passwordMismatch ? 'red' : 'initial',
+                  backgroundColor: passwordMismatch ? '#fdd' : 'initial'
+                }}
+              />
+            </div>
+          </div>
 
         </div>
       </div>
