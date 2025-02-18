@@ -6,7 +6,6 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Import the calendar styles
 import { BASE_URL } from "/src/constants/constant.jsx";
 
-
 const Employee = () => {
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -45,7 +44,6 @@ const Employee = () => {
   const [filteredDesignations, setFilteredDesignations] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-
 
   // Fetch branches
   const fetchBranches = () => {
@@ -109,31 +107,33 @@ const Employee = () => {
     }
   }, [selectedDepartment, designations]);
 
+  // Handle branch selection (only dedicated handler is called)
   const handleBranchChange = (event) => {
     const branchId = event.target.value;
     setSelectedBranch(branchId);
     setSelectedDepartment("");
-    setSelectedDesignation("");
     setEmployeeForm((prev) => ({
       ...prev,
-      branch_id: branchId
+      branch_id: branchId,
+      department_id: "",
+      designation_id: ""
     }));
   };
 
+  // Handle department selection (only dedicated handler is called)
   const handleDepartmentChange = (event) => {
     const departmentId = event.target.value;
     setSelectedDepartment(departmentId);
-    setSelectedDesignation("");
     setEmployeeForm((prev) => ({
       ...prev,
-      department_id: departmentId
+      department_id: departmentId,
+      designation_id: ""
     }));
   };
 
-  // Handle input changes for controlled form fields
+  // Generic handler for other input fields, including password checks
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-
     setEmployeeForm((prev) => {
       const updatedForm = {
         ...prev,
@@ -142,17 +142,13 @@ const Employee = () => {
 
       // If password or confirm_password changes, check if they match
       if (id === "password" || id === "confirm_password") {
-        if (updatedForm.password !== updatedForm.confirm_password) {
-          // Optionally, set a state to show an error message or flag
-          setPasswordMismatch(true);
-        } else {
-          setPasswordMismatch(false);
-        }
+        setPasswordMismatch(updatedForm.password !== updatedForm.confirm_password);
       }
 
       return updatedForm;
     });
   };
+
 
 
   // Handle change for search input separately
