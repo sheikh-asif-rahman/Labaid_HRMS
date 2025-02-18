@@ -4,6 +4,8 @@ import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Import the calendar styles
+import { BASE_URL } from "/src/constants/constant.jsx";
+
 
 const Employee = () => {
   const [showModal, setShowModal] = useState(false);
@@ -42,12 +44,13 @@ const Employee = () => {
   const [filteredDepartments, setFilteredDepartments] = useState([]);
   const [filteredDesignations, setFilteredDesignations] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("");
-  const [selectedDesignation, setSelectedDesignation] = useState("");
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
+
 
   // Fetch branches
   const fetchBranches = () => {
     axios
-      .get("http://localhost:3000/api/locations")
+      .get(`${BASE_URL}locations`)
       .then((response) => {
         console.log("Fetched branches:", response.data);
         setBranches(response.data);
@@ -58,7 +61,7 @@ const Employee = () => {
   // Fetch departments
   const fetchDepartments = () => {
     axios
-      .get("http://localhost:3000/api/loaddepartments")
+      .get(`${BASE_URL}loaddepartments`)
       .then((response) => {
         console.log("Fetched departments:", response.data);
         setDepartments(response.data);
@@ -69,7 +72,7 @@ const Employee = () => {
   // Fetch designations
   const fetchDesignations = () => {
     axios
-      .get("http://localhost:3000/api/loaddesignation")
+      .get(`${BASE_URL}loaddesignation`)
       .then((response) => {
         console.log("Fetched designations:", response.data);
         setDesignations(response.data);
@@ -130,11 +133,27 @@ const Employee = () => {
   // Handle input changes for controlled form fields
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setEmployeeForm((prev) => ({
-      ...prev,
-      [id]: value
-    }));
+  
+    setEmployeeForm((prev) => {
+      const updatedForm = {
+        ...prev,
+        [id]: value
+      };
+  
+      // If password or confirm_password changes, check if they match
+      if (id === "password" || id === "confirm_password") {
+        if (updatedForm.password !== updatedForm.confirm_password) {
+          // Optionally, set a state to show an error message or flag
+          setPasswordMismatch(true);
+        } else {
+          setPasswordMismatch(false);
+        }
+      }
+  
+      return updatedForm;
+    });
   };
+  
 
   // Handle change for search input separately
   const handleSearchInputChange = (e) => {
@@ -223,7 +242,7 @@ const Employee = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/searchemployee?userId=${userId}`
+        `${BASE_URL}searchemployee?userId=${userId}`
       );
       console.log("Search response:", response.data);
   
@@ -267,6 +286,7 @@ const Employee = () => {
   const handlePageRefresh = () => {
     window.location.reload();
   };
+  
 
   const handleSave = async () => {
     setLoading(true);
@@ -276,6 +296,14 @@ const Employee = () => {
   
       if (!createdBy) {
         setModalMessage("User is not logged in.");
+        setLoading(false);
+        setShowModal(true);
+        return;
+      }
+  
+      // Check if the password and confirm password match
+      if (employeeForm.password !== employeeForm.confirm_password) {
+        setModalMessage("Passwords do not match.");
         setLoading(false);
         setShowModal(true);
         return;
@@ -306,7 +334,7 @@ const Employee = () => {
         permanent_address: employeeForm.permanent_address,
         nid: employeeForm.nid,
         status: statusValue, // Send true or false based on status
-        password: "123", // You might have logic to generate password
+        password: employeeForm.password, // Use the actual password entered
         createdby: createdBy, // The 'createdby' comes from localStorage
         image: employeeForm.image || null // Optional image, null if not available
       };
@@ -315,7 +343,7 @@ const Employee = () => {
       console.log("Sending employee data:", JSON.stringify(formDataToSend, null, 2));
   
       // Step 1: Send the employeeForm data to the employeecreate API to save the employee
-      const response = await axios.post("http://localhost:3000/api/employeecreate", formDataToSend);
+      const response = await axios.post(`${BASE_URL}employeecreate`, formDataToSend);
   
       // Check for a successful response (201 Created)
       if (response.status === 201) {
@@ -329,6 +357,83 @@ const Employee = () => {
       // Improved error message handling
       if (error.response) {
         setModalMessage(error.response?.data?.message || "Error saving employee.");
+      } else {
+        setModalMessage("An unexpected error occurred. Please try again.");
+      }
+    }
+    setLoading(false);
+    setShowModal(true);
+  };
+  
+  const handleUpdate = async () => {
+    setLoading(true);
+    try {
+      // Retrieve the 'userId' from localStorage for the 'createdby' field
+      const updatedby = localStorage.getItem("userId");
+  
+      if (!updatedby) {
+        setModalMessage("User is not logged in.");
+        setLoading(false);
+        setShowModal(true);
+        return;
+      }
+  
+      // Trim the status and check if it's exactly 'active' (case-sensitive check)
+      const statusValue = employeeForm.status && employeeForm.status.trim().toLowerCase() === "active" ? true : false;
+  
+      // Password matching logic
+      if (employeeForm.password !== employeeForm.confirm_password) {
+        setModalMessage("Passwords do not match.");
+        setLoading(false);
+        setShowModal(true);
+        return;
+      }
+  
+      // Prepare the data in the required format for update
+      const formDataToSend = {
+        userId: employeeForm.user_id, // Map the user_id field to userId
+        user_name: employeeForm.user_name,
+        branch_id: employeeForm.branch_id,
+        personalPhone: employeeForm.personal_phone, // Mapping to personalPhone
+        officialPhone: employeeForm.official_phone, // Mapping to officialPhone
+        department_id: employeeForm.department_id,
+        designation_id: employeeForm.designation_id,
+        date_of_joining: employeeForm.date_of_joining,
+        date_of_resign: employeeForm.date_of_resign || null, // Optional resign date
+        email: employeeForm.email,
+        employee_type: employeeForm.employee_type,
+        gender: employeeForm.gender,
+        marital_status: employeeForm.marital_status,
+        blood_group: employeeForm.blood_group,
+        fathers_name: employeeForm.fathers_name,
+        mothers_name: employeeForm.mothers_name,
+        present_address: employeeForm.present_address,
+        permanent_address: employeeForm.permanent_address,
+        nid: employeeForm.nid,
+        status: statusValue, // Send true or false based on status
+        password: employeeForm.password, // Only set if passwords match
+        updatedby: updatedby, // The 'createdby' comes from localStorage
+        image: employeeForm.image || null // Optional image, null if not available
+      };
+  
+      // Log the data to be sent to the API (for debugging)
+      console.log("Sending employee update data:", JSON.stringify(formDataToSend, null, 2));
+  
+      // Step 1: Send the employeeForm data to the employeeupdate API to update the employee
+      const response = await axios.put(`${BASE_URL}employee/${employeeForm.user_id}`, formDataToSend);
+  
+      // Check for a successful response (200 OK or 204 No Content)
+      if (response.status === 200 || response.status === 204) {
+        setModalMessage("Employee updated successfully!");
+      } else {
+        setModalMessage("Employee update failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating employee:", error);
+  
+      // Improved error message handling
+      if (error.response) {
+        setModalMessage(error.response?.data?.message || "Error updating employee.");
       } else {
         setModalMessage("An unexpected error occurred. Please try again.");
       }
@@ -421,7 +526,7 @@ const Employee = () => {
   <>
     {isFormFilled ? (
       // Show Update button if the data is complete
-      <button className="custom-employee-update-button" onClick={""}>Update</button>
+      <button className="custom-employee-update-button" onClick={handleUpdate}>Update</button>
     ) : (
       // Show Save button if data is incomplete
       <button className="custom-employee-save-button" onClick={handleSave}>Save</button>
@@ -725,28 +830,33 @@ const Employee = () => {
           </div>
 
           <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="password">Password:</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Enter Password"
-                value={employeeForm.password}
-                onChange={handleInputChange}
-              />
-            </div>
+  <div className="custom-employee-form-group">
+    <label htmlFor="password">Password:</label>
+    <input
+      id="password"
+      type="password"
+      placeholder="Enter Password"
+      value={employeeForm.password}
+      onChange={handleInputChange}
+    />
+  </div>
 
-            <div className="custom-employee-form-group">
-              <label htmlFor="confirm_password">Confirm Password:</label>
-              <input
-                id="confirm_password"
-                type="password"
-                placeholder="Confirm Password"
-                value={employeeForm.confirm_password}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
+  <div className="custom-employee-form-group">
+    <label htmlFor="confirm_password">Confirm Password:</label>
+    <input
+      id="confirm_password"
+      type="password"
+      placeholder="Confirm Password"
+      value={employeeForm.confirm_password}
+      onChange={handleInputChange}
+    />
+  </div>
+
+  {passwordMismatch && (
+    <p style={{ color: "red" }}>Passwords do not match.</p>
+  )}
+</div>
+
         </div>
       </div>
 
