@@ -2,14 +2,14 @@ const { sql } = require("../config/dbConfig");
 
 const rulesPermissionEmployeeUpdate = async (req, res) => {
     try {
-        let { userId, userName, permissions, branchId, updatedBy } = req.body;
+        let { userId, userName, permissions, branchId, branchName, updatedBy } = req.body;
 
-        if (!userId || !userName || !permissions || !branchId || !updatedBy) {
-            return res.status(400).send("All fields (userId, userName, permissions, branchId, updatedBy) are required");
+        if (!userId || !userName || !permissions || !branchId || !branchName || !updatedBy) {
+            return res.status(400).send("All fields (userId, userName, permissions, branchId, branchName, updatedBy) are required");
         }
 
-        if (!Array.isArray(permissions) || !Array.isArray(branchId)) {
-            return res.status(400).send("permissions and branchId should be arrays");
+        if (!Array.isArray(permissions) || !Array.isArray(branchId) || !Array.isArray(branchName)) {
+            return res.status(400).send("permissions, branchId, and branchName should be arrays");
         }
 
         userId = userId.trim();
@@ -20,6 +20,7 @@ const rulesPermissionEmployeeUpdate = async (req, res) => {
         request.input("userName", sql.NVarChar, userName);
         request.input("permissions", sql.NVarChar, permissions.join(","));
         request.input("branchId", sql.NVarChar, branchId.join(","));
+        request.input("branchName", sql.NVarChar, branchName.join(",")); // Added branchName
         request.input("updatedBy", sql.NVarChar, updatedBy);
 
         // Check if user exists
@@ -31,12 +32,13 @@ const rulesPermissionEmployeeUpdate = async (req, res) => {
             return res.status(404).send("No record found.");
         }
 
-        // Update the user data
+        // Update the user data, adding BranchName
         const updateQuery = `
             UPDATE dbo.UserLogin
             SET UserName = @userName, 
                 Permission = @permissions, 
                 BranchId = @branchId, 
+                BranchName = @branchName,  -- Added branchName
                 UpdatedBy = @updatedBy
             WHERE UserId = @userId
         `;

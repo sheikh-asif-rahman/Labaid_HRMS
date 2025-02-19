@@ -76,11 +76,17 @@ const RulesPermission = () => {
       return;
     }
   
+    // Extract branch names based on selected branch IDs
+    const branchNames = branches
+      .filter((branch) => selectedBranches.includes(branch.id.toString()))
+      .map((branch) => branch.name);
+  
     const requestData = {
       userId: userId,
       userName: userName,
       permissions: permissions,
       branchId: selectedBranches,
+      branchName: branchNames, // Added branch names to the request data
       updatedBy: "AdminUser",
     };
   
@@ -118,6 +124,7 @@ const RulesPermission = () => {
         setShowModal(true);
       });
   };
+  
   
   
 
