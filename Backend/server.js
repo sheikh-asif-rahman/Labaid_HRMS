@@ -21,6 +21,8 @@ const designationcreate = require('./routes/DesignationCreateRoute');
 const designationupdate = require('./routes/DesignationUpdateRoute');
 const employeeCreate = require('./routes/EmployeeCreateRoute');
 const employeeUpdate = require('./routes/EmployeeUpdateRoute');
+const rulesPermissionEmployeeSearch = require('./routes/RulesPermissionEmployeeSearchRoute');
+const rulesPermissionEmployeeUpdate = require('./routes/RulesPermissionUpdateRoute');
 
 
 const app = express();
@@ -59,6 +61,8 @@ app.use('/api', designationcreate);
 app.use('/api', designationupdate);
 app.use('/api', employeeCreate);
 app.use('/api', employeeUpdate);
+app.use('/api', rulesPermissionEmployeeSearch);
+app.use('/api', rulesPermissionEmployeeUpdate);
 
 
 

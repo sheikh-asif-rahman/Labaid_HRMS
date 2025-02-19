@@ -7,6 +7,8 @@ import "react-calendar/dist/Calendar.css"; // Import the calendar styles
 import { BASE_URL } from "/src/constants/constant.jsx";
 
 const Employee = () => {
+  const storedPermission = localStorage.getItem("permission");
+const permission = storedPermission ? JSON.parse(storedPermission) : [];
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState(new Date());
   const [modalMessage, setModalMessage] = useState("");
@@ -501,40 +503,57 @@ const Employee = () => {
 
       {/* Main content */}
       <div className="custom-employee-container">
-        <div className="custom-employee-search-container">
-          <label htmlFor="employee-search">Search Employee ID:</label>
-          <div className="custom-employee-search-box-wrapper">
-            <input
-              id="employee-search"
-              type="number"
-              placeholder="Enter Employee ID"
-              value={searchUserId}
-              onChange={handleSearchInputChange}
-            />
-            {!searchCompleted ? (
-              <button
-                className="custom-employee-search-button"
-                onClick={handleSearch}
-              >
-                <FaSearch />
-              </button>
-            ) : (
-              <>
-                {isFormFilled ? (
-                  // Show Update button if the data is complete
-                  <button className="custom-employee-update-button" onClick={handleUpdate}>Update</button>
-                ) : (
-                  // Show Save button if data is incomplete
-                  <button className="custom-employee-save-button" onClick={handleSave}>Save</button>
-                )}
-                <button className="custom-employee-new-button" onClick={handlePageRefresh}>New</button>
-              </>
-            )}
+      <div className="custom-employee-search-container">
+  <label htmlFor="employee-search">Search Employee ID:</label>
+  <div className="custom-employee-search-box-wrapper">
+    <input
+      id="employee-search"
+      type="number"
+      placeholder="Enter Employee ID"
+      value={searchUserId}
+      onChange={handleSearchInputChange}
+    />
+    {!searchCompleted ? (
+      <button
+        className="custom-employee-search-button"
+        onClick={handleSearch}
+      >
+        <FaSearch />
+      </button>
+    ) : (
+      <>
+        {isFormFilled ? (
+          // Show Update button if data is complete and user has permission to edit
+          permission.includes("Can Edit User Information") && (
+            <button
+              className="custom-employee-update-button"
+              onClick={handleUpdate}
+            >
+              Update
+            </button>
+          )
+        ) : (
+          // Show Save button if data is incomplete and user has permission to create new
+          permission.includes("Can Create New User") && (
+            <button
+              className="custom-employee-save-button"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          )
+        )}
+        <button
+          className="custom-employee-new-button"
+          onClick={handlePageRefresh}
+        >
+          New
+        </button>
+      </>
+    )}
+  </div>
+</div>
 
-
-
-          </div>
-        </div>
 
         {/* Form to display employee details */}
         <div className="custom-employee-form-container">

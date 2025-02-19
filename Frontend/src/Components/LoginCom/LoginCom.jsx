@@ -38,45 +38,23 @@ const LoginCom = () => {
         }),
       });
 
-      const message = await response.text();
-      debugger;
-
-      if (response.ok) {
-        debugger;
-        localStorage.setItem("isLoggedIn", "true"); // Store login status
-        localStorage.setItem("userId", formData.userId); // Store the userId after successful login
-
-        if (message === "Welcome") {
-          // Fetch user data and permissions after successful login
-          const userResponse = await fetch(
-            `${BASE_URL}adminusersearch`,
-            {
-              method: "POST", // Using POST method
-              headers: {
-                "Content-Type": "application/json", // Sending JSON payload
-              },
-              body: JSON.stringify({
-                UserId: formData.userId, // Sending UserId in the body as an nvarchar string
-              }),
-            }
-          );
-
-          if (userResponse.ok) {
-            const userData = await userResponse.json();
-
-            // Store the Permission from the response
-            const permission = userData.Permission; // Extracting the Permission field
-            localStorage.setItem("permission", permission); // Store permission in localStorage
-            debugger;
-
-            navigate(`/homepage`); // Navigate to homepage on successful login
-          } else {
-            alert("Failed to fetch user data.");
-          }
-        }
-      } else {
-        alert(message); // Error message
+      if (!response.ok) {
+        const message = await response.text();
+        alert(message); // Show error message
+        return;
       }
+
+      const data = await response.json(); // Parse JSON response
+
+      // Store UserId and Permission in localStorage
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userId", data.UserId);
+      
+      // Convert permission string into an array and store it
+      const permissionArray = data.Permission ? data.Permission.split(",") : [];
+      localStorage.setItem("permission", JSON.stringify(permissionArray));
+
+      navigate("/homepage"); // Navigate to homepage on successful login
     } catch (error) {
       console.error("Error logging in:", error);
       alert("An error occurred while logging in. Please try again later.");
@@ -131,7 +109,6 @@ const LoginCom = () => {
       </div>
     </div>
   );
-  
 };
 
 export default LoginCom;

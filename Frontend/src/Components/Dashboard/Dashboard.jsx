@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap styles are imported
-import "./Dashboard.css"; // Import custom CSS
-import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
+import "bootstrap/dist/css/bootstrap.min.css"; // Bootstrap styles
+import "./Dashboard.css"; // Custom CSS
+import { useNavigate } from "react-router-dom"; // For navigation
+
 // Icons
 import {
   BsWrenchAdjustableCircle,
@@ -12,29 +13,37 @@ import { RiTeamFill } from "react-icons/ri";
 import { SiAdblock } from "react-icons/si";
 
 const Dashboard = () => {
-  const navigate = useNavigate(); // Create a navigate function
-  const [permission, setPermission] = useState(null);
+  const navigate = useNavigate();
+
+  const [permission, setPermission] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
-    // Load permission from localStorage
+    // Load and parse permission from localStorage
     const storedPermission = localStorage.getItem("permission");
-    setPermission(storedPermission);
+    if (storedPermission) {
+      try {
+        const parsedPermission = JSON.parse(storedPermission);
+        setPermission(parsedPermission);
+      } catch (error) {
+        console.error("Error parsing permission:", error);
+        setPermission([]);
+      }
+    }
   }, []);
 
   // Define the onClick handler for each card to navigate
   const handleCardClick = (cardName) => {
-    // Only navigating to the Report Page for now
     if (cardName === "Report") {
-      navigate("/reportpage"); // Navigate to the Report page when the Report card is clicked
+      navigate("/reportpage"); // Navigate to the Report page
     } else if (cardName === "OverView") {
-      navigate("/overviewpage"); // Navigate to the OverView page when the OverView card is clicked
+      navigate("/overviewpage"); // Navigate to the OverView page
     } else if (cardName === "Admin") {
-      navigate("/admin"); // Navigate to the Admin page when the Admin card is clicked
-    }  else if (cardName === "Employee") {
-      navigate("/employeepage"); // Navigate to the Employee page when the Employee card is clicked
-    }  else if (cardName === "underDevelopmentModal") {
+      navigate("/admin"); // Navigate to the Admin page
+    } else if (cardName === "Employee") {
+      navigate("/employeepage"); // Navigate to the Employee page
+    } else if (cardName === "underDevelopmentModal") {
       setModalMessage("Under Development");
       setShowModal(true);
     }
@@ -86,25 +95,26 @@ const Dashboard = () => {
         </div>
 
         {/* Conditionally render the Admin card based on permission */}
-        {permission === "Admin" && (
-          <div className="col-md-4 mb-4">
-            <div
-              className="card custom-card card-monitoring"
-              onClick={() => handleCardClick("Admin")}
-            >
-              <div className="row g-0">
-                <div className="col-md-8">
-                  <div className="card-body">
-                    <h5 className="card-title">Admin</h5>
-                  </div>
-                </div>
-                <div className="col-md-4 d-flex justify-content-center align-items-center">
-                  <BsWrenchAdjustableCircle className="card-icon" />
-                </div>
-              </div>
-            </div>
+{permission && Array.isArray(permission) && permission.includes("Can Access Admin") && (
+  <div className="col-md-4 mb-4">
+    <div
+      className="card custom-card card-monitoring"
+      onClick={() => handleCardClick("Admin")}
+    >
+      <div className="row g-0">
+        <div className="col-md-8">
+          <div className="card-body">
+            <h5 className="card-title">Admin</h5>
           </div>
-        )}
+        </div>
+        <div className="col-md-4 d-flex justify-content-center align-items-center">
+          <BsWrenchAdjustableCircle className="card-icon" />
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
         {/* Card 4: Employee */}
         <div className="col-md-4 mb-4">
