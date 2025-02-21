@@ -58,27 +58,30 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
       .catch((error) => console.error("Error fetching branches:", error));
   };
 
-  // Fetch departments
-  const fetchDepartments = () => {
-    axios
-      .get(`${BASE_URL}loaddepartments`)
-      .then((response) => {
-        console.log("Fetched departments:", response.data);
-        setDepartments(response.data);
-      })
-      .catch((error) => console.error("Error fetching departments:", error));
-  };
+// Fetch departments
+const fetchDepartments = () => {
+  axios
+    .get(`${BASE_URL}loaddepartments`)
+    .then((response) => {
+      const filteredDepartments = response.data.filter((dept) => dept.status);
+      console.log("Fetched departments:", filteredDepartments);
+      setDepartments(filteredDepartments);
+    })
+    .catch((error) => console.error("Error fetching departments:", error));
+};
 
-  // Fetch designations
-  const fetchDesignations = () => {
-    axios
-      .get(`${BASE_URL}loaddesignation`)
-      .then((response) => {
-        console.log("Fetched designations:", response.data);
-        setDesignations(response.data);
-      })
-      .catch((error) => console.error("Error fetching designations:", error));
-  };
+// Fetch designations
+const fetchDesignations = () => {
+  axios
+    .get(`${BASE_URL}loaddesignation`)
+    .then((response) => {
+      const filteredDesignations = response.data.filter((designation) => designation.status);
+      console.log("Fetched designations:", filteredDesignations);
+      setDesignations(filteredDesignations);
+    })
+    .catch((error) => console.error("Error fetching designations:", error));
+};
+
 
   useEffect(() => {
     fetchBranches();
@@ -136,20 +139,19 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
   // Generic handler for other input fields, including password checks
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+    
     setEmployeeForm((prev) => {
-      const updatedForm = {
-        ...prev,
-        [id]: value
-      };
-
+      const updatedForm = { ...prev, [id]: value };
+  
       // If password or confirm_password changes, check if they match
       if (id === "password" || id === "confirm_password") {
         setPasswordMismatch(updatedForm.password !== updatedForm.confirm_password);
       }
-
+  
       return updatedForm;
     });
   };
+  
 
 
 
@@ -573,12 +575,13 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
             <div className="custom-employee-form-group">
               <label htmlFor="user_name">Employee Name:</label>
               <input
-                id="user_name"
-                type="text"
-                placeholder="Enter Employee Name"
-                value={employeeForm.user_name}
-                onChange={handleInputChange}
-              />
+  id="user_name"
+  type="text"
+  placeholder="Enter Employee Name"
+  value={employeeForm.user_name}
+  onChange={handleInputChange}
+  style={{ borderColor: employeeForm.user_name ? "" : "red" }}
+/>
             </div>
           </div>
 
@@ -587,6 +590,7 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
               <label htmlFor="branch_id">Branch:</label>
               <select
                 id="branch_id"
+                style={{ borderColor: employeeForm.branch_id ? "" : "red" }}
                 value={employeeForm.branch_id}
                 onChange={(e) => {
                   handleBranchChange(e);
@@ -619,6 +623,7 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
               <label htmlFor="department_id">Department:</label>
               <select
                 id="department_id"
+                style={{ borderColor: employeeForm.department_id ? "" : "red" }}
                 value={employeeForm.department_id}
                 onChange={(e) => {
                   handleDepartmentChange(e);
@@ -655,6 +660,7 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
               <label htmlFor="designation_id">Designation:</label>
               <select
                 id="designation_id"
+                style={{ borderColor: employeeForm.designation_id ? "" : "red" }}
                 value={employeeForm.designation_id}
                 onChange={handleInputChange}
               >
@@ -674,6 +680,7 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
             <div className="custom-employee-form-group">
               <label htmlFor="date_of_joining">Date of Joining:</label>
               <input
+                style={{ borderColor: employeeForm.date_of_joining ? "" : "red" }}
                 id="date_of_joining"
                 type="date"
                 value={employeeForm.date_of_joining}
@@ -706,19 +713,46 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
           </div>
 
           <div className="custom-employee-form-row">
-            <div className="custom-employee-form-group">
-              <label htmlFor="employee_type">Employee Type:</label>
-              <select
-                id="employee_type"
-                value={employeeForm.employee_type}
-                onChange={handleInputChange}
-              >
-                <option value="">Select Employee Type</option>
-                <option value="admin">Admin</option>
-                <option value="staff">Staff</option>
-                <option value="contract">Contract</option>
-              </select>
-            </div>
+          <div className="custom-employee-form-group">
+    <label htmlFor="employee_type">Employee Type:</label>
+    <select
+      id="employee_type"
+      value={employeeForm.employee_type}
+      onChange={handleInputChange}
+    >
+      <option value="">Select Employee Type</option>
+      <option value="anaesthetist_on_call">Anaesthetist on call</option>
+      <option value="billing_head">Billing Head</option>
+      <option value="concession_head">Concession Head</option>
+      <option value="contract_staff">Contract Staff</option>
+      <option value="contractual">Contractual</option>
+      <option value="dietician">Dietician</option>
+      <option value="doctor">Doctor</option>
+      <option value="doctor_team">Doctor Team</option>
+      <option value="employee">Employee</option>
+      <option value="full_time">Full Time</option>
+      <option value="lab_director">Lab Director</option>
+      <option value="lab_doctor">Lab Doctor</option>
+      <option value="lab_in_charge">Lab In-Charge</option>
+      <option value="lab_supervisor">Lab Supervisor</option>
+      <option value="lab_technician">Lab Technician</option>
+      <option value="management">Management</option>
+      <option value="manager">Manager</option>
+      <option value="marketing">Marketing</option>
+      <option value="nurse">Nurse</option>
+      <option value="nursing">Nursing</option>
+      <option value="nursing_supervisor">Nursing Supervisor</option>
+      <option value="ot_manager">OT Manager</option>
+      <option value="others">Others</option>
+      <option value="paramedical">Paramedical</option>
+      <option value="permanent">Permanent</option>
+      <option value="pharmacist">Pharmacist</option>
+      <option value="physiotherapist">Physiotherapist</option>
+      <option value="scrub_nurse">Scrub Nurse</option>
+      <option value="technician">Technician</option>
+      <option value="technician_other">Technician</option>
+    </select>
+  </div>
 
             <div className="custom-employee-form-group">
               <label htmlFor="gender">Gender:</label>
