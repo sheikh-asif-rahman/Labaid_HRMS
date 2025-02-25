@@ -8,7 +8,7 @@ import { BASE_URL } from "/src/constants/constant.jsx";
 
 const Employee = () => {
   const storedPermission = localStorage.getItem("permission");
-const permission = storedPermission ? JSON.parse(storedPermission) : [];
+  const permission = storedPermission ? JSON.parse(storedPermission) : [];
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState(new Date());
   const [modalMessage, setModalMessage] = useState("");
@@ -35,7 +35,7 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
     present_address: "",
     permanent_address: "",
     nid: "",
-    status: "active"
+    status: ""
   });
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -58,29 +58,29 @@ const permission = storedPermission ? JSON.parse(storedPermission) : [];
       .catch((error) => console.error("Error fetching branches:", error));
   };
 
-// Fetch departments
-const fetchDepartments = () => {
-  axios
-    .get(`${BASE_URL}loaddepartments`)
-    .then((response) => {
-      const filteredDepartments = response.data.filter((dept) => dept.status);
-      console.log("Fetched departments:", filteredDepartments);
-      setDepartments(filteredDepartments);
-    })
-    .catch((error) => console.error("Error fetching departments:", error));
-};
+  // Fetch departments
+  const fetchDepartments = () => {
+    axios
+      .get(`${BASE_URL}loaddepartments`)
+      .then((response) => {
+        const filteredDepartments = response.data.filter((dept) => dept.status);
+        console.log("Fetched departments:", filteredDepartments);
+        setDepartments(filteredDepartments);
+      })
+      .catch((error) => console.error("Error fetching departments:", error));
+  };
 
-// Fetch designations
-const fetchDesignations = () => {
-  axios
-    .get(`${BASE_URL}loaddesignation`)
-    .then((response) => {
-      const filteredDesignations = response.data.filter((designation) => designation.status);
-      console.log("Fetched designations:", filteredDesignations);
-      setDesignations(filteredDesignations);
-    })
-    .catch((error) => console.error("Error fetching designations:", error));
-};
+  // Fetch designations
+  const fetchDesignations = () => {
+    axios
+      .get(`${BASE_URL}loaddesignation`)
+      .then((response) => {
+        const filteredDesignations = response.data.filter((designation) => designation.status);
+        console.log("Fetched designations:", filteredDesignations);
+        setDesignations(filteredDesignations);
+      })
+      .catch((error) => console.error("Error fetching designations:", error));
+  };
 
 
   useEffect(() => {
@@ -139,19 +139,21 @@ const fetchDesignations = () => {
   // Generic handler for other input fields, including password checks
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    
+
     setEmployeeForm((prev) => {
       const updatedForm = { ...prev, [id]: value };
-  
+
       // If password or confirm_password changes, check if they match
       if (id === "password" || id === "confirm_password") {
         setPasswordMismatch(updatedForm.password !== updatedForm.confirm_password);
       }
-  
+
+      console.log('Updated Employee Form:', updatedForm);  // Log to check the updated value
       return updatedForm;
     });
   };
-  
+
+
 
 
 
@@ -203,15 +205,11 @@ const fetchDesignations = () => {
       user_name: data.EmployeeName || data.user_name || "", // Both EmployeeName and user_name can be used
       branch_id: data.BranchId || "",
       personal_phone: data.PersonalContactNumber || "", // Mapping for personal phone number
-      official_phone: data.OfficalContactNumber || "", // Mapping for official phone number
+      official_phone: data.OfficialContactNumber || "", // Fixed typo from OfficalContactNumber
       department_id: data.DepartmentId || "",
       designation_id: data.DesignationId || "",
-      date_of_joining: data.DateOfJoin
-        ? new Date(data.DateOfJoin).toISOString().split("T")[0]
-        : "",
-      date_of_resign: data.DateOfResign
-        ? new Date(data.DateOfResign).toISOString().split("T")[0]
-        : "",
+      date_of_joining: data.DateOfJoin ? new Date(data.DateOfJoin).toISOString().split("T")[0] : "",
+      date_of_resign: data.DateOfResign ? new Date(data.DateOfResign).toISOString().split("T")[0] : "",
       email: data.Email || "",
       employee_type: data.EmployeeType || "",
       gender: data.Gender || "",
@@ -222,7 +220,7 @@ const fetchDesignations = () => {
       present_address: data.PresentAddress || "",
       permanent_address: data.PermanentAddress || "",
       nid: data.NID || "",
-      status: data.Status ? "active" : "inactive",
+      status: ["active", "inactive", "lock"].includes(data.Status) ? data.Status : "lock", // Ensure valid status
       filteredBranches,
       filteredDepartments,
       filteredDesignations
@@ -241,42 +239,33 @@ const fetchDesignations = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${BASE_URL}searchemployee?userId=${userId}`
-      );
-      console.log("Search response:", response.data);
+      const response = await axios.get(`${BASE_URL}searchemployee?userId=${userId}`);
+      console.log("Search response:", response.data); // Log the full response from the search API
 
-      if (response.data) {
+      if (response.data && response.data.EmployeeId) {
         // If we get full employee data
         setSearchCompleted(true);
         const mappedData = mapEmployeeDataToForm(response.data);
-        console.log("Mapped form data:", mappedData);
+        console.log("Mapped form data:", mappedData); // Log the mapped data
         setEmployeeForm(mappedData);
-        setFilteredDepartments(mappedData.filteredDepartments); // Update filtered departments
-        setFilteredDesignations(mappedData.filteredDesignations); // Update filtered designations
+        setFilteredDepartments(mappedData.filteredDepartments);
+        setFilteredDesignations(mappedData.filteredDesignations);
 
-        // Check if all necessary fields are available for updating
-        if (mappedData.branch_id && mappedData.department_id && mappedData.designation_id) {
-          setIsFormFilled(true);  // Set to true if data is complete
-        } else {
-          setIsFormFilled(false); // Set to false if any required data is missing
-        }
+        setIsFormFilled(mappedData.branch_id && mappedData.department_id && mappedData.designation_id);
       } else {
-        // If the data is incomplete (only user_id and user_name)
+        // If only minimal data is available
         setEmployeeForm({
-          user_id: response.data.user_id,
-          user_name: response.data.user_name || ""
+          user_id: response.data?.user_id || "",
+          user_name: response.data?.user_name || ""
         });
         setSearchCompleted(false);
-        setIsFormFilled(false); // Set to false since data is incomplete
+        setIsFormFilled(false);
       }
 
       setModalMessage(response.data.message || "Search completed.");
     } catch (error) {
       console.error("Search error:", error);
-      setModalMessage(
-        error.response?.data?.message || "Error searching employee."
-      );
+      setModalMessage(error.response?.data?.message || "Error searching employee.");
     }
     setLoading(false);
     setShowModal(true);
@@ -291,7 +280,6 @@ const fetchDesignations = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      // Retrieve the 'userId' from localStorage for the 'createdby' field
       const createdBy = localStorage.getItem("userId");
 
       if (!createdBy) {
@@ -301,7 +289,6 @@ const fetchDesignations = () => {
         return;
       }
 
-      // Check if the password and confirm password match
       if (employeeForm.password !== employeeForm.confirm_password) {
         setModalMessage("Passwords do not match.");
         setLoading(false);
@@ -309,20 +296,18 @@ const fetchDesignations = () => {
         return;
       }
 
-      // Trim the status and check if it's exactly 'active' (case-sensitive check)
-      const statusValue = employeeForm.status && employeeForm.status.trim().toLowerCase() === "active" ? true : false;
+      const statusValue = employeeForm.status?.trim() || "Lock";
 
-      // Prepare the data in the required format
       const formDataToSend = {
-        userId: employeeForm.user_id, // Map the user_id field to userId
+        userId: employeeForm.user_id,
         user_name: employeeForm.user_name,
         branch_id: employeeForm.branch_id,
-        personalPhone: employeeForm.personal_phone, // Mapping to personalPhone
-        officialPhone: employeeForm.official_phone, // Mapping to officialPhone
+        personalPhone: employeeForm.personal_phone,
+        officialPhone: employeeForm.official_phone,
         department_id: employeeForm.department_id,
         designation_id: employeeForm.designation_id,
         date_of_joining: employeeForm.date_of_joining,
-        date_of_resign: employeeForm.date_of_resign || null, // Optional resign date
+        date_of_resign: employeeForm.date_of_resign || null,
         email: employeeForm.email,
         employee_type: employeeForm.employee_type,
         gender: employeeForm.gender,
@@ -333,19 +318,16 @@ const fetchDesignations = () => {
         present_address: employeeForm.present_address,
         permanent_address: employeeForm.permanent_address,
         nid: employeeForm.nid,
-        status: statusValue, // Send true or false based on status
-        password: employeeForm.password, // Use the actual password entered
-        createdby: createdBy, // The 'createdby' comes from localStorage
-        image: employeeForm.image || null // Optional image, null if not available
+        status: statusValue,
+        password: employeeForm.password,
+        createdby: createdBy,
+        image: employeeForm.image || null
       };
 
-      // Log the data to be sent to the API (for debugging)
-      console.log("Sending employee data:", JSON.stringify(formDataToSend, null, 2));
+      console.log("Sending employee data:", JSON.stringify(formDataToSend, null, 2)); // Log the data being sent to the API
 
-      // Step 1: Send the employeeForm data to the employeecreate API to save the employee
       const response = await axios.post(`${BASE_URL}employeecreate`, formDataToSend);
 
-      // Check for a successful response (201 Created)
       if (response.status === 201) {
         setModalMessage("Employee saved successfully!");
       } else {
@@ -353,8 +335,6 @@ const fetchDesignations = () => {
       }
     } catch (error) {
       console.error("Error saving employee:", error);
-
-      // Improved error message handling
       if (error.response) {
         setModalMessage(error.response?.data?.message || "Error saving employee.");
       } else {
@@ -365,10 +345,10 @@ const fetchDesignations = () => {
     setShowModal(true);
   };
 
+
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      // Retrieve the 'userId' from localStorage for the 'createdby' field
       const updatedby = localStorage.getItem("userId");
 
       if (!updatedby) {
@@ -378,10 +358,8 @@ const fetchDesignations = () => {
         return;
       }
 
-      // Trim the status and check if it's exactly 'active' (case-sensitive check)
-      const statusValue = employeeForm.status && employeeForm.status.trim().toLowerCase() === "active" ? true : false;
+      const statusValue = employeeForm.status?.trim() || "Lock";
 
-      // Password matching logic
       if (employeeForm.password !== employeeForm.confirm_password) {
         setModalMessage("Passwords do not match.");
         setLoading(false);
@@ -389,17 +367,16 @@ const fetchDesignations = () => {
         return;
       }
 
-      // Prepare the data in the required format for update
       const formDataToSend = {
-        userId: employeeForm.user_id, // Map the user_id field to userId
+        userId: employeeForm.user_id,
         user_name: employeeForm.user_name,
         branch_id: employeeForm.branch_id,
-        personalPhone: employeeForm.personal_phone, // Mapping to personalPhone
-        officialPhone: employeeForm.official_phone, // Mapping to officialPhone
+        personalPhone: employeeForm.personal_phone,
+        officialPhone: employeeForm.official_phone,
         department_id: employeeForm.department_id,
         designation_id: employeeForm.designation_id,
         date_of_joining: employeeForm.date_of_joining,
-        date_of_resign: employeeForm.date_of_resign || null, // Optional resign date
+        date_of_resign: employeeForm.date_of_resign || null,
         email: employeeForm.email,
         employee_type: employeeForm.employee_type,
         gender: employeeForm.gender,
@@ -410,19 +387,16 @@ const fetchDesignations = () => {
         present_address: employeeForm.present_address,
         permanent_address: employeeForm.permanent_address,
         nid: employeeForm.nid,
-        status: statusValue, // Send true or false based on status
-        password: employeeForm.password, // Only set if passwords match
-        updatedby: updatedby, // The 'createdby' comes from localStorage
-        image: employeeForm.image || null // Optional image, null if not available
+        status: statusValue,
+        password: employeeForm.password,
+        updatedby: updatedby,
+        image: employeeForm.image || null
       };
 
-      // Log the data to be sent to the API (for debugging)
-      console.log("Sending employee update data:", JSON.stringify(formDataToSend, null, 2));
+      console.log("Sending employee update data:", JSON.stringify(formDataToSend, null, 2)); // Log the update data
 
-      // Step 1: Send the employeeForm data to the employeeupdate API to update the employee
       const response = await axios.put(`${BASE_URL}employee/${employeeForm.user_id}`, formDataToSend);
 
-      // Check for a successful response (200 OK or 204 No Content)
       if (response.status === 200 || response.status === 204) {
         setModalMessage("Employee updated successfully!");
       } else {
@@ -430,8 +404,6 @@ const fetchDesignations = () => {
       }
     } catch (error) {
       console.error("Error updating employee:", error);
-
-      // Improved error message handling
       if (error.response) {
         setModalMessage(error.response?.data?.message || "Error updating employee.");
       } else {
@@ -441,6 +413,7 @@ const fetchDesignations = () => {
     setLoading(false);
     setShowModal(true);
   };
+
 
 
 
@@ -505,56 +478,56 @@ const fetchDesignations = () => {
 
       {/* Main content */}
       <div className="custom-employee-container">
-      <div className="custom-employee-search-container">
-  <label htmlFor="employee-search">Search Employee ID:</label>
-  <div className="custom-employee-search-box-wrapper">
-    <input
-      id="employee-search"
-      type="number"
-      placeholder="Enter Employee ID"
-      value={searchUserId}
-      onChange={handleSearchInputChange}
-    />
-    {!searchCompleted ? (
-      <button
-        className="custom-employee-search-button"
-        onClick={handleSearch}
-      >
-        <FaSearch />
-      </button>
-    ) : (
-      <>
-        {isFormFilled ? (
-          // Show Update button if data is complete and user has permission to edit
-          permission.includes("Can Edit User Information") && (
-            <button
-              className="custom-employee-update-button"
-              onClick={handleUpdate}
-            >
-              Update
-            </button>
-          )
-        ) : (
-          // Show Save button if data is incomplete and user has permission to create new
-          permission.includes("Can Create New User") && (
-            <button
-              className="custom-employee-save-button"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          )
-        )}
-        <button
-          className="custom-employee-new-button"
-          onClick={handlePageRefresh}
-        >
-          New
-        </button>
-      </>
-    )}
-  </div>
-</div>
+        <div className="custom-employee-search-container">
+          <label htmlFor="employee-search">Search Employee ID:</label>
+          <div className="custom-employee-search-box-wrapper">
+            <input
+              id="employee-search"
+              type="number"
+              placeholder="Enter Employee ID"
+              value={searchUserId}
+              onChange={handleSearchInputChange}
+            />
+            {!searchCompleted ? (
+              <button
+                className="custom-employee-search-button"
+                onClick={handleSearch}
+              >
+                <FaSearch />
+              </button>
+            ) : (
+              <>
+                {isFormFilled ? (
+                  // Show Update button if data is complete and user has permission to edit
+                  permission.includes("Can Edit User Information") && (
+                    <button
+                      className="custom-employee-update-button"
+                      onClick={handleUpdate}
+                    >
+                      Update
+                    </button>
+                  )
+                ) : (
+                  // Show Save button if data is incomplete and user has permission to create new
+                  permission.includes("Can Create New User") && (
+                    <button
+                      className="custom-employee-save-button"
+                      onClick={handleSave}
+                    >
+                      Save
+                    </button>
+                  )
+                )}
+                <button
+                  className="custom-employee-new-button"
+                  onClick={handlePageRefresh}
+                >
+                  New
+                </button>
+              </>
+            )}
+          </div>
+        </div>
 
 
         {/* Form to display employee details */}
@@ -575,13 +548,13 @@ const fetchDesignations = () => {
             <div className="custom-employee-form-group">
               <label htmlFor="user_name">Employee Name:</label>
               <input
-  id="user_name"
-  type="text"
-  placeholder="Enter Employee Name"
-  value={employeeForm.user_name}
-  onChange={handleInputChange}
-  style={{ borderColor: employeeForm.user_name ? "" : "red" }}
-/>
+                id="user_name"
+                type="text"
+                placeholder="Enter Employee Name"
+                value={employeeForm.user_name}
+                onChange={handleInputChange}
+                style={{ borderColor: employeeForm.user_name ? "" : "red" }}
+              />
             </div>
           </div>
 
@@ -713,46 +686,46 @@ const fetchDesignations = () => {
           </div>
 
           <div className="custom-employee-form-row">
-          <div className="custom-employee-form-group">
-    <label htmlFor="employee_type">Employee Type:</label>
-    <select
-      id="employee_type"
-      value={employeeForm.employee_type}
-      onChange={handleInputChange}
-    >
-      <option value="">Select Employee Type</option>
-      <option value="anaesthetist_on_call">Anaesthetist on call</option>
-      <option value="billing_head">Billing Head</option>
-      <option value="concession_head">Concession Head</option>
-      <option value="contract_staff">Contract Staff</option>
-      <option value="contractual">Contractual</option>
-      <option value="dietician">Dietician</option>
-      <option value="doctor">Doctor</option>
-      <option value="doctor_team">Doctor Team</option>
-      <option value="employee">Employee</option>
-      <option value="full_time">Full Time</option>
-      <option value="lab_director">Lab Director</option>
-      <option value="lab_doctor">Lab Doctor</option>
-      <option value="lab_in_charge">Lab In-Charge</option>
-      <option value="lab_supervisor">Lab Supervisor</option>
-      <option value="lab_technician">Lab Technician</option>
-      <option value="management">Management</option>
-      <option value="manager">Manager</option>
-      <option value="marketing">Marketing</option>
-      <option value="nurse">Nurse</option>
-      <option value="nursing">Nursing</option>
-      <option value="nursing_supervisor">Nursing Supervisor</option>
-      <option value="ot_manager">OT Manager</option>
-      <option value="others">Others</option>
-      <option value="paramedical">Paramedical</option>
-      <option value="permanent">Permanent</option>
-      <option value="pharmacist">Pharmacist</option>
-      <option value="physiotherapist">Physiotherapist</option>
-      <option value="scrub_nurse">Scrub Nurse</option>
-      <option value="technician">Technician</option>
-      <option value="technician_other">Technician</option>
-    </select>
-  </div>
+            <div className="custom-employee-form-group">
+              <label htmlFor="employee_type">Employee Type:</label>
+              <select
+                id="employee_type"
+                value={employeeForm.employee_type}
+                onChange={handleInputChange}
+              >
+                <option value="">Select Employee Type</option>
+                <option value="anaesthetist_on_call">Anaesthetist on call</option>
+                <option value="billing_head">Billing Head</option>
+                <option value="concession_head">Concession Head</option>
+                <option value="contract_staff">Contract Staff</option>
+                <option value="contractual">Contractual</option>
+                <option value="dietician">Dietician</option>
+                <option value="doctor">Doctor</option>
+                <option value="doctor_team">Doctor Team</option>
+                <option value="employee">Employee</option>
+                <option value="full_time">Full Time</option>
+                <option value="lab_director">Lab Director</option>
+                <option value="lab_doctor">Lab Doctor</option>
+                <option value="lab_in_charge">Lab In-Charge</option>
+                <option value="lab_supervisor">Lab Supervisor</option>
+                <option value="lab_technician">Lab Technician</option>
+                <option value="management">Management</option>
+                <option value="manager">Manager</option>
+                <option value="marketing">Marketing</option>
+                <option value="nurse">Nurse</option>
+                <option value="nursing">Nursing</option>
+                <option value="nursing_supervisor">Nursing Supervisor</option>
+                <option value="ot_manager">OT Manager</option>
+                <option value="others">Others</option>
+                <option value="paramedical">Paramedical</option>
+                <option value="permanent">Permanent</option>
+                <option value="pharmacist">Pharmacist</option>
+                <option value="physiotherapist">Physiotherapist</option>
+                <option value="scrub_nurse">Scrub Nurse</option>
+                <option value="technician">Technician</option>
+                <option value="technician_other">Technician</option>
+              </select>
+            </div>
 
             <div className="custom-employee-form-group">
               <label htmlFor="gender">Gender:</label>
@@ -869,13 +842,16 @@ const fetchDesignations = () => {
               <label htmlFor="status">Status:</label>
               <select
                 id="status"
-                value={employeeForm.status}
+                value={employeeForm.status || "lock"}  // Set default value to "lock"
                 onChange={handleInputChange}
+                disabled  // Disable the dropdown to prevent changes
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
+                <option value="lock">Lock</option>
               </select>
             </div>
+
           </div>
 
           <div className="custom-employee-form-row">

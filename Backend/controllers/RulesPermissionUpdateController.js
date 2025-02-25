@@ -4,12 +4,12 @@ const rulesPermissionEmployeeUpdate = async (req, res) => {
     try {
         let { userId, userName, permissions, branchId, branchName, updatedBy } = req.body;
 
-        if (!userId || !userName || !permissions || !branchId || !branchName || !updatedBy) {
-            return res.status(400).send("All fields (userId, userName, permissions, branchId, branchName, updatedBy) are required");
+        if (!userId || !userName || !permissions || !updatedBy) {
+            return res.status(400).send("Fields userId, userName, permissions, and updatedBy are required.");
         }
 
-        if (!Array.isArray(permissions) || !Array.isArray(branchId) || !Array.isArray(branchName)) {
-            return res.status(400).send("permissions, branchId, and branchName should be arrays");
+        if (!Array.isArray(permissions)) {
+            return res.status(400).send("permissions should be an array");
         }
 
         userId = userId.trim();
@@ -18,9 +18,6 @@ const rulesPermissionEmployeeUpdate = async (req, res) => {
         const request = new sql.Request();
         request.input("userId", sql.NVarChar, userId);
         request.input("userName", sql.NVarChar, userName);
-        request.input("permissions", sql.NVarChar, permissions.join(","));
-        request.input("branchId", sql.NVarChar, branchId.join(","));
-        request.input("branchName", sql.NVarChar, branchName.join(",")); // Added branchName
         request.input("updatedBy", sql.NVarChar, updatedBy);
 
         // Check if user exists
@@ -32,20 +29,44 @@ const rulesPermissionEmployeeUpdate = async (req, res) => {
             return res.status(404).send("No record found.");
         }
 
-        // Update the user data, adding BranchName
-        const updateQuery = `
-            UPDATE dbo.UserLogin
-            SET UserName = @userName, 
-                Permission = @permissions, 
-                BranchId = @branchId, 
-                BranchName = @branchName,  -- Added branchName
+        // Step 1: Remove existing permissions
+        const deletePermissionsQuery = `UPDATE dbo.UserLogin SET Permission = '' WHERE UserId = @userId`;
+        await request.query(deletePermissionsQuery);
+        console.log("🗑️ Existing permissions cleared.");
+
+        // Step 2: Insert new permissions
+        const newPermissions = permissions.join(",");
+        const updatePermissionsQuery = `UPDATE dbo.UserLogin SET Permission = @permissions WHERE UserId = @userId`;
+        request.input("permissions", sql.NVarChar, newPermissions);
+        await request.query(updatePermissionsQuery);
+        console.log("✅ New permissions updated.");
+
+        // Step 3: Update BranchId and BranchName (clear if no data)
+        const newBranchId = Array.isArray(branchId) && branchId.length > 0 ? branchId.join(",") : "";
+        const newBranchName = Array.isArray(branchName) && branchName.length > 0 ? branchName.join(",") : "";
+
+        const updateBranchQuery = `
+            UPDATE dbo.UserLogin 
+            SET BranchId = @branchId, 
+                BranchName = @branchName, 
                 UpdatedBy = @updatedBy
             WHERE UserId = @userId
         `;
+        request.input("branchId", sql.NVarChar, newBranchId);
+        request.input("branchName", sql.NVarChar, newBranchName);
+        await request.query(updateBranchQuery);
+        console.log("✅ BranchId and BranchName updated.");
 
-        await request.query(updateQuery);
+        // Step 4: Update UserName
+        const updateUserQuery = `
+            UPDATE dbo.UserLogin
+            SET UserName = @userName, 
+                UpdatedBy = @updatedBy
+            WHERE UserId = @userId
+        `;
+        await request.query(updateUserQuery);
+        console.log("✅ User details updated successfully.");
 
-        console.log("✅ User data updated successfully.");
         return res.send("User data updated successfully.");
     } catch (err) {
         console.error("🔥 Error updating user:", err);

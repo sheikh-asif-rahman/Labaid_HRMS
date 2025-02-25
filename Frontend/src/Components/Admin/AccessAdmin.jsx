@@ -3,7 +3,7 @@ import './AccessAdmin.css';
 import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
 import { LiaUserShieldSolid } from "react-icons/lia";
 import { MdWorkOutline } from "react-icons/md";
-import { FaBuilding } from "react-icons/fa";
+import { FaBuilding, FaUserCog } from "react-icons/fa";
 
 const AccessAdmin = () => {
     const navigate = useNavigate(); // Create a navigate function
@@ -18,6 +18,9 @@ const AccessAdmin = () => {
     }
     else if (cardName === "Designation Setup") {
       navigate("/designationcreatepage"); // Navigate to the OverView page when the OverView card is clicked
+    }
+    else if (cardName === "Employee Approve") {
+      navigate("/employeeapprovalpage"); // Navigate to the OverView page when the OverView card is clicked
     }
   };
  
@@ -76,6 +79,24 @@ const AccessAdmin = () => {
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
                 <FaBuilding className="card-icon" />
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Card 4: Employee Approve */}
+        <div className="col-md-4 mb-4">
+          <div
+            className="card custom-card access-admin-page-card-approve"
+            onClick={() => handleCardClick("Employee Approve")}
+          >
+            <div className="row g-0">
+              <div className="col-md-8">
+                <div className="card-body">
+                  <h5 className="card-title">Employee Approve</h5>
+                </div>
+              </div>
+              <div className="col-md-4 d-flex justify-content-center align-items-center">
+                <FaUserCog className="card-icon" />
               </div>
             </div>
           </div>

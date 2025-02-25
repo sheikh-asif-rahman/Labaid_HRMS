@@ -32,10 +32,10 @@ const loginUser = async (req, res) => {
         // Log extracted data
         console.log("Extracted Data:", { hashedPassword, Permission, Status });
 
-        // If the employee's status is 0 (inactive) or false, prevent login and return appropriate response
-        if (Status === 0 || Status === false) {
-            console.log("Account is inactive. UserId:", UserId);
-            return res.status(403).send("Your account is inactive");
+        // If the employee's status is "Inactive" or "Lock", prevent login and return appropriate response
+        if (Status === "Inactive" || Status === "Lock") {
+            console.log(`Account is ${Status}. UserId:`, UserId);
+            return res.status(403).send(`Your account is ${Status}`);
         }
 
         // Hash the provided password to compare with the stored hashed password

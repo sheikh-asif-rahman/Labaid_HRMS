@@ -1,9 +1,9 @@
 const { sql } = require("../config/dbConfig");
-const crypto = require('crypto'); // Importing the crypto module
+const crypto = require("crypto"); // Importing the crypto module
 
 // Function to hash a password using SHA-256
 const hashPassword = (password) => {
-  return crypto.createHash('sha256').update(password).digest('hex');
+  return crypto.createHash("sha256").update(password).digest("hex");
 };
 
 const employeeCreate = async (req, res) => {
@@ -13,8 +13,8 @@ const employeeCreate = async (req, res) => {
       userId,
       user_name,
       branch_id,
-      personalPhone,  // Renamed from 'phone' to 'personalPhone'
-      officialPhone,  // Renamed from 'official_phone' to 'officialPhone'
+      personalPhone,
+      officialPhone,
       department_id,
       designation_id,
       date_of_joining,
@@ -32,48 +32,54 @@ const employeeCreate = async (req, res) => {
       status,
       password,
       createdby,
-      image
+      image,
     } = req.body;
 
     // Validate required fields
     if (!userId || !user_name || !password || !createdby) {
-      return res
-        .status(400)
-        .json({ message: "userId, user_name, password, and createdby are required" });
+      return res.status(400).json({
+        message: "userId, user_name, password, and createdby are required",
+      });
     }
 
     // Clean up string inputs and ensure fields are in the correct type
     userId = userId.trim();
     user_name = user_name.trim();
-    branch_id = branch_id ? branch_id.toString().trim() : null;  // Handle as string
-    personalPhone = personalPhone ? personalPhone.toString().trim() : null;  // Handle as string
-    officialPhone = officialPhone ? officialPhone.toString().trim() : null;  // Handle as string
-    department_id = department_id ? department_id.toString().trim() : null;  // Handle as string
-    designation_id = designation_id ? designation_id.toString().trim() : null;  // Handle as string
+    branch_id = branch_id ? branch_id.toString().trim() : null;
+    personalPhone = personalPhone ? personalPhone.toString().trim() : null;
+    officialPhone = officialPhone ? officialPhone.toString().trim() : null;
+    department_id = department_id ? department_id.toString().trim() : null;
+    designation_id = designation_id ? designation_id.toString().trim() : null;
     email = email ? email.trim() : null;
     createdby = createdby.trim();
+
+    // Process status: Ensure it's "Active", "Inactive", or default to "Lock"
+    const validStatuses = ["active", "inactive", "lock"];
+    status = status && validStatuses.includes(status.trim()) ? status.trim() : "lock";
 
     // Process image if provided
     let imageBuffer = null;
     if (image) {
-      const base64Data = image.includes("base64,") ? image.split("base64,")[1] : image;
+      const base64Data = image.includes("base64,")
+        ? image.split("base64,")[1]
+        : image;
       imageBuffer = Buffer.from(base64Data, "base64");
     }
 
     // Hash the password using SHA-256
-    const hashedPassword = hashPassword(password); // Use SHA-256 hashing
+    const hashedPassword = hashPassword(password);
 
     // Employee data to insert into the database
     const employeeData = {
       EmployeeId: userId,
       EmployeeName: user_name,
       BranchId: branch_id,
-      PersonalContactNumber: personalPhone,  // Using 'personalPhone'
-      OfficalContactNumber: officialPhone,  // Using 'officialPhone'
+      PersonalContactNumber: personalPhone,
+      OfficalContactNumber: officialPhone,
       DepartmentId: department_id,
       DesignationId: designation_id,
-      DateOfJoin: date_of_joining,  // YYYY-MM-DD format
-      DateOfResign: date_of_resign,  // Optional
+      DateOfJoin: date_of_joining,
+      DateOfResign: date_of_resign || null,
       Email: email,
       EmployeeType: employee_type,
       Gender: gender,
@@ -84,22 +90,22 @@ const employeeCreate = async (req, res) => {
       PresentAddress: present_address,
       PermanentAddress: permanent_address,
       NID: nid,
-      Status: status === true ? 1 : 0,  // Convert to 1 for active
+      Status: status, // Storing as "Active", "Inactive", or "Lock"
       CreatedBy: createdby,
-      Image: imageBuffer
+      Image: imageBuffer,
     };
 
     // User login data (with hashed password)
     const userLoginData = {
       UserId: userId,
       UserName: user_name,
-      Password: hashedPassword,  // Store the hashed password
-      CreatedBy: createdby
+      Password: hashedPassword,
+      CreatedBy: createdby,
     };
 
     // Connect to the database and start a transaction
     const pool = await sql.connect();
-    transaction = new sql.Transaction(pool); // Start transaction
+    transaction = new sql.Transaction(pool);
     await transaction.begin();
 
     // Insert into the Employee table
@@ -123,7 +129,7 @@ const employeeCreate = async (req, res) => {
     employeeRequest.input("DepartmentId", sql.NVarChar, employeeData.DepartmentId);
     employeeRequest.input("DesignationId", sql.NVarChar, employeeData.DesignationId);
     employeeRequest.input("DateOfJoin", sql.Date, employeeData.DateOfJoin);
-    employeeRequest.input("DateOfResign", sql.Date, employeeData.DateOfResign || null);
+    employeeRequest.input("DateOfResign", sql.Date, employeeData.DateOfResign);
     employeeRequest.input("Email", sql.NVarChar, employeeData.Email);
     employeeRequest.input("EmployeeType", sql.NVarChar, employeeData.EmployeeType);
     employeeRequest.input("Gender", sql.NVarChar, employeeData.Gender);
@@ -134,7 +140,7 @@ const employeeCreate = async (req, res) => {
     employeeRequest.input("PresentAddress", sql.NVarChar, employeeData.PresentAddress);
     employeeRequest.input("PermanentAddress", sql.NVarChar, employeeData.PermanentAddress);
     employeeRequest.input("NID", sql.NVarChar, employeeData.NID);
-    employeeRequest.input("Status", sql.Int, employeeData.Status);
+    employeeRequest.input("Status", sql.NVarChar, employeeData.Status);
     employeeRequest.input("CreatedBy", sql.NVarChar, employeeData.CreatedBy);
     employeeRequest.input("Image", sql.VarBinary, employeeData.Image);
 
@@ -157,14 +163,15 @@ const employeeCreate = async (req, res) => {
     // Commit the transaction
     await transaction.commit();
 
-    // Success response
     return res.status(201).json({ message: "Employee created successfully" });
   } catch (err) {
     if (transaction) {
-      await transaction.rollback(); // Rollback if there's an error
+      await transaction.rollback();
     }
     console.error("Error creating employee:", err);
-    return res.status(500).json({ message: "Error creating employee", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Error creating employee", error: err.message });
   }
 };
 

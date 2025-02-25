@@ -1,58 +1,125 @@
-/* Navbar.css */
-
-/* Basic Navbar styles */
+/* Navbar styles */
 .navbar-custom {
     position: fixed;
     font-size: 20px;
     font-weight: 500;
-    background-color: #1a23a1; /* Set your desired navbar background color */
-    transition: background-color 0.3s ease; /* Smooth transition */
-    padding-bottom: 6px; /* Adds bottom padding to the navbar */
+    background-color: #1a23a1;
+    transition: background-color 0.3s ease;
+    padding-bottom: 6px;
 }
 
 .navbar-custom .nav-link {
-    color: #fff; /* Link color */
+    color: #fff;
 }
 
 .navbar-custom .nav-link:hover {
-    color: #d4d4d4; /* Link hover color */
+    color: #d4d4d4;
 }
 
 .navbar-custom .navbar-brand {
-    color: #ffffff; /* Brand color */
-    font-family: 'Arial', sans-serif; /* Change to your desired font */
-    font-size: 26px; /* Adjust the brand font size */
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    font-size: 26px;
     font-weight: bolder;
     cursor: pointer;
-
 }
 
 /* Offcanvas styles */
 .offcanvas {
-    background-color: #3e4bf8 !important; /* Match the navbar background */
-    color: white; /* Set text color to white */
-    width: 60% !important; /* Set offcanvas width to 60% */
-    max-width: 60% !important; /* Ensure max-width is also set to 60% */
+    background-color: #3e4bf8 !important;
+    color: white;
+    width: 60% !important;
+    max-width: 60% !important;
 }
 
 .offcanvas .offcanvas-header {
-    border-bottom: 1px solid rgba(0, 255, 242, 0.2); /* Optional: add a border for separation */
+    border-bottom: 1px solid rgba(0, 255, 242, 0.2);
 }
 
 .offcanvas .nav-link {
-    
-    color: white; /* Offcanvas link color */
+    color: white;
 }
 
 .offcanvas .nav-link:hover {
-    color: #d4d4d4; /* Offcanvas link hover color */
+    color: #d4d4d4;
 }
 
-/* Custom style for Logout link */
+/* Logout link styles */
 .navbar-custom .logout-link {
-    color: #ff709b; /* Pink-red color */
+    color: #ff709b;
 }
 
 .navbar-custom .logout-link:hover {
-    color: #ff0055; /* Lighter pink-red on hover */
+    color: #ff0055;
+}
+
+/* Notification Bell Styles */
+.notification-btn {
+    background: none;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 5px;
+    color: white; /* Default color (white) */
+    transition: color 0.3s ease;
+}
+
+.notification-btn.unread {
+    color: yellow; /* Change to yellow when there are unread notifications */
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 12px;
+    background-color: red;
+    border-radius: 50%;
+    padding: 4px 7px;
+}
+
+/* Notification Dropdown */
+.notification-dropdown {
+    width: 300px;
+    max-height: 300px;
+    max-width: 200px;
+    overflow-y: auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.notification-list {
+    max-height: 250px;
+    max-width: 200px;
+}
+
+/* Notification Message Styles */
+.notification-list .dropdown-item {
+    white-space: normal;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.notification-list .dropdown-item.unread {
+    font-weight: bold;
+    color: black;
+    background-color: #fff7c2; /* Light yellow for unread messages */
+}
+
+.notification-list .dropdown-item.read {
+    color: gray;
+    background-color: white;
+}
+
+/* Hover effect */
+.notification-list .dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Horizontal Separator between messages */
+.notification-list hr {
+    margin: 5px 0;
+    border-top: 1px solid #ccc;
 }

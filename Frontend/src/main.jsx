@@ -16,6 +16,7 @@ import RulesPermissionPage from "./Page/RulesPermissionPage.jsx";
 import EmployeePage from "./Page/EmployeePage.jsx";
 import DepartmentCreatePage from "./Page/DepartmentCreatePage.jsx";
 import DesignationCreatePage from "./Page/DesignationCreatePage.jsx";
+import EmployeeApprovalPage from "./Page/EmployeeApprovalPage.jsx";
 
 // Import the ProtectedRoute component
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
   {
     path: `/designationcreatepage`,
     element: <ProtectedRoute element={<DesignationCreatePage />} />,
+  },
+  {
+    path: `/employeeapprovalpage`,
+    element: <ProtectedRoute element={<EmployeeApprovalPage />} />,
   },
 ]);
 

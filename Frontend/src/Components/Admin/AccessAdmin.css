@@ -47,6 +47,10 @@
 .access-admin-page-card-department .card-icon {
   color: #28a745; /* Green */
 }
+.access-admin-page-card-approve .card-title,
+.access-admin-page-card-approve .card-icon {
+  color: #6f00ff; /* Green */
+}
 
 /* Hover effects */
 .access-admin-page-card-rules:hover {
@@ -70,9 +74,16 @@
 .access-admin-page-card-department:hover {
   background-color: #28a745; /* Green background */
 }
+.access-admin-page-card-approve:hover {
+  background-color: #8a31ff; /* Green background */
+}
 
 .access-admin-page-card-department:hover .card-title,
 .access-admin-page-card-department:hover .card-icon {
+  color: white;
+}
+.access-admin-page-card-approve:hover .card-title,
+.access-admin-page-card-approve:hover .card-icon {
   color: white;
 }
 
