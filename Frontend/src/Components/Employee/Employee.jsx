@@ -350,23 +350,24 @@ const Employee = () => {
     setLoading(true);
     try {
       const updatedby = localStorage.getItem("userId");
-
+  
       if (!updatedby) {
         setModalMessage("User is not logged in.");
         setLoading(false);
         setShowModal(true);
         return;
       }
-
-      const statusValue = employeeForm.status?.trim() || "Lock";
-
+  
       if (employeeForm.password !== employeeForm.confirm_password) {
         setModalMessage("Passwords do not match.");
         setLoading(false);
         setShowModal(true);
         return;
       }
-
+  
+      // Check status: If "Active", keep it, otherwise set "Lock"
+      const statusValue = employeeForm.status?.trim() === "active" ? "active" : "lock";
+  
       const formDataToSend = {
         userId: employeeForm.user_id,
         user_name: employeeForm.user_name,
@@ -392,11 +393,11 @@ const Employee = () => {
         updatedby: updatedby,
         image: employeeForm.image || null
       };
-
+  
       console.log("Sending employee update data:", JSON.stringify(formDataToSend, null, 2)); // Log the update data
-
+  
       const response = await axios.put(`${BASE_URL}employee/${employeeForm.user_id}`, formDataToSend);
-
+  
       if (response.status === 200 || response.status === 204) {
         setModalMessage("Employee updated successfully!");
       } else {
@@ -413,6 +414,7 @@ const Employee = () => {
     setLoading(false);
     setShowModal(true);
   };
+  
 
 
 

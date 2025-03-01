@@ -1,47 +1,160 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './EmployeeApprove.css';
 
-const employees = [
-  { id: 1, userId: "EMP001", name: "John Doe", department: "IT", designation: "Software Engineer", doj: "2023-01-15", branch: "New York" },
-  { id: 2, userId: "EMP002", name: "Jane Smith", department: "Product", designation: "Product Manager", doj: "2022-06-10", branch: "San Francisco" },
-  { id: 3, userId: "EMP003", name: "Alice Johnson", department: "Design", designation: "Designer", doj: "2021-09-05", branch: "Los Angeles" }
-];
-
 const EmployeeApprove = () => {
-  const [selectAll, setSelectAll] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [departments, setDepartments] = useState({});
+  const [designations, setDesignations] = useState({});
+  const [locations, setLocations] = useState({});
   const [selected, setSelected] = useState({});
+  const [selectAll, setSelectAll] = useState(false);
+  const [modalMessage, setModalMessage] = useState(""); // Message for the modal
+  const [showModal, setShowModal] = useState(false);  // Control modal visibility
 
-  const handleSelectAll = () => {
-    const newSelection = {};
-    if (!selectAll) {
-      employees.forEach((emp) => (newSelection[emp.id] = true));
-    }
-    setSelected(newSelection);
-    setSelectAll(!selectAll);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch Departments
+        const deptResponse = await axios.get("http://localhost:3000/api/loaddepartments");
+        const departmentMap = {};
+        deptResponse.data.forEach((dept) => {
+          departmentMap[dept.id] = dept.departmentName;
+        });
+        setDepartments(departmentMap);
+
+        // Fetch Designations
+        const desigResponse = await axios.get("http://localhost:3000/api/loaddesignation");
+        const designationMap = {};
+        desigResponse.data.forEach((desig) => {
+          designationMap[desig.id] = {
+            name: desig.designationName,
+            departmentId: desig.departmentId
+          };
+        });
+        setDesignations(designationMap);
+
+        // Fetch Locations (Branch Names)
+        const locResponse = await axios.get("http://localhost:3000/api/locations");
+        const locationMap = {};
+        locResponse.data.forEach((loc) => {
+          locationMap[loc.id] = loc.name;
+        });
+        setLocations(locationMap);
+
+        // Fetch Pending Employees
+        const empResponse = await axios.get("http://localhost:3000/api/pendingemployee");
+        const processedEmployees = empResponse.data.map((emp) => ({
+          id: emp.EmployeeId,
+          userId: emp.EmployeeId,
+          name: emp.EmployeeName,
+          department: departmentMap[emp.DepartmentId] || "Unknown",
+          designation: designationMap[emp.DesignationId]?.name || "Unknown",
+          branch: locationMap[emp.BranchId] || "Unknown",
+          doj: new Date(emp.DateOfJoin).toLocaleDateString(),
+          createdBy: emp.CreatedBy
+        }));
+        setEmployees(processedEmployees);
+        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSelect = (id) => {
-    setSelected((prev) => {
-      const newSelection = { ...prev, [id]: !prev[id] };
-      setSelectAll(Object.keys(newSelection).length === employees.length && Object.values(newSelection).every(Boolean));
-      return newSelection;
-    });
+    setSelected((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const newSelected = {};
+    if (!selectAll) {
+      employees.forEach((emp) => (newSelected[emp.id] = true));
+    }
+    setSelected(newSelected);
+  };
+
+  // Approve selected employees
+  const handleApprove = async () => {
+    const selectedEmployees = employees.filter(emp => selected[emp.id]);
+    
+    if (selectedEmployees.length === 0) {
+      setModalMessage("No user is selected.");
+      setShowModal(true);
+      return;
+    }
+
+    try {
+      for (const employee of selectedEmployees) {
+        await axios.post('http://localhost:3000/api/updatependingemployee', {
+          EmployeeId: employee.userId,
+          action: 'approve'
+        });
+      }
+      setModalMessage("Employees approved successfully.");
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error approving employees:", error);
+      setModalMessage("Error approving employees.");
+      setShowModal(true);
+    }
+  };
+
+  // Reject selected employees
+  const handleReject = async () => {
+    const selectedEmployees = employees.filter(emp => selected[emp.id]);
+    const rejectedBy = localStorage.getItem("userId");
+    const createdBy = selectedEmployees[0]?.createdBy;
+
+    if (selectedEmployees.length === 0) {
+      setModalMessage("No user is selected.");
+      setShowModal(true);
+      return;
+    }
+
+    try {
+      for (const employee of selectedEmployees) {
+        await axios.post('http://localhost:3000/api/updatependingemployee', {
+          EmployeeId: employee.userId,
+          action: 'reject',
+          Remark: "NOT RIGHT",
+          RejectedBy: rejectedBy,
+          CreatedBy: createdBy
+        });
+      }
+      setModalMessage("Employees rejected successfully.");
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error rejecting employees:", error);
+      setModalMessage("Error rejecting employees.");
+      setShowModal(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    window.location.reload(); // Reload the page when OK is clicked
   };
 
   return (
     <div className="custom-employee-approve-page">
       {/* Bubbles in the background */}
-  <div className="custom-employee-approve-bubbles">
-    {[...Array(10)].map((_, index) => (
-      <div key={index} className="custom-employee-approve-bubble"></div>
-    ))}
-  </div>
+      <div className="custom-employee-approve-bubbles">
+        {[...Array(10)].map((_, index) => (
+          <div key={index} className="custom-employee-approve-bubble"></div>
+        ))}
+      </div>
+
+      {/* Main container */}
       <div className="custom-employee-approve-container">
         <div className="custom-employee-approve-header">
           <h2>Employee Approval Table</h2>
           <div className="custom-employee-approve-buttons">
-            <button className="approve-button">Approve</button>
-            <button className="reject-button">Reject</button>
+            <button className="approve-button" onClick={handleApprove}>Approve</button>
+            <button className="reject-button" onClick={handleReject}>Reject</button>
           </div>
         </div>
         <table className="custom-employee-approve-table">
@@ -50,30 +163,61 @@ const EmployeeApprove = () => {
               <th><input type="checkbox" checked={selectAll} onChange={handleSelectAll} /></th>
               <th>SL</th>
               <th>User ID</th>
-              <th>Name</th>
+              <th>User Name</th>
               <th>Department</th>
               <th>Designation</th>
-              <th>Date of Joining</th>
               <th>Branch</th>
+              <th>Date of Joining</th>
+              <th>Created By</th>
               <th>Remark</th>
             </tr>
           </thead>
           <tbody>
             {employees.map((employee, index) => (
               <tr key={employee.id}>
-                <td><input type="checkbox" checked={!!selected[employee.id]} onChange={() => handleSelect(employee.id)} /></td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={!!selected[employee.id]}
+                    onChange={() => handleSelect(employee.id)}
+                  />
+                </td>
                 <td>{index + 1}</td>
                 <td>{employee.userId}</td>
                 <td>{employee.name}</td>
                 <td>{employee.department}</td>
                 <td>{employee.designation}</td>
-                <td>{employee.doj}</td>
                 <td>{employee.branch}</td>
-                <td><input type="text" className="custom-employee-approve-remark" placeholder="Enter remark" /></td>
+                <td>{employee.doj}</td>
+                <td>{employee.createdBy}</td>
+                <td>
+                  <input type="text" className="custom-employee-approve-remark" placeholder="Enter remark" />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Message Modal */}
+      <div
+        className={`modal fade ${showModal ? "show d-block" : ""}`}
+        tabIndex="-1"
+        role="dialog"
+        style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content text-center p-4">
+            <p>{modalMessage}</p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleCloseModal}
+            >
+              OK
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

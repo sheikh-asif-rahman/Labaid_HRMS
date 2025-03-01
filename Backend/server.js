@@ -23,7 +23,9 @@ const employeeCreate = require('./routes/EmployeeCreateRoute');
 const employeeUpdate = require('./routes/EmployeeUpdateRoute');
 const rulesPermissionEmployeeSearch = require('./routes/RulesPermissionEmployeeSearchRoute');
 const rulesPermissionEmployeeUpdate = require('./routes/RulesPermissionUpdateRoute');
-
+const getPendingEmployee = require('./routes/PendingEmployeeRoute');
+const updatePendingEmployee = require('./routes/PendingEmployeeUpdateRoute');
+const getNotification = require('./routes/NotificationRoute');
 
 const app = express();
 app.use(express.json());
@@ -63,6 +65,11 @@ app.use('/api', employeeCreate);
 app.use('/api', employeeUpdate);
 app.use('/api', rulesPermissionEmployeeSearch);
 app.use('/api', rulesPermissionEmployeeUpdate);
+app.use('/api', getPendingEmployee);
+app.use('/api', updatePendingEmployee);
+app.use('/api', getNotification);
+
+
 
 
 
