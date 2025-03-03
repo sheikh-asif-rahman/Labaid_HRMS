@@ -20,6 +20,7 @@ import EmployeeApprovalPage from "./Page/EmployeeApprovalPage.jsx";
 
 // Import the ProtectedRoute component
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import LeaveManagementPage from "./Page/LeaveManagementPage.jsx";
 
 // Define routes using createBrowserRouter
 const router = createBrowserRouter([
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
   {
     path: `/employeeapprovalpage`,
     element: <ProtectedRoute element={<EmployeeApprovalPage />} />,
+  },
+  {
+    path: `/leavemanagementpage`,
+    element: <ProtectedRoute element={<LeaveManagementPage />} />,
   },
 ]);
 

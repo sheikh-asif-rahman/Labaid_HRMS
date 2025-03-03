@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { Bell } from "react-bootstrap-icons";
 import axios from "axios";
 import "./NavigationBar.css"; // Import the CSS file
+import { BASE_URL } from "/src/constants/constant.jsx";
+
 
 const NavigationBar = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -22,7 +24,7 @@ const NavigationBar = () => {
       if (!userId) return;
 
       try {
-        const response = await axios.get(`http://localhost:3000/api/notification?userId=${userId}`);
+        const response = await axios.get(`${BASE_URL}notification?userId=${userId}`);
         console.log("Notifications response:", response.data); // Log the response to check the structure
         setNotifications(response.data); // Assuming API returns an array of notifications
       } catch (error) {

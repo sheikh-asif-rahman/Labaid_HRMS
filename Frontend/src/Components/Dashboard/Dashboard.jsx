@@ -43,6 +43,8 @@ const Dashboard = () => {
       navigate("/admin"); // Navigate to the Admin page
     } else if (cardName === "Employee") {
       navigate("/employeepage"); // Navigate to the Employee page
+    } else if (cardName === "Leave Management") {
+      navigate("/leavemanagementpage"); // Navigate to the Employee page
     } else if (cardName === "underDevelopmentModal") {
       setModalMessage("Under Development");
       setShowModal(true);
@@ -139,7 +141,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-leave-management"
-            onClick={() => handleCardClick("underDevelopmentModal")}
+            onClick={() => handleCardClick("Leave Management")}
           >
             <div className="row g-0">
               <div className="col-md-8">

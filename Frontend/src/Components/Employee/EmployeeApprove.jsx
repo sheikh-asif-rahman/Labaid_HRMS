@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './EmployeeApprove.css';
+import { BASE_URL } from "/src/constants/constant.jsx";
+
 
 const EmployeeApprove = () => {
   const [employees, setEmployees] = useState([]);
@@ -16,7 +18,7 @@ const EmployeeApprove = () => {
     const fetchData = async () => {
       try {
         // Fetch Departments
-        const deptResponse = await axios.get("http://localhost:3000/api/loaddepartments");
+        const deptResponse = await axios.get(`${BASE_URL}loaddepartments`);
         const departmentMap = {};
         deptResponse.data.forEach((dept) => {
           departmentMap[dept.id] = dept.departmentName;
@@ -24,7 +26,7 @@ const EmployeeApprove = () => {
         setDepartments(departmentMap);
 
         // Fetch Designations
-        const desigResponse = await axios.get("http://localhost:3000/api/loaddesignation");
+        const desigResponse = await axios.get(`${BASE_URL}loaddesignation`);
         const designationMap = {};
         desigResponse.data.forEach((desig) => {
           designationMap[desig.id] = {
@@ -35,7 +37,7 @@ const EmployeeApprove = () => {
         setDesignations(designationMap);
 
         // Fetch Locations (Branch Names)
-        const locResponse = await axios.get("http://localhost:3000/api/locations");
+        const locResponse = await axios.get(`${BASE_URL}locations`);
         const locationMap = {};
         locResponse.data.forEach((loc) => {
           locationMap[loc.id] = loc.name;
@@ -43,7 +45,7 @@ const EmployeeApprove = () => {
         setLocations(locationMap);
 
         // Fetch Pending Employees
-        const empResponse = await axios.get("http://localhost:3000/api/pendingemployee");
+        const empResponse = await axios.get(`${BASE_URL}pendingemployee`);
         const processedEmployees = empResponse.data.map((emp) => ({
           id: emp.EmployeeId,
           userId: emp.EmployeeId,
@@ -89,7 +91,7 @@ const EmployeeApprove = () => {
 
     try {
       for (const employee of selectedEmployees) {
-        await axios.post('http://localhost:3000/api/updatependingemployee', {
+        await axios.post(`${BASE_URL}updatependingemployee`, {
           EmployeeId: employee.userId,
           action: 'approve'
         });
@@ -117,7 +119,7 @@ const EmployeeApprove = () => {
 
     try {
       for (const employee of selectedEmployees) {
-        await axios.post('http://localhost:3000/api/updatependingemployee', {
+        await axios.post(`${BASE_URL}updatependingemployee`, {
           EmployeeId: employee.userId,
           action: 'reject',
           Remark: "NOT RIGHT",
