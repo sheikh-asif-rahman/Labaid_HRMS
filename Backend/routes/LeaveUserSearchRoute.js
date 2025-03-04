@@ -1,8 +1,7 @@
-const express = require('express');
-const { leaveusersearch } = require('../controllers/LeaveUserSearchController');
-
+const { leaveUserSearch } = require("../controllers/LeaveUserSearchController");
+const express = require("express");
 const router = express.Router();
 
-router.get('/leaveusersearch', leaveusersearch);
+router.post("/leaveusersearch", leaveUserSearch);
 
 module.exports = router;

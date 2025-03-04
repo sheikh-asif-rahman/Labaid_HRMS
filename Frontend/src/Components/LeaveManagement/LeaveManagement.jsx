@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./LeaveManagement.css";
 import { BASE_URL } from "/src/constants/constant.jsx";
+import LeaveForm from "../LeaveForm/LeaveForm"; 
+
+
 
 const LeaveManagement = () => {
   const [searchId, setSearchId] = useState("");
@@ -19,34 +22,88 @@ const LeaveManagement = () => {
   });
   const [history, setHistory] = useState([]);
   const [searched, setSearched] = useState(false);
+// search user
+const handleSearch = async () => {
+  if (!searchId) return;
 
-  const handleSearch = async () => {
-    if (!searchId) return;
+  try {
+    const response = await axios.post(`${BASE_URL}/leaveusersearch`, {
+      user_id: searchId,
+    });
 
-    try {
-      const response = await axios.get(`${BASE_URL}/leave/${searchId}`);
-      setLeaveData(response.data || {});
-      setHistory(response.data.history || []);
-      setSearched(true);
-    } catch (error) {
-      console.error("Error fetching leave data:", error);
-      setLeaveData({
-        empCode: "",
-        empName: "",
-        department: "",
-        designation: "",
-        leaveRequired: "",
-        fromDate: "",
-        toDate: "",
-        leaveBalance: "",
-        purpose: "",
-        alternativePerson: "",
+    const designationResponse = await axios.get(`${BASE_URL}/loaddesignation`);
+    const departmentResponse = await axios.get(`${BASE_URL}/loaddepartments`);
+
+    if (response.data) {
+      const { employee, leave } = response.data;
+      const employeeData = employee || {};
+      const leaveHistory = leave || [];
+
+      const department = departmentResponse.data.find(
+        (dept) => dept.id === employeeData.DepartmentId
+      ) || {};
+
+      const designation = designationResponse.data.find(
+        (desig) => desig.id === employeeData.DesignationId
+      ) || {};
+
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+      const leaveTakenInLastYear = leaveHistory.filter((leaveRecord) => {
+        const leaveDate = new Date(leaveRecord.created_date);
+        return leaveDate >= oneYearAgo;
       });
-      setHistory([]);
-      setSearched(false);
-    }
-  };
 
+      const leaveTakenCount = leaveTakenInLastYear.reduce(
+        (acc, leaveRecord) => acc + leaveRecord.leave_enjoyed,
+        0
+      );
+
+      const leaveBalance = 20 - leaveTakenCount; // Max leave is 20
+
+      const newLeaveData = {
+        empCode: employeeData.EmployeeId || "",
+        empName: employeeData.EmployeeName || "",
+        department: department.departmentName || "",
+        designation: designation.designationName || "",
+        leaveBalance: leaveBalance || 0,
+      };
+
+      setLeaveData(newLeaveData);
+      console.log("Stored Employee Leave Data:", newLeaveData);
+
+      const leaveHistoryWithDays = leaveHistory.map((leaveRecord) => {
+        const startDate = new Date(leaveRecord.start_date);
+        const endDate = new Date(leaveRecord.end_date);
+        const leaveDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
+
+        return {
+          ...leaveRecord,
+          leaveDays,
+        };
+      });
+
+      setHistory(leaveHistoryWithDays || []);
+      console.log("Stored Leave History:", leaveHistoryWithDays);
+
+      setSearched(true);
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    setLeaveData({
+      empCode: "",
+      empName: "",
+      department: "",
+      designation: "",
+      leaveBalance: "",
+    });
+    setHistory([]);
+    setSearched(false);
+  }
+};
+
+// reset
   const handleNew = () => {
     setSearchId("");
     setLeaveData({
@@ -64,19 +121,51 @@ const LeaveManagement = () => {
     setHistory([]);
     setSearched(false);
   };
-
+// save function
   const handleSave = () => {
     console.log("Saving data...", leaveData);
-    // API call for saving the data can be implemented here.
   };
 
   const handleLeaveRequiredChange = (e) => {
-    const value = Math.min(20, Math.max(0, Number(e.target.value))); // Ensure max 20
+    const value = Math.min(20, Math.max(0, Number(e.target.value)));
     setLeaveData({ ...leaveData, leaveRequired: value });
   };
 
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedLeaveData, setSelectedLeaveData] = useState(null);
+  
+  const handlePrint = (record) => {
+      const employee = {
+          empCode: record.employee_id,
+          empName: record.employee_name,
+          designation: record.designation_name,
+          department: record.department_name,
+      };
+  
+      const leaveData = {
+          leaveEnjoyedDays: record.leave_enjoyed,
+          leaveBalanceDays: record.leave_balance,
+          leaveRequiredDays: record.leaveDays,
+          leaveStartDate: record.start_date.split("T")[0],
+          leaveEndDate: record.end_date.split("T")[0],
+          purposeOfLeave: record.request_reason,
+          chargePerson: record.alternative_person,
+      };
+  
+      setSelectedEmployee(employee);
+      setSelectedLeaveData(leaveData);
+  };
+  
+  
+
+
+
   return (
     <div className="custom-leave-management-page">
+      {selectedEmployee && selectedLeaveData && (
+    <LeaveForm employee={selectedEmployee} leaveData={selectedLeaveData} />
+)}
+
       <div className="custom-leave-management-bubbles">
         {[...Array(10)].map((_, index) => (
           <div key={index} className="custom-leave-management-bubble"></div>
@@ -174,35 +263,42 @@ const LeaveManagement = () => {
         </div>
 
         {searched && history.length > 0 && (
-  <div className="custom-history-container">
-    <h3>Leave History</h3>
-    <table className="custom-leave-history-table">
-      <thead>
-        <tr>
-          <th>SL</th>
-          <th>Application Date</th>
-          <th>Leave (Days)</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {history.map((record, index) => (
-          <tr key={index}>
-            <td>{index + 1}</td>
-            <td>{record.applicationDate}</td>
-            <td>{record.leaveDays}</td>
-            <td>
-              <button className="custom-print-button" onClick={() => handlePrint(record)}>
-                Print
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-)}
+          <div className="custom-history-container">
+            <h3>Leave History</h3>
+            <table className="custom-leave-history-table">
+              <thead>
+                <tr>
+                  <th>SL</th>
+                  <th>Application Date</th>
+                  <th>Leave (Days)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+    {history.map((record, index) => {
+        const createdDate = new Date(record.created_date).toLocaleDateString();
 
+        return (
+            <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{createdDate}</td>
+                <td>{record.leaveDays}</td>
+                <td>
+                    <button 
+                        className="custom-print-button" 
+                        onClick={() => handlePrint(record)}
+                    >
+                        Print
+                    </button>
+                </td>
+            </tr>
+        );
+    })}
+</tbody>
+
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

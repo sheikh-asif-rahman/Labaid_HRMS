@@ -1,0 +1,165 @@
+.print-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+  
+  .print-button {
+    background-color: #007bff; /* Blue color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .print-button:hover {
+    background-color: #0056b3; /* Darker blue */
+  }
+  
+body {
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* This makes sure content stretches to the top and bottom */
+}
+
+/* Ensure the main content doesn't push footer out */
+.main-content {
+    flex-grow: 1; /* Allow the content to grow and push the footer to the bottom */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+table, th, td {
+    border: none;
+}
+
+th, td {
+    padding: 5px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.header {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.section {
+    margin-bottom: 10px;
+}
+
+.signature {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.signature table {
+    width: 100%;
+    margin: 0 auto;
+    border: none;
+}
+
+.signature td {
+    border: none;
+    text-align: left;
+    width: 50%;
+}
+
+.signature .right-align {
+    text-align: right;
+}
+
+.office-use {
+    width: 100%;
+    margin-top: auto; /* This ensures the footer is pushed to the bottom */
+    padding-top: 20px;
+}
+
+.office-use hr {
+    border: 1px solid black;
+    margin: 10px auto;
+}
+
+.office-use table {
+    width: 100%;
+    margin: 0 auto;
+    border: none;
+}
+
+.office-use td {
+    border: none;
+    text-align: left;
+    width: 50%;
+}
+
+.office-use .right-align {
+    text-align: right;
+}
+
+/* First table styling */
+.first-table {
+    border: 1px solid black;
+}
+
+.first-table td {
+    border: none;
+}
+
+.first-table tr {
+    border-bottom: none;
+}
+
+.first-table .joining-date {
+    text-align: center;
+    vertical-align: top;
+}
+
+/* Second table styling */
+.second-table {
+    border: 1px solid black;
+}
+
+.second-table td {
+    border: none;
+}
+
+.second-table tr {
+    border-bottom: none;
+}
+
+.second-table .vertical-border {
+    border-right: 1px solid black;
+}
+
+/* Third table styling */
+.third-table {
+    border: 1px solid black;
+}
+
+.third-table th, .third-table td {
+    border: 1px solid black;
+}
+
+.third-table .no-inner-border {
+    border-right: none;
+}
+
+.third-table .leave-enjoyed {
+    text-align: center;
+}
+
+.third-table .reason-no-border {
+    border-bottom: none;
+}
