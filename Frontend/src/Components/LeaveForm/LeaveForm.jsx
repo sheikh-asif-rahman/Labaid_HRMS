@@ -3,26 +3,8 @@ import './LeaveForm.css';
 
 const LeaveForm = ({ employee, leaveData }) => {
   const formRef = useRef();
-
-  const handlePrint = () => {
-    const printContent = formRef.current.innerHTML;
-    const originalContent = document.body.innerHTML;
-
-    document.body.innerHTML = printContent; // Temporarily replace page with form content
-    window.print();
-    document.body.innerHTML = originalContent; // Restore the original page after printing
-  };
-
   return (
     <div>
-      {/* Print Button */}
-<div className="print-button-container">
-  <button onClick={handlePrint} className="print-button">
-    Print Leave Form
-  </button>
-</div>
-
-
       {/* Leave Form Content */}
       <div ref={formRef} className="leave-form">
         <div className="header">

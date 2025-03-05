@@ -3,6 +3,7 @@ import axios from "axios";
 import "./LeaveManagement.css";
 import { BASE_URL } from "/src/constants/constant.jsx";
 import LeaveForm from "../LeaveForm/LeaveForm"; 
+import ReactDOM from 'react-dom'; // You need to import ReactDOM for portals
 
 
 
@@ -22,6 +23,9 @@ const LeaveManagement = () => {
   });
   const [history, setHistory] = useState([]);
   const [searched, setSearched] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedLeaveData, setSelectedLeaveData] = useState(null);
+
 // search user
 const handleSearch = async () => {
   if (!searchId) return;
@@ -130,41 +134,60 @@ const handleSearch = async () => {
     const value = Math.min(20, Math.max(0, Number(e.target.value)));
     setLeaveData({ ...leaveData, leaveRequired: value });
   };
-
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [selectedLeaveData, setSelectedLeaveData] = useState(null);
-  
   const handlePrint = (record) => {
-      const employee = {
-          empCode: record.employee_id,
-          empName: record.employee_name,
-          designation: record.designation_name,
-          department: record.department_name,
-      };
+    const employee = {
+      empCode: record.employee_id,
+      empName: record.employee_name,
+      designation: record.designation_name,
+      department: record.department_name,
+    };
   
-      const leaveData = {
-          leaveEnjoyedDays: record.leave_enjoyed,
-          leaveBalanceDays: record.leave_balance,
-          leaveRequiredDays: record.leaveDays,
-          leaveStartDate: record.start_date.split("T")[0],
-          leaveEndDate: record.end_date.split("T")[0],
-          purposeOfLeave: record.request_reason,
-          chargePerson: record.alternative_person,
-      };
+    const leaveData = {
+      leaveEnjoyedDays: record.leave_enjoyed,
+      leaveBalanceDays: record.leave_balance,
+      leaveRequiredDays: record.leaveDays,
+      leaveStartDate: record.start_date.split("T")[0],
+      leaveEndDate: record.end_date.split("T")[0],
+      purposeOfLeave: record.request_reason,
+      chargePerson: record.alternative_person,
+    };
   
-      setSelectedEmployee(employee);
-      setSelectedLeaveData(leaveData);
+    // Set state for the selected employee and leave data
+    setSelectedEmployee(employee);
+    setSelectedLeaveData(leaveData);
+  
+    // Create a new print window
+    const printWindow = window.open('', '', 'height=600,width=800');
+  
+    // Inject basic styles for the print layout (optional, for better printing)
+    const styles = Array.from(document.styleSheets)
+      .map(styleSheet => {
+        try {
+          return Array.from(styleSheet.cssRules).map(rule => rule.cssText).join('');
+        } catch (e) {
+          return ''; // skip if we can't access styles
+        }
+      })
+      .join('');
+  
+    printWindow.document.write('<html><head><title>Print Preview</title>');
+    printWindow.document.write(`<style>${styles}</style>`); // Inject styles to match the page layout
+    printWindow.document.write('</head><body>');
+  
+    // Render the LeaveForm component into the print window using ReactDOM.createPortal()
+    ReactDOM.render(
+      <LeaveForm employee={employee} leaveData={leaveData} />,
+      printWindow.document.body
+    );
+  
+    // After rendering, automatically trigger the print dialog
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
   };
   
-  
-
-
-
   return (
     <div className="custom-leave-management-page">
-      {selectedEmployee && selectedLeaveData && (
-    <LeaveForm employee={selectedEmployee} leaveData={selectedLeaveData} />
-)}
 
       <div className="custom-leave-management-bubbles">
         {[...Array(10)].map((_, index) => (

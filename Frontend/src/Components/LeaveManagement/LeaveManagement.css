@@ -249,3 +249,22 @@
     }
 }
 
+@media print {
+    .custom-leave-management-page {
+      /* Adjust for print layout */
+      display: block;
+      padding: 10px;
+      font-size: 12pt;
+    }
+  
+    .custom-search-section, .custom-form-container, .custom-history-container {
+      display: none; /* Hide UI sections that are not needed for print */
+    }
+  
+    .custom-leave-form {
+      /* Adjust style for LeaveForm during print */
+      display: block;
+    }
+  }
+  
+
