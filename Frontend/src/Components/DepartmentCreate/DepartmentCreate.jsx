@@ -448,51 +448,87 @@ const DepartmentCreate = () => {
             </table>
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <nav className="mt-3">
-                <ul className="pagination justify-content-center">
-                  <li
-                    className={`page-item ${
-                      currentPage === 1 ? "disabled" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                    >
-                      Previous
-                    </button>
-                  </li>
-                  {Array.from({ length: totalPages }, (_, i) => (
-                    <li
-                      key={i}
-                      className={`page-item ${
-                        currentPage === i + 1 ? "active" : ""
-                      }`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(i + 1)}
-                      >
-                        {i + 1}
-                      </button>
-                    </li>
-                  ))}
-                  <li
-                    className={`page-item ${
-                      currentPage === totalPages ? "disabled" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                    >
-                      Next
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-            )}
+{totalPages > 1 && (
+  <nav className="mt-3">
+    <ul className="pagination justify-content-center">
+      {/* Previous Button */}
+      <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+        <button
+          className="page-link"
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+      </li>
+
+      {/* Page Numbers with Ellipsis */}
+      {currentPage > 3 && (
+        <>
+          <li className="page-item">
+            <button
+              className="page-link"
+              onClick={() => setCurrentPage(1)}
+            >
+              1
+            </button>
+          </li>
+          <li className="page-item disabled">
+            <span className="page-link">...</span>
+          </li>
+        </>
+      )}
+
+      {/* Page Numbers around Current Page */}
+      {Array.from({ length: 3 }, (_, i) => i + currentPage - 1)
+        .filter(page => page > 0 && page <= totalPages)
+        .map(page => (
+          <li
+            key={page}
+            className={`page-item ${currentPage === page ? "active" : ""}`}
+          >
+            <button
+              className="page-link"
+              onClick={() => setCurrentPage(page)}
+            >
+              {page}
+            </button>
+          </li>
+        ))}
+
+      {/* Ellipsis when there are more pages after */}
+      {currentPage < totalPages - 2 && (
+        <li className="page-item disabled">
+          <span className="page-link">...</span>
+        </li>
+      )}
+
+      {/* Last Page Button */}
+      {totalPages > 1 && currentPage < totalPages - 1 && (
+        <li className="page-item">
+          <button
+            className="page-link"
+            onClick={() => setCurrentPage(totalPages)}
+          >
+            {totalPages}
+          </button>
+        </li>
+      )}
+
+      {/* Next Button */}
+      <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+        <button
+          className="page-link"
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </li>
+    </ul>
+  </nav>
+)}
+
           </div>
         </div>
       </div>

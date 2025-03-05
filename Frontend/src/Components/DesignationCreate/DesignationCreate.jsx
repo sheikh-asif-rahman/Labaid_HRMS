@@ -504,44 +504,86 @@ const DesignationCreate = () => {
             </table>
             {/* Pagination */}
             <div className="pagination-container">
-              <nav aria-label="Page navigation example">
-                <ul className="pagination">
-                  <li className="page-item">
-                    <button
-                      className="page-link"
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      Previous
-                    </button>
-                  </li>
-                  {[
-                    ...Array(Math.ceil(filteredDesignations.length / rowsPerPage)),
-                  ].map((_, pageIndex) => (
-                    <li key={pageIndex + 1} className="page-item">
-                      <button
-                        className="page-link"
-                        onClick={() => paginate(pageIndex + 1)}
-                      >
-                        {pageIndex + 1}
-                      </button>
-                    </li>
-                  ))}
-                  <li className="page-item">
-                    <button
-                      className="page-link"
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={
-                        currentPage ===
-                        Math.ceil(filteredDesignations.length / rowsPerPage)
-                      }
-                    >
-                      Next
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-            </div>
+  <nav aria-label="Page navigation example">
+    <ul className="pagination">
+      {/* Previous Button */}
+      <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+        <button
+          className="page-link"
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+      </li>
+
+      {/* Ellipsis before page numbers */}
+      {currentPage > 3 && (
+        <>
+          <li className="page-item">
+            <button
+              className="page-link"
+              onClick={() => paginate(1)}
+            >
+              1
+            </button>
+          </li>
+          <li className="page-item disabled">
+            <span className="page-link">...</span>
+          </li>
+        </>
+      )}
+
+      {/* Page Numbers around the Current Page */}
+      {Array.from({ length: 3 }, (_, i) => i + currentPage - 1)
+        .filter(page => page > 0 && page <= Math.ceil(filteredDesignations.length / rowsPerPage))
+        .map(page => (
+          <li
+            key={page}
+            className={`page-item ${currentPage === page ? "active" : ""}`}
+          >
+            <button
+              className="page-link"
+              onClick={() => paginate(page)}
+            >
+              {page}
+            </button>
+          </li>
+        ))}
+
+      {/* Ellipsis when there are more pages after */}
+      {currentPage < Math.ceil(filteredDesignations.length / rowsPerPage) - 2 && (
+        <li className="page-item disabled">
+          <span className="page-link">...</span>
+        </li>
+      )}
+
+      {/* Last Page Button */}
+      {currentPage < Math.ceil(filteredDesignations.length / rowsPerPage) - 1 && (
+        <li className="page-item">
+          <button
+            className="page-link"
+            onClick={() => paginate(Math.ceil(filteredDesignations.length / rowsPerPage))}
+          >
+            {Math.ceil(filteredDesignations.length / rowsPerPage)}
+          </button>
+        </li>
+      )}
+
+      {/* Next Button */}
+      <li className={`page-item ${currentPage === Math.ceil(filteredDesignations.length / rowsPerPage) ? "disabled" : ""}`}>
+        <button
+          className="page-link"
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === Math.ceil(filteredDesignations.length / rowsPerPage)}
+        >
+          Next
+        </button>
+      </li>
+    </ul>
+  </nav>
+</div>
+
           </div>
         </div>
       </div>

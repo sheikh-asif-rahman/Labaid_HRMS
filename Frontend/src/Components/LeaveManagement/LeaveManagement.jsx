@@ -27,14 +27,12 @@ const LeaveManagement = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedLeaveData, setSelectedLeaveData] = useState(null);
 
-
   // Set state for the current page
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
   // Sort history by created_date (latest on top)
-  const sortedHistory = history
-    .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+  const sortedHistory = history.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
   // Get the current records for the current page
   const indexOfLastRecord = currentPage * recordsPerPage;
@@ -58,98 +56,96 @@ const LeaveManagement = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-
   // search function---------------------------------------------
   const handleSearch = async () => {
-  if (!searchId) return;
+    if (!searchId) return;
 
-  try {
-    const response = await axios.post(`${BASE_URL}/leaveusersearch`, {
-      user_id: searchId,
-    });
-
-    const designationResponse = await axios.get(`${BASE_URL}/loaddesignation`);
-    const departmentResponse = await axios.get(`${BASE_URL}/loaddepartments`);
-
-    if (response.data) {
-      const { employee, leave } = response.data;
-      const employeeData = employee || {};
-      const leaveHistory = leave || [];
-
-      const department = departmentResponse.data.find(
-        (dept) => dept.id === employeeData.DepartmentId
-      ) || {};
-
-      const designation = designationResponse.data.find(
-        (desig) => desig.id === employeeData.DesignationId
-      ) || {};
-
-      // Calculate total leave days taken
-      let totalLeaveDays = 0;
-      leaveHistory.forEach((leaveRecord) => {
-        const startDate = new Date(leaveRecord.start_date);
-        const endDate = new Date(leaveRecord.end_date);
-        const leaveDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
-        totalLeaveDays += leaveDays;
+    try {
+      const response = await axios.post(`${BASE_URL}/leaveusersearch`, {
+        user_id: searchId,
       });
 
-      // Maximum leave is 20 days
-      const leaveBalance = 20 - totalLeaveDays;
+      const designationResponse = await axios.get(`${BASE_URL}/loaddesignation`);
+      const departmentResponse = await axios.get(`${BASE_URL}/loaddepartments`);
 
-      // Corrected Leave Enjoyed: (Max Leave - Leave Balance)
-      const leaveEnjoyed = 20 - leaveBalance;
+      if (response.data) {
+        const { employee, leave } = response.data;
+        const employeeData = employee || {};
+        const leaveHistory = leave || [];
 
-      // Format DateOfJoin to 'YYYY-MM-DD'
-      const formattedDateOfJoin = employeeData.DateOfJoin
-        ? new Date(employeeData.DateOfJoin).toISOString().split('T')[0]
-        : '';
+        const department = departmentResponse.data.find(
+          (dept) => dept.id === employeeData.DepartmentId
+        ) || {};
 
-      const newLeaveData = {
-        empCode: employeeData.EmployeeId || "",
-        empName: employeeData.EmployeeName || "",
-        department: department.departmentName || "",
-        designation: designation.designationName || "",
-        leaveBalance: leaveBalance || 0,
-        leaveEnjoyed: leaveEnjoyed || 0, // Corrected leave enjoyed
-        dateOfJoin: formattedDateOfJoin,
-      };
+        const designation = designationResponse.data.find(
+          (desig) => desig.id === employeeData.DesignationId
+        ) || {};
 
-      setLeaveData(newLeaveData);
-      console.log("Stored Employee Leave Data:", newLeaveData);
+        // Calculate total leave days taken
+        let totalLeaveDays = 0;
+        leaveHistory.forEach((leaveRecord) => {
+          const startDate = new Date(leaveRecord.start_date);
+          const endDate = new Date(leaveRecord.end_date);
+          const leaveDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
+          totalLeaveDays += leaveDays;
+        });
 
-      // Map leave history with leave days
-      const leaveHistoryWithDays = leaveHistory.map((leaveRecord) => {
-        const startDate = new Date(leaveRecord.start_date);
-        const endDate = new Date(leaveRecord.end_date);
-        const leaveDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
+        // Maximum leave is 20 days
+        const leaveBalance = 20 - totalLeaveDays;
 
-        return {
-          ...leaveRecord,
-          leaveDays,
+        // Corrected Leave Enjoyed: (Max Leave - Leave Balance)
+        const leaveEnjoyed = 20 - leaveBalance;
+
+        // Format DateOfJoin to 'YYYY-MM-DD'
+        const formattedDateOfJoin = employeeData.DateOfJoin
+          ? new Date(employeeData.DateOfJoin).toISOString().split('T')[0]
+          : '';
+
+        const newLeaveData = {
+          empCode: employeeData.EmployeeId || "",
+          empName: employeeData.EmployeeName || "",
+          department: department.departmentName || "",
+          designation: designation.designationName || "",
+          leaveBalance: leaveBalance || 0,
+          leaveEnjoyed: leaveEnjoyed || 0, // Corrected leave enjoyed
+          dateOfJoin: formattedDateOfJoin,
         };
+
+        setLeaveData(newLeaveData);
+        console.log("Stored Employee Leave Data:", newLeaveData);
+
+        // Map leave history with leave days
+        const leaveHistoryWithDays = leaveHistory.map((leaveRecord) => {
+          const startDate = new Date(leaveRecord.start_date);
+          const endDate = new Date(leaveRecord.end_date);
+          const leaveDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
+
+          return {
+            ...leaveRecord,
+            leaveDays,
+          };
+        });
+
+        setHistory(leaveHistoryWithDays || []);
+        console.log("Stored Leave History:", leaveHistoryWithDays);
+
+        setSearched(true);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLeaveData({
+        empCode: "",
+        empName: "",
+        department: "",
+        designation: "",
+        leaveBalance: "",
+        leaveEnjoyed: "", // Reset leaveEnjoyed in case of error
+        dateOfJoin: "",
       });
-
-      setHistory(leaveHistoryWithDays || []);
-      console.log("Stored Leave History:", leaveHistoryWithDays);
-
-      setSearched(true);
+      setHistory([]);
+      setSearched(false);
     }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    setLeaveData({
-      empCode: "",
-      empName: "",
-      department: "",
-      designation: "",
-      leaveBalance: "",
-      leaveEnjoyed: "", // Reset leaveEnjoyed in case of error
-      dateOfJoin: "",
-    });
-    setHistory([]);
-    setSearched(false);
-  }
-};
-
+  };
 
   // reset
   const handleNew = () => {
@@ -174,12 +170,12 @@ const LeaveManagement = () => {
   // save function
   const handleSave = async () => {
     const createdBy = localStorage.getItem("userId"); // Retrieve user ID from localStorage
-  
+
     if (!createdBy) {
       alert("User ID not found. Please log in again.");
       return;
     }
-  
+
     const leaveRequestData = {
       employee_id: leaveData.empCode,
       employee_name: leaveData.empName,
@@ -193,7 +189,7 @@ const LeaveManagement = () => {
       leave_enjoyed: leaveData.leaveEnjoyed,
       leave_balance: leaveData.leaveBalance,
     };
-  
+
     try {
       const response = await fetch("http://localhost:3000/api/leavesave", {
         method: "POST",
@@ -202,15 +198,15 @@ const LeaveManagement = () => {
         },
         body: JSON.stringify(leaveRequestData),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to save leave request");
       }
-  
+
       const result = await response.json();
       console.log("Leave request saved successfully:", result);
       alert("Leave request saved successfully!");
-  
+
       // Call handleSearch after successfully saving the leave request
       handleSearch();
     } catch (error) {
@@ -218,8 +214,6 @@ const LeaveManagement = () => {
       alert("Failed to save leave request.");
     }
   };
-  
-  
 
   const handleLeaveRequiredChange = (e) => {
     const value = Math.min(20, Math.max(0, Number(e.target.value)));
@@ -283,6 +277,7 @@ const LeaveManagement = () => {
     printWindow.document.close();
     printWindow.print();
   };
+
   const handleFromDateChange = (e) => {
     const fromDate = e.target.value;
     setLeaveData((prevState) => {
@@ -291,7 +286,7 @@ const LeaveManagement = () => {
       return updatedLeaveData;
     });
   };
-  
+
   const handleToDateChange = (e) => {
     const toDate = e.target.value;
     setLeaveData((prevState) => {
@@ -300,19 +295,16 @@ const LeaveManagement = () => {
       return updatedLeaveData;
     });
   };
-  
+
   const calculateLeaveDays = (fromDate, toDate) => {
     if (!fromDate || !toDate) return 0;
-  
+
     const start = new Date(fromDate);
     const end = new Date(toDate);
     const diffTime = Math.abs(end - start);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Add 1 to include both start and end date
     return diffDays;
   };
-  
-  
-  
 
   return (
     <div className="custom-leave-management-page">
@@ -429,62 +421,61 @@ const LeaveManagement = () => {
 
         {searched && history.length > 0 && (
           <div className="custom-history-container">
-          <h3>Leave History</h3>
-          <table className="custom-leave-history-table">
-            <thead>
-              <tr>
-                <th>SL</th>
-                <th>Application Date</th>
-                <th>Leave (Days)</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRecords.map((record, index) => {
-                const createdDate = new Date(record.created_date).toLocaleDateString();
-                const isFirstRecord = index === 0;
-  
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{createdDate}</td>
-                    <td>{record.leaveDays}</td>
-                    <td>
-                      <button
-                        className="custom-print-button"
-                        onClick={() => handlePrint(record)}
-                        disabled={!isFirstRecord}
-                      >
-                        Print
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-  
-          <div className="pagination">
-            <button onClick={handlePrevious} disabled={currentPage === 1}>
-              Previous
-            </button>
-            {[...Array(totalPages).keys()].map((pageNumber) => (
-              <button
-                key={pageNumber}
-                onClick={() => handlePageChange(pageNumber + 1)}
-                className={currentPage === pageNumber + 1 ? 'active' : ''}
-              >
-                {pageNumber + 1}
+            <h3>Leave History</h3>
+            <table className="custom-leave-history-table">
+              <thead>
+                <tr>
+                  <th>SL</th>
+                  <th>Application Date</th>
+                  <th>Leave (Days)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRecords.map((record, index) => {
+                  const createdDate = new Date(record.created_date).toLocaleDateString();
+                  const isFirstRecord = index === 0;
+
+                  return (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{createdDate}</td>
+                      <td>{record.leaveDays}</td>
+                      <td>
+                        <button
+                          className="custom-print-button"
+                          onClick={() => handlePrint(record)}
+                          disabled={!isFirstRecord}
+                        >
+                          Print
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            <div className="pagination">
+              <button onClick={handlePrevious} disabled={currentPage === 1}>
+                Previous
               </button>
-            ))}
-            <button onClick={handleNext} disabled={currentPage === totalPages}>
-              Next
-            </button>
+              {[...Array(totalPages).keys()].map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber + 1)}
+                  className={currentPage === pageNumber + 1 ? 'active' : ''}
+                >
+                  {pageNumber + 1}
+                </button>
+              ))}
+              <button onClick={handleNext} disabled={currentPage === totalPages}>
+                Next
+              </button>
+            </div>
           </div>
-        </div>
         )}
       </div>
-
     </div>
   );
 };
