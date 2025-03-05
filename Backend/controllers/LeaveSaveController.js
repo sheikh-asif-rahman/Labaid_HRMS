@@ -1,46 +1,58 @@
 const { sql } = require("../config/dbConfig");
 
-// Fetch user details and leave records
-const leaveUserSearch = async (req, res) => {
+// Save leave record
+const leavesave = async (req, res) => {
     try {
-        const { user_id } = req.body;
-        if (!user_id) {
-            return res.status(400).json({ message: "User ID is required" });
+        const {
+            employee_id, 
+            employee_name, 
+            created_by, 
+            request_reason, 
+            start_date, 
+            end_date, 
+            department_name, 
+            designation_name, 
+            alternative_person, 
+            leave_enjoyed, 
+            leave_balance
+        } = req.body;
+
+        // Validation checks
+        if (!employee_id || !employee_name || !created_by || !start_date || !end_date) {
+            return res.status(400).json({ message: "Required fields are missing" });
         }
 
         const request = new sql.Request();
-        request.input("user_id", sql.Int, user_id);
+        request.input("employee_id", sql.Int, employee_id);
+        request.input("employee_name", sql.NVarChar(255), employee_name);
+        request.input("created_by", sql.NVarChar(255), created_by);
+        request.input("request_reason", sql.NVarChar(500), request_reason || null); // Optional field
+        request.input("start_date", sql.Date, start_date);
+        request.input("end_date", sql.Date, end_date);
+        request.input("department_name", sql.NVarChar(255), department_name || null); // Optional field
+        request.input("designation_name", sql.NVarChar(255), designation_name || null); // Optional field
+        request.input("alternative_person", sql.NVarChar(255), alternative_person || null); // Optional field
+        request.input("leave_enjoyed", sql.Int, leave_enjoyed || 0); // Optional field, default to 0 if not provided
+        request.input("leave_balance", sql.Int, leave_balance || 0); // Optional field, default to 0 if not provided
 
-        // Query Employee table
-        const employeeQuery = `
-            SELECT EmployeeName, EmployeeId, DepartmentId, DesignationId ,DateOfJoin
-            FROM dbo.Employee 
-            WHERE EmployeeId = @user_id
+        // Insert query for Leave table
+        const insertQuery = `
+            INSERT INTO dbo.Leave 
+            (employee_id, employee_name, created_by, request_reason, start_date, end_date, 
+             department_name, designation_name, alternative_person, leave_enjoyed, leave_balance)
+            VALUES
+            (@employee_id, @employee_name, @created_by, @request_reason, @start_date, @end_date, 
+             @department_name, @designation_name, @alternative_person, @leave_enjoyed, @leave_balance)
         `;
-        const employeeResult = await request.query(employeeQuery);
 
-        if (employeeResult.recordset.length === 0) {
-            return res.status(404).json({ message: "Employee not found" });
-        }
+        // Execute insert query
+        await request.query(insertQuery);
 
-        const employeeData = employeeResult.recordset[0];
-
-        // Query Leave table
-        const leaveQuery = `
-            SELECT employee_id, employee_name, request_reason, start_date, end_date, 
-                   department_name, designation_name, alternative_person, leave_enjoyed, 
-                   leave_balance, created_by, created_date 
-            FROM dbo.Leave 
-            WHERE employee_id = @user_id
-        `;
-        const leaveResult = await request.query(leaveQuery);
-        const leaveData = leaveResult.recordset;
-
-        return res.json({ employee: employeeData, leave: leaveData });
+        return res.status(200).json({ message: "Leave record saved successfully" });
     } catch (error) {
-        console.error("Error fetching leave user search:", error);
-        return res.status(500).send("Error fetching leave user search");
+        console.error("Error saving leave record:", error);
+        return res.status(500).send("Error saving leave record");
     }
 };
 
-module.exports = { leaveUserSearch };
+module.exports = { leavesave };

@@ -27,6 +27,7 @@ const getPendingEmployee = require('./routes/PendingEmployeeRoute');
 const updatePendingEmployee = require('./routes/PendingEmployeeUpdateRoute');
 const getNotification = require('./routes/NotificationRoute');
 const leaveusersearch = require('./routes/LeaveUserSearchRoute');
+const leavesave = require('./routes/LeaveSaveRoute');
 
 const app = express();
 app.use(express.json());
@@ -70,6 +71,8 @@ app.use('/api', getPendingEmployee);
 app.use('/api', updatePendingEmployee);
 app.use('/api', getNotification);
 app.use('/api', leaveusersearch);
+app.use('/api', leavesave);
+
 
 
 
