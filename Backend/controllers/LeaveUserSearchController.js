@@ -4,16 +4,17 @@ const { sql } = require("../config/dbConfig");
 const leaveUserSearch = async (req, res) => {
     try {
         const { user_id } = req.body;
+
         if (!user_id) {
             return res.status(400).json({ message: "User ID is required" });
         }
 
         const request = new sql.Request();
-        request.input("user_id", sql.Int, user_id);
+        request.input("user_id", sql.NVarChar, user_id); // Always bind as NVARCHAR
 
         // Query Employee table
         const employeeQuery = `
-            SELECT EmployeeName, EmployeeId, DepartmentId, DesignationId ,DateOfJoin
+            SELECT EmployeeName, EmployeeId, DepartmentId, DesignationId, DateOfJoin
             FROM dbo.Employee 
             WHERE EmployeeId = @user_id
         `;
