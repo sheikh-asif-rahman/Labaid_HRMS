@@ -45,7 +45,10 @@ const Dashboard = () => {
       navigate("/employeepage"); // Navigate to the Employee page
     } else if (cardName === "Leave Management") {
       navigate("/leavemanagementpage"); // Navigate to the Employee page
-    } else if (cardName === "underDevelopmentModal") {
+    } else if (cardName === "Holiday Calendar") {
+      navigate("/holidaycalander"); // Navigate to the Employee page
+    } 
+     else if (cardName === "underDevelopmentModal") {
       setModalMessage("Under Development");
       setShowModal(true);
     }
@@ -179,7 +182,7 @@ const Dashboard = () => {
         <div className="col-md-4 mb-4">
           <div
             className="card custom-card card-holiday-calendar"
-            onClick={() => handleCardClick("underDevelopmentModal")}
+            onClick={() => handleCardClick("Holiday Calendar")}
           >
             <div className="row g-0">
               <div className="col-md-8">

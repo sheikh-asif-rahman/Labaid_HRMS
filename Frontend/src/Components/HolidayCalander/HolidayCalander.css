@@ -1,0 +1,51 @@
+/* HolidayCalander.css */
+body {
+    background: #98cbff;
+  }
+  
+  .calendar-container {
+    margin: 100px 50px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .holiday-calendar {
+    border-radius: 8px;
+    background: white;
+    padding: 10px;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .calendar-container {
+      margin: 20px;
+      padding: 15px;
+    }
+  
+    .holiday-calendar {
+      padding: 5px;
+    }
+  
+    h2 {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .calendar-container {
+      margin: 100px 20px;
+      padding: auto;
+    }
+  
+    .holiday-calendar {
+      padding: auto;
+    }
+  
+    h2 {
+      font-size: 1.2rem;
+      text-align: center;
+    }
+  }

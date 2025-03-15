@@ -21,6 +21,7 @@ import EmployeeApprovalPage from "./Page/EmployeeApprovalPage.jsx";
 // Import the ProtectedRoute component
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import LeaveManagementPage from "./Page/LeaveManagementPage.jsx";
+import HolidayCalanderPage from "./Page/HolidayCalanderPage.jsx";
 
 // Define routes using createBrowserRouter
 const router = createBrowserRouter([
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
   {
     path: `/leavemanagementpage`,
     element: <ProtectedRoute element={<LeaveManagementPage />} />,
+  },
+  {
+    path: `/holidaycalander`,
+    element: <ProtectedRoute element={<HolidayCalanderPage />} />,
   },
 ]);
 
