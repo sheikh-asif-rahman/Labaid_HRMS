@@ -11,6 +11,8 @@ import {
 } from "react-icons/bs";
 import { RiTeamFill } from "react-icons/ri";
 import { SiAdblock } from "react-icons/si";
+import { SlCalender } from "react-icons/sl";
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -191,7 +193,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                <SiAdblock className="card-icon" />
+                <SlCalender className="card-icon" />
               </div>
             </div>
           </div>
