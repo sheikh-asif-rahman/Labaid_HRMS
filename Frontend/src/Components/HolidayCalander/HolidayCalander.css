@@ -1,51 +1,109 @@
-/* HolidayCalander.css */
+/* General Styles */
 body {
-    background: #98cbff;
-  }
-  
+  background: #98cbff;
+}
+
+.calendar-container {
+  margin: 100px 50px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.holiday-calendar {
+  border-radius: 8px;
+  background: white;
+  padding: 10px;
+}
+
+/* --- Ensure Row Expands Dynamically --- */
+.rbc-month-row {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.rbc-row-content {
+  height: auto !important;
+}
+
+.rbc-day-bg {
+  height: auto !important;
+  min-height: 50px;
+}
+
+/* --- Ensure Events Stack Properly in a Day Cell --- */
+.rbc-event {
+  min-height: 25px !important;
+  padding: 4px;
+  font-size: 0.9rem;
+  white-space: normal;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+
+/* Allow event text to be visible */
+.rbc-event-content {
+  white-space: normal;
+}
+
+/* --- Ensure Day Cell Expands with Events --- */
+.rbc-day-slot {
+  height: auto !important;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
   .calendar-container {
-    margin: 100px 50px;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .holiday-calendar {
-    border-radius: 8px;
-    background: white;
-    padding: 10px;
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .calendar-container {
       margin: 20px;
       padding: 15px;
-    }
-  
-    .holiday-calendar {
+  }
+
+  .holiday-calendar {
       padding: 5px;
-    }
-  
-    h2 {
+  }
+
+  h2 {
       font-size: 1.5rem;
       text-align: center;
-    }
   }
-  
-  @media (max-width: 480px) {
-    .calendar-container {
+}
+
+@media (max-width: 480px) {
+  .calendar-container {
       margin: 100px 20px;
       padding: auto;
-    }
-  
-    .holiday-calendar {
+  }
+
+  .holiday-calendar {
       padding: auto;
-    }
-  
-    h2 {
+  }
+
+  h2 {
       font-size: 1.2rem;
       text-align: center;
-    }
   }
+}
+
+.custom-right-button {
+  background-color: #28a745 !important; /* Force Green */
+  color: white !important;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.custom-right-button:hover {
+  background-color: #218838 !important; /* Darker Green */
+}
+
+.custom-right-button:active {
+  background-color: #1e7e34 !important;
+}

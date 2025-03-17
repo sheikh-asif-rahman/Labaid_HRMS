@@ -28,7 +28,8 @@ const updatePendingEmployee = require('./routes/PendingEmployeeUpdateRoute');
 const getNotification = require('./routes/NotificationRoute');
 const leaveusersearch = require('./routes/LeaveUserSearchRoute');
 const leavesave = require('./routes/LeaveSaveRoute');
-
+const holidaycalanderload = require('./routes/HolidayCalanderLoadRoute');
+const holidaycalanderupdate = require('./routes/HolidayCalanderUpdateRoute');
 const app = express();
 app.use(express.json());
 const port = 3000;
@@ -72,6 +73,10 @@ app.use('/api', updatePendingEmployee);
 app.use('/api', getNotification);
 app.use('/api', leaveusersearch);
 app.use('/api', leavesave);
+app.use('/api', holidaycalanderload);
+app.use('/api', holidaycalanderupdate);
+
+
 
 
 
