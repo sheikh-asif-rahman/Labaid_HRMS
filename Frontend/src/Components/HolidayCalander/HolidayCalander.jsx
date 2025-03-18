@@ -364,6 +364,9 @@ const HolidayCalander = () => {
     console.log("✅ PDF Downloaded Successfully.");
   };
 
+  const permissionArray = JSON.parse(localStorage.getItem("permission")) || [];
+  const canEditHolidayCalendar = permissionArray.includes("Can Edit Holiday Calendar");
+  
   return (
     <div className="calendar-container">
       <h2>Holiday Calendar</h2>
@@ -389,10 +392,7 @@ const HolidayCalander = () => {
               </div>
               <span className="rbc-toolbar-label">{props.label}</span>
               <div className="rbc-btn-group">
-                <button
-                  className="custom-right-button"
-                  onClick={handleDownloadPDF}
-                >
+                <button className="custom-right-button" onClick={handleDownloadPDF}>
                   Download
                 </button>
               </div>
@@ -400,7 +400,7 @@ const HolidayCalander = () => {
           ),
         }}
       />
-
+  
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>{selectedDate}</Modal.Title>
@@ -427,73 +427,74 @@ const HolidayCalander = () => {
               />
             ))
           ) : selectedEvents.length > 0 ? (
-            selectedEvents.map((event, index) => (
-              <p key={index}>{event.title}</p>
-            ))
+            selectedEvents.map((event, index) => <p key={index}>{event.title}</p>)
           ) : (
             <p>No Event on This Day</p>
           )}
         </Modal.Body>
         <Modal.Footer>
-          {isSaved ? (
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setShowModal(false);
-                setRefreshEvents((prev) => !prev); // ✅ Toggle state to trigger useEffect
-              }}
-            >
-              OK
-            </Button>
-          ) : isAddingNewEvent ? (
-            <>
-              <Button variant="success" onClick={handleAddEvent}>
-                Save New Event
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => setIsAddingNewEvent(false)}
-              >
-                Cancel
-              </Button>
-            </>
-          ) : isEditing ? (
-            <>
-              <Button variant="success" onClick={handleSave}>
-                Save
-              </Button>
-              <Button variant="secondary" onClick={() => setIsEditing(false)}>
-                Cancel
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                variant="primary"
-                onClick={() => setIsAddingNewEvent(true)}
-              >
-                Add Event
-              </Button>
-              {selectedEvents.length > 0 && (
-                <Button variant="primary" onClick={handleEdit}>
-                  Edit
-                </Button>
-              )}
+          {canEditHolidayCalendar ? (
+            isSaved ? (
               <Button
                 variant="secondary"
                 onClick={() => {
                   setShowModal(false);
-                  setRefreshEvents((prev) => !prev); // ✅ Toggle state to trigger useEffect
+                  setRefreshEvents((prev) => !prev);
                 }}
               >
                 OK
-              </Button>{" "}
-            </>
+              </Button>
+            ) : isAddingNewEvent ? (
+              <>
+                <Button variant="success" onClick={handleAddEvent}>
+                  Save New Event
+                </Button>
+                <Button variant="secondary" onClick={() => setIsAddingNewEvent(false)}>
+                  Cancel
+                </Button>
+              </>
+            ) : isEditing ? (
+              <>
+                <Button variant="success" onClick={handleSave}>Save</Button>
+                <Button variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
+              </>
+            ) : (
+              <>
+                <Button variant="primary" onClick={() => setIsAddingNewEvent(true)}>
+                  Add Event
+                </Button>
+                {selectedEvents.length > 0 && (
+                  <Button variant="primary" onClick={handleEdit}>
+                    Edit
+                  </Button>
+                )}
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setShowModal(false);
+                    setRefreshEvents((prev) => !prev);
+                  }}
+                >
+                  OK
+                </Button>
+              </>
+            )
+          ) : (
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowModal(false);
+                setRefreshEvents((prev) => !prev);
+              }}
+            >
+              OK
+            </Button>
           )}
         </Modal.Footer>
       </Modal>
     </div>
   );
+  
 };
 
 export default HolidayCalander;
