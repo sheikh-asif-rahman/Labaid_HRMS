@@ -230,18 +230,18 @@ const Employee = () => {
   const handleSearch = async () => {
     const trimmedUserId = searchUserId.trim();
     const userId = Number(trimmedUserId);
-
+  
     if (isNaN(userId)) {
       setModalMessage("Please enter a valid numeric User ID.");
       setShowModal(true);
       return;
     }
-
+  
     setLoading(true);
     try {
       const response = await axios.get(`${BASE_URL}searchemployee?userId=${userId}`);
       console.log("Search response:", response.data); // Log the full response from the search API
-
+  
       if (response.data && response.data.EmployeeId) {
         // If we get full employee data
         setSearchCompleted(true);
@@ -250,18 +250,19 @@ const Employee = () => {
         setEmployeeForm(mappedData);
         setFilteredDepartments(mappedData.filteredDepartments);
         setFilteredDesignations(mappedData.filteredDesignations);
-
-        setIsFormFilled(mappedData.branch_id && mappedData.department_id && mappedData.designation_id);
+  
+        // Set form filled only if essential fields exist
+        setIsFormFilled(!!mappedData.branch_id && !!mappedData.department_id && !!mappedData.designation_id);
       } else {
-        // If only minimal data is available
+        // If only minimal data is available, still mark search as completed
+        setSearchCompleted(true);
         setEmployeeForm({
           user_id: response.data?.user_id || "",
           user_name: response.data?.user_name || ""
         });
-        setSearchCompleted(false);
-        setIsFormFilled(false);
+        setIsFormFilled(false); // Ensure Save button can appear
       }
-
+  
       setModalMessage(response.data.message || "Search completed.");
     } catch (error) {
       console.error("Search error:", error);
@@ -270,6 +271,7 @@ const Employee = () => {
     setLoading(false);
     setShowModal(true);
   };
+  
 
 
   const handlePageRefresh = () => {
