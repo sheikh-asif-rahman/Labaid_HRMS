@@ -161,32 +161,32 @@ const Employee = () => {
   const handleSearchInputChange = (e) => {
     setSearchUserId(e.target.value);
   };
+// when the calander part is done, remove the comment =>>
+  // const tileClassName = ({ date, view }) => {
+  //   const presentDates = [3, 5, 9]; // Example attended dates
+  //   const absentDates = [4, 10]; // Example absent dates
+  //   const holidayDates = [6]; // Example holiday dates
+  //   const leaveDates = [12]; // Example leave dates
 
-  const tileClassName = ({ date, view }) => {
-    const presentDates = [3, 5, 9]; // Example attended dates
-    const absentDates = [4, 10]; // Example absent dates
-    const holidayDates = [6]; // Example holiday dates
-    const leaveDates = [12]; // Example leave dates
+  //   const day = date.getDate();
+  //   const today = new Date();
+  //   const currentMonth = today.getMonth();
+  //   const todayDate = today.getDate();
 
-    const day = date.getDate();
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const todayDate = today.getDate();
+  //   if (date.getMonth() === currentMonth && date.getDate() === todayDate) {
+  //     return "today";
+  //   }
 
-    if (date.getMonth() === currentMonth && date.getDate() === todayDate) {
-      return "today";
-    }
-
-    if (leaveDates.includes(day)) {
-      return "leave";
-    } else if (presentDates.includes(day)) {
-      return "attended";
-    } else if (absentDates.includes(day)) {
-      return "absent";
-    } else if (holidayDates.includes(day)) {
-      return "holiday";
-    }
-  };
+  //   if (leaveDates.includes(day)) {
+  //     return "leave";
+  //   } else if (presentDates.includes(day)) {
+  //     return "attended";
+  //   } else if (absentDates.includes(day)) {
+  //     return "absent";
+  //   } else if (holidayDates.includes(day)) {
+  //     return "holiday";
+  //   }
+  // };
 
   const mapEmployeeDataToForm = (data) => {
     // Filter the branches, departments, and designations based on the mapped data
@@ -894,7 +894,7 @@ const Employee = () => {
       </div>
 
       {/* Hidden Calendar Section */}
-      <div hidden="true" className="custom-employee-container-calendar">
+      {/* <div  className="custom-employee-container-calendar">
         <div className="custom-employee-container-calendar-left">
           <Calendar
             onChange={setDate}
@@ -942,7 +942,7 @@ const Employee = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

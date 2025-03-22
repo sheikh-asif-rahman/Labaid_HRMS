@@ -6,6 +6,8 @@
     background-color: #1a23a1;
     transition: background-color 0.3s ease;
     padding-bottom: 6px;
+    width: 100%;
+    z-index: 1050;
 }
 
 .navbar-custom .nav-link {
@@ -22,6 +24,17 @@
     font-size: 26px;
     font-weight: bolder;
     cursor: pointer;
+}
+
+/* Mobile Navbar Toggle */
+.navbar-toggler {
+    border: none;
+    background-color: transparent;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 /* Offcanvas styles */
@@ -90,24 +103,27 @@
     border-radius: 8px;
 }
 
+/* Notification List */
 .notification-list {
     max-height: 250px;
     max-width: 200px;
 }
 
-/* Notification Message Styles */
+/* Notification Items */
 .notification-list .dropdown-item {
     white-space: normal;
     padding: 10px;
     transition: background-color 0.3s ease;
 }
 
+/* Unread notifications (Sky Blue Background) */
 .notification-list .dropdown-item.unread {
     font-weight: bold;
     color: black;
-    background-color: #fff7c2; /* Light yellow for unread messages */
+    background-color: #cceeff; /* Sky Blue */
 }
 
+/* Read notifications (White Background) */
 .notification-list .dropdown-item.read {
     color: gray;
     background-color: white;
@@ -122,4 +138,50 @@
 .notification-list hr {
     margin: 5px 0;
     border-top: 1px solid #ccc;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .navbar-custom .navbar-collapse {
+        background-color: #1a23a1;
+        padding: 10px;
+    }
+
+    .navbar-custom .nav-link {
+        display: block;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .navbar-custom .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar-toggler {
+        color: white;
+    }
+}
+/* Unread notifications (Sky Blue Background) */
+.unread-notification {
+    background-color: #cceeff !important;
+    font-weight: bold;
+}
+
+/* Read notifications (White Background) */
+.read-notification {
+    background-color: white !important;
+    color: gray;
+}
+
+/* Load More button */
+.load-more {
+    font-size: small;
+    text-align: center;
+    font-weight: bold;
+    color: blue;
+    cursor: pointer;
+}
+
+.load-more:hover {
+    background-color: #f0f0f0;
 }

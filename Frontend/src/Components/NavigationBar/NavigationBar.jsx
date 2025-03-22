@@ -6,36 +6,74 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Bell } from "react-bootstrap-icons";
 import axios from "axios";
-import "./NavigationBar.css"; // Import the CSS file
+import "./NavigationBar.css"; 
 import { BASE_URL } from "/src/constants/constant.jsx";
-
 
 const NavigationBar = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showReadNotifications, setShowReadNotifications] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      const userId = localStorage.getItem("userId"); // Get userId from localStorage
-      if (!userId) return;
-
-      try {
-        const response = await axios.get(`${BASE_URL}notification?userId=${userId}`);
-        console.log("Notifications response:", response.data); // Log the response to check the structure
-        setNotifications(response.data); // Assuming API returns an array of notifications
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
-
     fetchNotifications();
   }, []);
 
-  const handleToggle = () => setShowOffcanvas((prev) => !prev);
+  const fetchNotifications = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    try {
+      const response = await axios.get(`${BASE_URL}notification?userId=${userId}`);
+      console.log("Notifications response:", response.data);
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  const markNotificationAsRead = async (notification) => {
+    if (notification.Readed) {
+      setSelectedNotification(notification);
+      setShowModal(true);
+      return;
+    }
+  
+    try {
+      await axios.get(`${BASE_URL}notification?userId=${notification.CreatedBy}&notificationId=${notification.Id}&markRead=true`);
+  
+      // Update state to mark the specific notification as read
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notif) =>
+          notif.Id === notification.Id ? { ...notif, Readed: true } : notif
+        )
+      );
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  
+    setSelectedNotification({ ...notification, Readed: true });
+    setShowModal(true);
+  };
+  
+
+  const handleLoadMore = (event) => {
+    event.preventDefault();
+    event.stopPropagation(); // Prevent dropdown from closing
+    setShowReadNotifications(true);
+  };
+
+  const handleToggleDropdown = (isOpen) => {
+    setShowDropdown(isOpen);
+    if (!isOpen) {
+      setShowReadNotifications(false); // Reset read notifications when dropdown closes
+    }
+  };
+
   const handleHomePage = () => navigate(`/homepage`);
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
@@ -43,49 +81,77 @@ const NavigationBar = () => {
   };
   const handleChangePassword = () => navigate(`/changepasswordpage`);
 
-  const unreadCount = notifications.length; // All notifications are treated as unread
-
-  const handleNotificationClick = (notification) => {
-    setSelectedNotification(notification);
-    setShowModal(true);
-  };
+  const unreadNotifications = notifications.filter((n) => !n.Readed);
+  const readNotifications = notifications.filter((n) => n.Readed);
+  const unreadCount = unreadNotifications.length;
 
   return (
     <>
       <Navbar expand="lg" className="navbar-custom" fixed="top">
         <Container>
           <Navbar.Brand onClick={handleHomePage}>LABAID HRMS</Navbar.Brand>
-          <Navbar.Toggle aria-controls="offcanvasNavbar" onClick={handleToggle} />
-          <Navbar.Collapse id="offcanvasNavbar" className="d-none d-lg-flex">
-            <Nav className="ms-auto">
-              <Nav.Link onClick={handleHomePage}>Home</Nav.Link>
-              <NavDropdown title="Profile" id="profile-dropdown">
-                <NavDropdown.Item onClick={handleChangePassword}>Change Password</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={handleLogout} className="logout-link">Logout</NavDropdown.Item>
-              </NavDropdown>
-              {/* Notification Dropdown */}
-              <Dropdown align="end">
-                <Dropdown.Toggle variant="light" className="notification-btn">
-                  <Bell size={20} />
-                  {unreadCount > 0 && <Badge pill bg="danger">{unreadCount}</Badge>}
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="notification-dropdown">
-                  <div className="notification-list">
-                    {notifications.length === 0 ? (
-                      <Dropdown.Item>No new notifications</Dropdown.Item>
-                    ) : (
-                      notifications.map((notification) => (
-                        <Dropdown.Item key={notification.EmployeeId} onClick={() => handleNotificationClick(notification)}>
-                          <strong>{notification.EmployeeId}</strong> - {notification.Remark}
-                        </Dropdown.Item>
-                      ))
-                    )}
-                  </div>
-                </Dropdown.Menu>
-              </Dropdown>
-            </Nav>
-          </Navbar.Collapse>
+          <Navbar.Toggle onClick={() => setShowOffcanvas(!showOffcanvas)} />
+          <Navbar.Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end">
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>Menu</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="ms-auto">
+                <Nav.Link onClick={handleHomePage}>Home</Nav.Link>
+                <NavDropdown title="Profile" id="profile-dropdown">
+                  <NavDropdown.Item onClick={handleChangePassword}>Change Password</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={handleLogout} className="logout-link">Logout</NavDropdown.Item>
+                </NavDropdown>
+                
+                {/* Notification Dropdown */}
+                <Dropdown align="end" show={showDropdown} onToggle={handleToggleDropdown}>
+                  <Dropdown.Toggle variant="light" className="notification-btn">
+                    <Bell size={20} />
+                    {unreadCount > 0 && <Badge pill bg="danger">{unreadCount}</Badge>}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu className="notification-dropdown">
+                    <div className="notification-list">
+                      {unreadNotifications.length === 0 && readNotifications.length === 0 ? (
+                        <Dropdown.Item>No new notifications</Dropdown.Item>
+                      ) : (
+                        <>
+                          {unreadNotifications.map((notification) => (
+                            <Dropdown.Item 
+                              key={notification.EmployeeId} 
+                              onClick={() => markNotificationAsRead(notification)}
+                              className="unread-notification"
+                            >
+                              <strong>{notification.EmployeeId}</strong> - {notification.Remark}
+                            </Dropdown.Item>
+                          ))}
+                          
+                          {showReadNotifications && readNotifications.map((notification) => (
+                            <Dropdown.Item 
+                              key={notification.EmployeeId} 
+                              onClick={() => markNotificationAsRead(notification)}
+                              className="read-notification"
+                            >
+                              <strong>{notification.EmployeeId}</strong> - {notification.Remark}
+                            </Dropdown.Item>
+                          ))}
+
+                          {!showReadNotifications && readNotifications.length > 0 && (
+                            <Dropdown.Item 
+                              onClick={handleLoadMore} 
+                              className="load-more"
+                            >
+                              Load More
+                            </Dropdown.Item>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Nav>
+            </Offcanvas.Body>
+          </Navbar.Offcanvas>
         </Container>
       </Navbar>
 
