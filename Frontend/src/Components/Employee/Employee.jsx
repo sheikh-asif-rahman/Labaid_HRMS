@@ -694,6 +694,7 @@ const Employee = () => {
               <label htmlFor="employee_type">Employee Type:</label>
               <select
                 id="employee_type"
+                style={{ borderColor: employeeForm.employee_type ? "" : "red" }}
                 value={employeeForm.employee_type}
                 onChange={handleInputChange}
               >
@@ -735,6 +736,7 @@ const Employee = () => {
               <label htmlFor="gender">Gender:</label>
               <select
                 id="gender"
+                style={{ borderColor: employeeForm.gender ? "" : "red" }}
                 value={employeeForm.gender}
                 onChange={handleInputChange}
               >
@@ -751,6 +753,7 @@ const Employee = () => {
               <label htmlFor="marital_status">Marital Status:</label>
               <select
                 id="marital_status"
+                style={{ borderColor: employeeForm.marital_status ? "" : "red" }}
                 value={employeeForm.marital_status}
                 onChange={handleInputChange}
               >
@@ -766,6 +769,7 @@ const Employee = () => {
               <label htmlFor="blood_group">Blood Group:</label>
               <select
                 id="blood_group"
+                style={{ borderColor: employeeForm.blood_group ? "" : "red" }}
                 value={employeeForm.blood_group}
                 onChange={handleInputChange}
               >
