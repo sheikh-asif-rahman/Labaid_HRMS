@@ -205,7 +205,7 @@ const Employee = () => {
       user_name: data.EmployeeName || data.user_name || "", // Both EmployeeName and user_name can be used
       branch_id: data.BranchId || "",
       personal_phone: data.PersonalContactNumber || "", // Mapping for personal phone number
-      official_phone: data.OfficialContactNumber || "", // Fixed typo from OfficalContactNumber
+      official_phone: data.OfficalContactNumber || "", // Fixed typo from OfficalContactNumber
       department_id: data.DepartmentId || "",
       designation_id: data.DesignationId || "",
       date_of_joining: data.DateOfJoin ? new Date(data.DateOfJoin).toISOString().split("T")[0] : "",

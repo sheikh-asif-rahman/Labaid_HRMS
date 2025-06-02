@@ -13,6 +13,19 @@ const EmployeeApprove = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [modalMessage, setModalMessage] = useState(""); // Message for the modal
   const [showModal, setShowModal] = useState(false);  // Control modal visibility
+  const [selectedBranch, setSelectedBranch] = useState('');
+const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 30;
+
+const filteredEmployees = employees.filter(emp => !selectedBranch || emp.branch === selectedBranch);
+const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+const paginatedEmployees = filteredEmployees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+const handleBranchChange = (e) => {
+  setSelectedBranch(e.target.value);
+  setCurrentPage(1); // Reset to first page on filter
+};
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,55 +164,96 @@ const EmployeeApprove = () => {
       </div>
 
       {/* Main container */}
-      <div className="custom-employee-approve-container">
-        <div className="custom-employee-approve-header">
-          <h2>Employee Approval Table</h2>
-          <div className="custom-employee-approve-buttons">
-            <button className="approve-button" onClick={handleApprove}>Approve</button>
-            <button className="reject-button" onClick={handleReject}>Reject</button>
-          </div>
-        </div>
-        <table className="custom-employee-approve-table">
-          <thead>
-            <tr>
-              <th><input type="checkbox" checked={selectAll} onChange={handleSelectAll} /></th>
-              <th>SL</th>
-              <th>User ID</th>
-              <th>User Name</th>
-              <th>Department</th>
-              <th>Designation</th>
-              <th>Branch</th>
-              <th>Date of Joining</th>
-              <th>Created By</th>
-              <th>Remark</th>
-            </tr>
-          </thead>
-          <tbody>
-            {employees.map((employee, index) => (
-              <tr key={employee.id}>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={!!selected[employee.id]}
-                    onChange={() => handleSelect(employee.id)}
-                  />
-                </td>
-                <td>{index + 1}</td>
-                <td>{employee.userId}</td>
-                <td>{employee.name}</td>
-                <td>{employee.department}</td>
-                <td>{employee.designation}</td>
-                <td>{employee.branch}</td>
-                <td>{employee.doj}</td>
-                <td>{employee.createdBy}</td>
-                <td>
-                  <input type="text" className="custom-employee-approve-remark" placeholder="Enter remark" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+<div className="custom-employee-approve-container">
+  <div className="custom-employee-approve-header">
+    <h2>Employee Approval Table</h2>
+    <div className="custom-employee-approve-actions">
+      <select
+        value={selectedBranch}
+        onChange={handleBranchChange}
+        className="branch-filter-dropdown"
+      >
+        <option value="">All Branches</option>
+        {Array.from(new Set(employees.map(emp => emp.branch))).map(branch => (
+          <option key={branch} value={branch}>{branch}</option>
+        ))}
+      </select>
+      <button className="approve-button" onClick={handleApprove}>Approve</button>
+      <button className="reject-button" onClick={handleReject}>Reject</button>
+    </div>
+  </div>
+
+  <table className="custom-employee-approve-table">
+    <thead>
+      <tr>
+        <th><input type="checkbox" checked={selectAll} onChange={handleSelectAll} /></th>
+        <th>SL</th>
+        <th>User ID</th>
+        <th>User Name</th>
+        <th>Department</th>
+        <th>Designation</th>
+        <th>Branch</th>
+        <th>Date of Joining</th>
+        <th>Created By</th>
+        <th>Remark</th>
+      </tr>
+    </thead>
+    <tbody>
+      {paginatedEmployees.map((employee, index) => (
+        <tr key={employee.id}>
+          <td>
+            <input
+              type="checkbox"
+              checked={!!selected[employee.id]}
+              onChange={() => handleSelect(employee.id)}
+            />
+          </td>
+          <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+          <td>{employee.userId}</td>
+          <td>{employee.name}</td>
+          <td>{employee.department}</td>
+          <td>{employee.designation}</td>
+          <td>{employee.branch}</td>
+          <td>{employee.doj}</td>
+          <td>{employee.createdBy}</td>
+          <td>
+            <input type="text" className="custom-employee-approve-remark" placeholder="Enter remark" />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <div className="pagination-footer">
+    <button
+      className="pagination-button"
+      disabled={currentPage === 1}
+      onClick={() => setCurrentPage(prev => prev - 1)}
+    >
+      Previous
+    </button>
+
+    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+      <button
+        key={page}
+        className={`pagination-button ${page === currentPage ? 'active' : ''}`}
+        onClick={() => setCurrentPage(page)}
+      >
+        {page}
+      </button>
+    ))}
+
+    <button
+      className="pagination-button"
+      disabled={currentPage === totalPages}
+      onClick={() => setCurrentPage(prev => prev + 1)}
+    >
+      Next
+    </button>
+  </div>
+</div>
+
+
 
       {/* Message Modal */}
       <div

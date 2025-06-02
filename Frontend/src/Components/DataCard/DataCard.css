@@ -1,3 +1,10 @@
+/* Page background */
+.dashboard-overview {
+  position: relative;
+  min-height: 100vh;
+  background-color: #98cbff;
+  overflow: hidden;
+}
 /* General styles for the container */
 .card {
     padding: 5%;
@@ -8,6 +15,7 @@
     color: #333; /* Default text color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
     cursor: pointer; /* Pointer cursor on hover */
+    
 }
 
 /* Card Colors (Specific categories with hover matching their color) */

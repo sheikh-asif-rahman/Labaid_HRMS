@@ -231,4 +231,38 @@
     border-radius: 6px;
     font-size: 14px;
   }
-  
+.custom-employee-approve-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.pagination-button {
+  padding: 6px 10px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  background-color: white;
+  color: #007bff;
+  cursor: pointer;
+  min-width: 35px;
+}
+
+.pagination-button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

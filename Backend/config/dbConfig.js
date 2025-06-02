@@ -25,7 +25,7 @@ const dbConfig = {
     //     requestTimeout: 30000, // Increase timeout to 30 seconds
 
     // },
-    // port: 1433,
+    // port: 1488,
 };
 
 // Database connection

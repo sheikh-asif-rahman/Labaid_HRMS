@@ -14,7 +14,7 @@ const employeeCreate = async (req, res) => {
       user_name,
       branch_id,
       personalPhone,
-      officialPhone,
+      officalPhone,
       department_id,
       designation_id,
       date_of_joining,
@@ -47,7 +47,7 @@ const employeeCreate = async (req, res) => {
     user_name = user_name.trim();
     branch_id = branch_id ? branch_id.toString().trim() : null;
     personalPhone = personalPhone ? personalPhone.toString().trim() : null;
-    officialPhone = officialPhone ? officialPhone.toString().trim() : null;
+    officalPhone = officalPhone ? officalPhone.toString().trim() : null;
     department_id = department_id ? department_id.toString().trim() : null;
     designation_id = designation_id ? designation_id.toString().trim() : null;
     email = email ? email.trim() : null;
@@ -75,7 +75,7 @@ const employeeCreate = async (req, res) => {
       EmployeeName: user_name,
       BranchId: branch_id,
       PersonalContactNumber: personalPhone,
-      OfficalContactNumber: officialPhone,
+      OfficalContactNumber: officalPhone,
       DepartmentId: department_id,
       DesignationId: designation_id,
       DateOfJoin: date_of_joining,
