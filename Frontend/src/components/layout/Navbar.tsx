@@ -228,7 +228,7 @@ const Navbar = ({
                   setFocused(false);
                 }, 150);
               }}
-              placeholder="Search employees, payroll..."
+              placeholder="Search"
               className="
                 bg-transparent
                 outline-none
