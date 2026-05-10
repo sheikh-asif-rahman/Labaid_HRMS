@@ -1,31 +1,42 @@
-// ==============================
-// src/components/layout/SidebarItem.tsx
-// ==============================
+import type {
+  LucideIcon,
+} from "lucide-react";
 
-import type { LucideIcon } from "lucide-react";
+import {
+  NavLink,
+} from "react-router-dom";
 
 interface SidebarItemProps {
   icon: LucideIcon;
+
   title: string;
-  active?: boolean;
+
+  path: string;
+
   onClick?: () => void;
 }
 
 const SidebarItem = ({
   icon: Icon,
   title,
-  active,
+  path,
   onClick,
 }: SidebarItemProps) => {
   return (
-    <button
+    <NavLink
+      to={path}
       onClick={onClick}
-      className={`
-        w-full flex items-center gap-4
-        px-4 py-3 rounded-2xl
+      className={({
+        isActive,
+      }) => `
+        w-full
+        flex items-center gap-4
+        px-4 py-3
+        rounded-2xl
         transition-all duration-200
+
         ${
-          active
+          isActive
             ? "bg-black text-white shadow-lg"
             : "text-zinc-600 hover:bg-zinc-100"
         }
@@ -36,7 +47,7 @@ const SidebarItem = ({
       <span className="font-medium text-sm">
         {title}
       </span>
-    </button>
+    </NavLink>
   );
 };
 

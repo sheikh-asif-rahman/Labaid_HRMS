@@ -6,8 +6,8 @@ const TodayStatusCard = () => {
       todayStatusData.totalMinutes) *
     100;
 
-  const radius = 38;
-  const stroke = 7;
+  const radius = 34;
+  const stroke = 6;
 
   const normalizedRadius =
     radius - stroke / 2;
@@ -25,14 +25,17 @@ const TodayStatusCard = () => {
         bg-white
         border border-zinc-200
         rounded-2xl
-        p-5
+        p-4
+        w-full
+        xl:max-w-[240px]
+        2xl:max-w-[260px]
       "
     >
       {/* ROW 1 */}
-      <div className="mb-4">
+      <div className="mb-3">
         <h3
           className="
-            text-sm
+            text-xs
             font-medium
             text-zinc-500
           "
@@ -45,17 +48,18 @@ const TodayStatusCard = () => {
       <div
         className="
           flex items-center justify-between
-          gap-4
-          mb-5
+          gap-3
+          mb-4
         "
       >
-        <div>
+        <div className="min-w-0">
           <h2
             className="
-              text-3xl
+              text-2xl
               font-bold
               text-zinc-800
               leading-none
+              whitespace-nowrap
             "
           >
             {todayStatusData.workedTime}
@@ -63,9 +67,10 @@ const TodayStatusCard = () => {
 
           <p
             className="
-              text-sm
+              text-xs
               text-zinc-500
               mt-2
+              whitespace-nowrap
             "
           >
             Working Hours
@@ -75,7 +80,7 @@ const TodayStatusCard = () => {
         <div
           className="
             relative
-            w-24 h-24
+            w-20 h-20
             shrink-0
           "
         >
@@ -117,7 +122,7 @@ const TodayStatusCard = () => {
           >
             <span
               className="
-                text-sm
+                text-xs
                 font-semibold
                 text-zinc-800
               "
@@ -131,17 +136,18 @@ const TodayStatusCard = () => {
       {/* ROW 3 */}
       <div
         className="
-          grid grid-cols-2 gap-4
-          pt-4
+          grid grid-cols-2 gap-3
+          pt-3
           border-t border-zinc-200
         "
       >
         <div>
           <p
             className="
-              text-xs
+              text-[10px]
               text-zinc-500
               mb-1
+              whitespace-nowrap
             "
           >
             Punch In
@@ -149,9 +155,10 @@ const TodayStatusCard = () => {
 
           <h4
             className="
-              text-sm
+              text-xs
               font-semibold
               text-zinc-800
+              whitespace-nowrap
             "
           >
             {todayStatusData.punchIn}
@@ -161,9 +168,10 @@ const TodayStatusCard = () => {
         <div>
           <p
             className="
-              text-xs
+              text-[10px]
               text-zinc-500
               mb-1
+              whitespace-nowrap
             "
           >
             Expected Out
@@ -171,9 +179,10 @@ const TodayStatusCard = () => {
 
           <h4
             className="
-              text-sm
+              text-xs
               font-semibold
               text-zinc-800
+              whitespace-nowrap
             "
           >
             {todayStatusData.expectedOut}

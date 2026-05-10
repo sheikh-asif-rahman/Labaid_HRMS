@@ -3,59 +3,97 @@ import {
   LineChart,
   Line,
   XAxis,
+  YAxis,
   Tooltip,
   CartesianGrid,
 } from "recharts";
+import { useState } from "react";
 
 interface Props {
   data: any[];
 }
 
+const lines = [
+  {
+    key: "HR",
+    label: "HR",
+  },
+  {
+    key: "IT",
+    label: "IT",
+  },
+  {
+    key: "Sales",
+    label: "Sales",
+  },
+  {
+    key: "Marketing",
+    label: "Marketing",
+  },
+];
+
 const ProductivityChart = ({ data }: Props) => {
+  const [activeLine, setActiveLine] =
+    useState<string>("HR");
+
   return (
     <div className="bg-white border border-zinc-200 rounded-2xl p-4 h-full">
-      <div className="flex items-center justify-between mb-4">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-4 gap-4 flex-wrap">
         <div>
           <h2 className="text-sm font-semibold text-zinc-800">
             Productivity Overview
           </h2>
 
-          <p className="text-[11px] text-zinc-500 mt-1">
-            Monthly department comparison
-          </p>
         </div>
 
+        {/* Legend */}
         <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-blue-400" />
-            <span className="text-[10px] text-zinc-500">
-              HR
-            </span>
-          </div>
+          {lines.map((item) => {
+            const isActive =
+              activeLine === item.key;
 
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span className="text-[10px] text-zinc-500">
-              IT
-            </span>
-          </div>
+            return (
+              <button
+                key={item.key}
+                onClick={() =>
+                  setActiveLine(item.key)
+                }
+                onMouseEnter={() =>
+                  setActiveLine(item.key)
+                }
+                className="flex items-center gap-2 transition-all"
+              >
+                <div
+                  className={`
+                    w-2 h-2 rounded-full transition-all duration-200
+                    ${
+                      isActive
+                        ? "bg-black"
+                        : "bg-zinc-400"
+                    }
+                  `}
+                />
 
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-amber-400" />
-            <span className="text-[10px] text-zinc-500">
-              Sales
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-pink-400" />
-            <span className="text-[10px] text-zinc-500">
-              Marketing
-            </span>
-          </div>
+                <span
+                  className={`
+                    text-[10px] transition-all duration-200
+                    ${
+                      isActive
+                        ? "text-black font-medium"
+                        : "text-zinc-500"
+                    }
+                  `}
+                >
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
+      {/* Chart */}
       <div className="h-[320px]">
         <ResponsiveContainer
           width="100%"
@@ -77,57 +115,73 @@ const ProductivityChart = ({ data }: Props) => {
               axisLine={false}
             />
 
+            <YAxis
+              tick={{
+                fontSize: 11,
+                fill: "#71717a",
+              }}
+              tickLine={false}
+              axisLine={false}
+            />
+
             <Tooltip
+              cursor={{
+                stroke: "#d4d4d8",
+                strokeWidth: 1,
+              }}
               contentStyle={{
                 borderRadius: "14px",
                 border: "1px solid #e4e4e7",
                 fontSize: "12px",
+                background: "#fff",
+              }}
+              labelStyle={{
+                fontWeight: 600,
+                color: "#18181b",
               }}
             />
 
-            <Line
-              type="monotone"
-              dataKey="HR"
-              stroke="#60a5fa"
-              strokeWidth={2.5}
-              dot={false}
-              activeDot={{
-                r: 5,
-              }}
-            />
+            {lines.map((line) => {
+              const isActive =
+                activeLine === line.key;
 
-            <Line
-              type="monotone"
-              dataKey="IT"
-              stroke="#34d399"
-              strokeWidth={2.5}
-              dot={false}
-              activeDot={{
-                r: 5,
-              }}
-            />
-
-            <Line
-              type="monotone"
-              dataKey="Sales"
-              stroke="#fbbf24"
-              strokeWidth={2.5}
-              dot={false}
-              activeDot={{
-                r: 5,
-              }}
-            />
-
-            <Line
-              type="monotone"
-              dataKey="Marketing"
-              stroke="#f472b6"
-              strokeWidth={2.5}
-              dot={false}
-              activeDot={{
-                r: 5,
-              }}
-            />
+              return (
+                <Line
+                  key={line.key}
+                  type="monotone"
+                  dataKey={line.key}
+                  stroke={
+                    isActive
+                      ? "#000000"
+                      : "#d4d4d8"
+                  }
+                  strokeWidth={
+                    isActive ? 3 : 2
+                  }
+                  dot={
+                    isActive
+                      ? {
+                          r: 3,
+                          fill: "#000",
+                          strokeWidth: 0,
+                        }
+                      : false
+                  }
+                  activeDot={false}
+                  onMouseEnter={() =>
+                    setActiveLine(line.key)
+                  }
+                  onClick={() =>
+                    setActiveLine(line.key)
+                  }
+                  style={{
+                    cursor: "pointer",
+                    transition:
+                      "all .2s ease",
+                  }}
+                />
+              );
+            })}
           </LineChart>
         </ResponsiveContainer>
       </div>

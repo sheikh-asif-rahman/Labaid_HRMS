@@ -4,7 +4,6 @@
 
 import {
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -13,14 +12,10 @@ import {
   Bell,
   LogOut,
   Menu,
-  Search,
   Settings,
   User,
 } from "lucide-react";
 
-import { employees } from "../../data/employeesData";
-import { payrollData } from "../../data/payrollData";
-import { attendanceData } from "../../data/attendanceData";
 import { notificationsData } from "../../data/notificationsData";
 
 interface NavbarProps {
@@ -35,12 +30,6 @@ const Navbar = ({
   // ==============================
   // STATES
   // ==============================
-
-  const [search, setSearch] =
-    useState("");
-
-  const [focused, setFocused] =
-    useState(false);
 
   const [profileOpen, setProfileOpen] =
     useState(false);
@@ -59,62 +48,6 @@ const Navbar = ({
 
   const profileRef =
     useRef<HTMLDivElement>(null);
-
-  // ==============================
-  // SEARCH DATA
-  // ==============================
-
-  const searchableData = [
-    ...employees.map((emp) => emp.name),
-
-    ...employees.map(
-      (emp) => emp.department
-    ),
-
-    ...employees.map((emp) => emp.role),
-
-    ...employees.map((emp) => emp.id),
-
-    ...payrollData.map(
-      (payroll) => payroll.employee
-    ),
-
-    ...payrollData.map(
-      (payroll) => payroll.month
-    ),
-
-    ...attendanceData.map(
-      (attendance) =>
-        attendance.employee
-    ),
-
-    ...attendanceData.map(
-      (attendance) =>
-        attendance.status
-    ),
-  ];
-
-  // REMOVE DUPLICATES
-  const uniqueSearchData = [
-    ...new Set(searchableData),
-  ];
-
-  // ==============================
-  // FILTERED SEARCH
-  // ==============================
-
-  const filteredSuggestions =
-    useMemo(() => {
-      if (!search.trim()) return [];
-
-      return uniqueSearchData
-        .filter((item) =>
-          item
-            .toLowerCase()
-            .includes(search.toLowerCase())
-        )
-        .slice(0, 8);
-    }, [search]);
 
   // ==============================
   // OUTSIDE CLICK
@@ -195,90 +128,6 @@ const Navbar = ({
 
       {/* RIGHT */}
       <div className="flex items-center gap-4">
-        {/* SEARCH */}
-        <div className="relative hidden md:block">
-          <div
-            className="
-              flex items-center gap-3
-              bg-zinc-100
-              px-4 py-3
-              rounded-2xl
-              w-[340px]
-              border border-transparent
-              focus-within:border-black
-              transition-all
-            "
-          >
-            <Search
-              size={18}
-              className="text-zinc-500"
-            />
-
-            <input
-              type="text"
-              value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-              onFocus={() =>
-                setFocused(true)
-              }
-              onBlur={() => {
-                setTimeout(() => {
-                  setFocused(false);
-                }, 150);
-              }}
-              placeholder="Search"
-              className="
-                bg-transparent
-                outline-none
-                w-full
-                text-sm
-              "
-            />
-          </div>
-
-          {/* SEARCH SUGGESTIONS */}
-          {focused &&
-            filteredSuggestions.length >
-              0 && (
-              <div
-                className="
-                  absolute top-[110%] left-0
-                  w-full
-                  bg-white
-                  border border-zinc-200
-                  rounded-2xl
-                  shadow-xl
-                  overflow-hidden
-                  z-50
-                "
-              >
-                {filteredSuggestions.map(
-                  (item, index) => (
-                    <button
-                      key={index}
-                      onClick={() =>
-                        setSearch(item)
-                      }
-                      className="
-                        w-full text-left
-                        px-4 py-3
-                        text-sm
-                        hover:bg-zinc-100
-                        transition-all
-                        border-b border-zinc-100
-                        last:border-none
-                      "
-                    >
-                      {item}
-                    </button>
-                  )
-                )}
-              </div>
-            )}
-        </div>
-
         {/* NOTIFICATION */}
         <div
           ref={notificationRef}
@@ -304,7 +153,7 @@ const Navbar = ({
               className="
                 absolute top-2 right-2
                 h-2 w-2 rounded-full
-                bg-red-500
+                bg-black
               "
             />
           </button>
@@ -331,15 +180,20 @@ const Navbar = ({
                   flex items-center justify-between
                 "
               >
-                <h3 className="font-semibold">
+                <h3
+                  className="
+                    text-sm
+                    font-semibold
+                  "
+                >
                   Notifications
                 </h3>
 
                 <span
                   className="
-                    text-xs
-                    bg-red-100
-                    text-red-500
+                    text-[11px]
+                    bg-black
+                    text-white
                     px-2 py-1 rounded-lg
                   "
                 >
@@ -374,7 +228,7 @@ const Navbar = ({
                         <div>
                           <h4
                             className="
-                              text-sm font-semibold
+                              text-xs font-semibold
                               text-zinc-800
                             "
                           >
@@ -385,7 +239,8 @@ const Navbar = ({
 
                           <p
                             className="
-                              text-sm text-zinc-500
+                              text-[11px]
+                              text-zinc-500
                               mt-1
                             "
                           >
@@ -397,7 +252,8 @@ const Navbar = ({
 
                         <span
                           className="
-                            text-xs text-zinc-400
+                            text-[10px]
+                            text-zinc-400
                             whitespace-nowrap
                           "
                         >
@@ -477,13 +333,19 @@ const Navbar = ({
                 />
 
                 <div>
-                  <h4 className="font-semibold">
+                  <h4
+                    className="
+                      text-sm
+                      font-semibold
+                    "
+                  >
                     Sheikh Asif
                   </h4>
 
                   <p
                     className="
-                      text-sm text-zinc-500
+                      text-[11px]
+                      text-zinc-500
                     "
                   >
                     HR Manager
@@ -501,10 +363,10 @@ const Navbar = ({
                     rounded-xl
                     hover:bg-zinc-100
                     transition-all
-                    text-sm
+                    text-xs
                   "
                 >
-                  <User size={18} />
+                  <User size={16} />
                   My Profile
                 </button>
 
@@ -516,10 +378,10 @@ const Navbar = ({
                     rounded-xl
                     hover:bg-zinc-100
                     transition-all
-                    text-sm
+                    text-xs
                   "
                 >
-                  <Settings size={18} />
+                  <Settings size={16} />
                   Settings
                 </button>
 
@@ -529,13 +391,12 @@ const Navbar = ({
                     flex items-center gap-3
                     px-4 py-3
                     rounded-xl
-                    hover:bg-red-50
-                    text-red-500
+                    hover:bg-zinc-100
                     transition-all
-                    text-sm
+                    text-xs
                   "
                 >
-                  <LogOut size={18} />
+                  <LogOut size={16} />
                   Logout
                 </button>
               </div>

@@ -13,39 +13,44 @@ import SidebarItem from "./SidebarItem";
 
 interface SidebarProps {
   open: boolean;
+
   setOpen: (open: boolean) => void;
-  active: string;
-  setActive: (active: string) => void;
 }
 
 const sidebarItems = [
   {
     title: "Dashboard",
+    path: "/dashboard",
     icon: LayoutDashboard,
   },
 
   {
     title: "Employees",
+    path: "/employees",
     icon: Users,
   },
 
   {
     title: "Attendance",
+    path: "/attendance",
     icon: Clock3,
   },
 
   {
     title: "Payroll",
+    path: "/payroll",
     icon: Wallet,
   },
 
   {
     title: "Profile",
+    path: "/profile",
     icon: UserCircle2,
   },
 
   {
     title: "Settings",
+    path: "/settings",
     icon: Settings,
   },
 ];
@@ -53,8 +58,6 @@ const sidebarItems = [
 const Sidebar = ({
   open,
   setOpen,
-  active,
-  setActive,
 }: SidebarProps) => {
   return (
     <>
@@ -65,6 +68,7 @@ const Sidebar = ({
           fixed inset-0 bg-black/40 z-40
           transition-all duration-300
           lg:hidden
+
           ${
             open
               ? "opacity-100 visible"
@@ -143,12 +147,11 @@ const Sidebar = ({
             <SidebarItem
               key={item.title}
               title={item.title}
+              path={item.path}
               icon={item.icon}
-              active={active === item.title}
-              onClick={() => {
-                setActive(item.title);
-                setOpen(false);
-              }}
+              onClick={() =>
+                setOpen(false)
+              }
             />
           ))}
         </div>

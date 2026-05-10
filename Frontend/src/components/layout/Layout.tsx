@@ -1,17 +1,27 @@
 import { useState } from "react";
 
-import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
+import {
+  Outlet,
+  useLocation,
+} from "react-router-dom";
 
-import Dashboard from "../../pages/Dashboard";
-import Profile from "../../pages/Profile";
+import Sidebar from "./Sidebar";
+
+import Navbar from "./Navbar";
 
 const Layout = () => {
   const [open, setOpen] =
     useState(false);
 
-  const [active, setActive] =
-    useState("Dashboard");
+  const location = useLocation();
+
+  const pathname =
+    location.pathname.split("/")[1];
+
+  const active = pathname
+    ? pathname.charAt(0).toUpperCase() +
+      pathname.slice(1)
+    : "Dashboard";
 
   return (
     <div className="bg-zinc-100">
@@ -19,8 +29,6 @@ const Layout = () => {
       <Sidebar
         open={open}
         setOpen={setOpen}
-        active={active}
-        setActive={setActive}
       />
 
       {/* MAIN */}
@@ -33,14 +41,7 @@ const Layout = () => {
 
         {/* PAGE CONTENT */}
         <main className="p-4 lg:p-8 min-h-screen">
-          
-          {active === "Dashboard" && (
-            <Dashboard />
-          )}
-
-          {active === "Profile" && (
-            <Profile />
-          )}
+          <Outlet />
         </main>
       </div>
     </div>
