@@ -1,16 +1,7 @@
-// ==============================
-// src/App.tsx
-// ==============================
-
 import Layout from "./components/layout/Layout";
-import Dashboard from "./pages/Dashboard";
 
 function App() {
-  return (
-    <Layout>
-      <Dashboard />
-    </Layout>
-  );
+  return <Layout />;
 }
 
 export default App;

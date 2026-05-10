@@ -3,13 +3,10 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
+import Dashboard from "../../pages/Dashboard";
+import Profile from "../../pages/Profile";
 
-const Layout = ({
-  children,
-}: LayoutProps) => {
+const Layout = () => {
   const [open, setOpen] =
     useState(false);
 
@@ -36,7 +33,14 @@ const Layout = ({
 
         {/* PAGE CONTENT */}
         <main className="p-4 lg:p-8 min-h-screen">
-          {children}
+          
+          {active === "Dashboard" && (
+            <Dashboard />
+          )}
+
+          {active === "Profile" && (
+            <Profile />
+          )}
         </main>
       </div>
     </div>
