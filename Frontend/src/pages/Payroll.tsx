@@ -9,6 +9,8 @@ import PayrollActivityCard from "../components/payroll/PayrollActivityCard";
 import PayrollTableCard from "../components/payroll/PayrollTableCard";
 
 import { payrollSummaryData } from "../data/payrollData";
+import PayrollCalendarCard from "../components/payroll/PayrollCalendarCard";
+import PayrollTasksCard from "../components/payroll/PayrollTasksCard";
 
 const Payroll = () => {
   return (
@@ -79,6 +81,20 @@ const Payroll = () => {
           <PayrollStatusCard />
         </div>
       </div>
+      {/* ROW 3 */}
+<div
+  className="
+    grid
+    grid-cols-1
+    xl:grid-cols-2
+    gap-4
+    items-start
+  "
+>
+  <PayrollCalendarCard />
+
+  <PayrollTasksCard />
+</div>
     </div>
   );
 };
