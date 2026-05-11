@@ -2,7 +2,11 @@ import PayrollSummaryCard from "../components/payroll/PayrollSummaryCard";
 
 import PayrollStatusCard from "../components/payroll/PayrollStatusCard";
 
-import PayrollQuickActions from "../components/payroll/PayrollQuickActions";
+import PayrollDistributionCard from "../components/payroll/PayrollDistributionCard";
+
+import PayrollActivityCard from "../components/payroll/PayrollActivityCard";
+
+import PayrollTableCard from "../components/payroll/PayrollTableCard";
 
 import { payrollSummaryData } from "../data/payrollData";
 
@@ -46,14 +50,33 @@ const Payroll = () => {
           })}
         </div>
 
-        {/* COLUMN 2 - STATUS */}
+        {/* COLUMN 2 - SALARY DISTRIBUTION */}
         <div className="h-full">
-          <PayrollStatusCard />
+          <PayrollDistributionCard />
         </div>
 
-        {/* COLUMN 3 - QUICK ACTION */}
+        {/* COLUMN 3 - RECENT ACTIVITY */}
         <div className="h-full">
-          <PayrollQuickActions />
+          <PayrollActivityCard />
+        </div>
+      </div>
+
+      {/* ROW 2 */}
+      <div
+        className="
+          grid
+          grid-cols-1
+          xl:grid-cols-[minmax(0,1fr)_320px]
+          gap-4
+          items-start
+        "
+      >
+        {/* TABLE */}
+        <PayrollTableCard />
+
+        {/* RIGHT SIDE */}
+        <div className="space-y-4">
+          <PayrollStatusCard />
         </div>
       </div>
     </div>
