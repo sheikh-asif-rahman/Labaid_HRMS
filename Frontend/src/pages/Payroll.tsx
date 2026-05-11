@@ -13,6 +13,15 @@ import PayrollCalendarCard from "../components/payroll/PayrollCalendarCard";
 import PayrollTasksCard from "../components/payroll/PayrollTasksCard";
 import PayslipDownloadsCard from "../components/payroll/PayslipDownloadsCard";
 import SalaryBreakdownCard from "../components/payroll/SalaryBreakdownCard";
+import PayrollTimelineCard from "../components/payroll/PayrollTimelineCard";
+import PayrollComplianceCard from "../components/payroll/PayrollComplianceCard";
+import PayrollTrendCard from "../components/payroll/PayrollTrendCard";
+import OvertimeTrendCard from "../components/payroll/OvertimeTrendCard";
+import PayrollReportsCard from "../components/payroll/PayrollReportsCard";
+import PayrollExportCard from "../components/payroll/PayrollExportCard";
+import TopPaidEmployeesCard from "../components/payroll/TopPaidEmployeesCard";
+import PayrollAlertsCard from "../components/payroll/PayrollAlertsCard";
+import PayrollFooterCards from "../components/payroll/PayrollFooterCards";
 
 const Payroll = () => {
   return (
@@ -108,6 +117,65 @@ const Payroll = () => {
 
         <SalaryBreakdownCard />
       </div>
+      {/* ROW 5 */}
+      <div
+        className="
+    grid
+    grid-cols-1
+    xl:grid-cols-[minmax(0,1fr)_340px]
+    gap-4
+    items-stretch
+  "
+      >
+        <PayrollTimelineCard />
+
+        <PayrollComplianceCard />
+      </div>
+      {/* ROW 6 */}
+      <div
+        className="
+    grid
+    grid-cols-1
+    xl:grid-cols-[minmax(0,1fr)_340px]
+    gap-4
+    items-stretch
+  "
+      >
+        <PayrollTrendCard />
+
+        <OvertimeTrendCard />
+      </div>
+      {/* ROW 7 */}
+      <div
+        className="
+    grid
+    grid-cols-1
+    xl:grid-cols-[minmax(0,1fr)_340px]
+    gap-4
+    items-stretch
+  "
+      >
+        <PayrollReportsCard />
+
+        <PayrollExportCard />
+      </div>
+      {/* ROW 8 */}
+      <div
+        className="
+    grid
+    grid-cols-1
+    xl:grid-cols-[minmax(0,1fr)_340px]
+    gap-4
+    items-stretch
+  "
+      >
+        <TopPaidEmployeesCard />
+
+        <PayrollAlertsCard />
+      </div>
+
+      {/* ROW 9 */}
+      <PayrollFooterCards />
     </div>
   );
 };
