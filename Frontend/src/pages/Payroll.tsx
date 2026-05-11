@@ -11,6 +11,8 @@ import PayrollTableCard from "../components/payroll/PayrollTableCard";
 import { payrollSummaryData } from "../data/payrollData";
 import PayrollCalendarCard from "../components/payroll/PayrollCalendarCard";
 import PayrollTasksCard from "../components/payroll/PayrollTasksCard";
+import PayslipDownloadsCard from "../components/payroll/PayslipDownloadsCard";
+import SalaryBreakdownCard from "../components/payroll/SalaryBreakdownCard";
 
 const Payroll = () => {
   return (
@@ -37,10 +39,7 @@ const Payroll = () => {
             const Icon = item.icon;
 
             return (
-              <div
-                key={item.id}
-                className="flex-1"
-              >
+              <div key={item.id} className="flex-1">
                 <PayrollSummaryCard
                   title={item.title}
                   value={item.value}
@@ -82,19 +81,33 @@ const Payroll = () => {
         </div>
       </div>
       {/* ROW 3 */}
-<div
-  className="
+      <div
+        className="
     grid
     grid-cols-1
     xl:grid-cols-2
     gap-4
     items-start
   "
->
-  <PayrollCalendarCard />
+      >
+        <PayrollCalendarCard />
 
-  <PayrollTasksCard />
-</div>
+        <PayrollTasksCard />
+      </div>
+      {/* ROW 4 */}
+      <div
+        className="
+    grid
+    grid-cols-1
+    xl:grid-cols-[minmax(0,1fr)_340px]
+    gap-4
+    items-stretch
+  "
+      >
+        <PayslipDownloadsCard />
+
+        <SalaryBreakdownCard />
+      </div>
     </div>
   );
 };
