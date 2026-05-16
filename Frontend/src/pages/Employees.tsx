@@ -1,39 +1,27 @@
 import { useState } from "react";
-import EmployeeStatsCards from "../components/Employees/EmployeeStatsCards";
-import EmployeeToolbar from "../components/Employees/EmployeeToolbar";
 
+import EmployeeToolbar from "../components/Employees/EmployeeToolbar";
+import EmployeeStatsCards from "../components/Employees/EmployeeStatsCards";
+import EmployeeTable from "../components/Employees/Employee-table";
 
 const Employees = () => {
   const [search, setSearch] = useState("");
 
   return (
     <div className="space-y-5">
+
+      {/* ROW 1: TOOLBAR */}
+      <EmployeeStatsCards />
+      {/* ROW 2: STATS */}
       <EmployeeToolbar
         search={search}
         setSearch={setSearch}
       />
 
-      <EmployeeStatsCards />
 
-      <div
-        className="
-          bg-white
-          border border-zinc-200
-          rounded-2xl
-          h-[400px]
-          flex items-center justify-center
-        "
-      >
-        <h1
-          className="
-            text-2xl
-            font-bold
-            text-zinc-800
-          "
-        >
-          Employees Page
-        </h1>
-      </div>
+      {/* ROW 3: TABLE */}
+      <EmployeeTable search={search} />
+
     </div>
   );
 };
