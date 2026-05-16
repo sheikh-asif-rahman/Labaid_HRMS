@@ -1,7 +1,13 @@
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { employeeTableData } from "../../data/employee-table-data";
+import { useNavigate } from "react-router-dom";
+
+const ITEMS_PER_PAGE = 5;
 
 const EmployeeTable = ({ search }: { search: string }) => {
+  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
 
   const filteredData = employeeTableData.filter((emp) =>
     emp.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -9,100 +15,102 @@ const EmployeeTable = ({ search }: { search: string }) => {
     emp.designation.toLowerCase().includes(search.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+
+  const start = (page - 1) * ITEMS_PER_PAGE;
+  const currentData = filteredData.slice(start, start + ITEMS_PER_PAGE);
+
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white overflow-hidden">
+    <div className="rounded-2xl border bg-white overflow-hidden">
 
+      {/* TABLE */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px]">
+        <table className="w-full min-w-[900px] text-xs">
 
-          {/* HEADER */}
-          <thead className="bg-zinc-50 border-b border-zinc-200">
-            <tr>
-              <th className="p-4 text-left text-sm text-zinc-600">Employee</th>
-              <th className="p-4 text-left text-sm text-zinc-600">Designation</th>
-              <th className="p-4 text-left text-sm text-zinc-600">Department</th>
-              <th className="p-4 text-left text-sm text-zinc-600">Facility</th>
-              <th className="p-4 text-left text-sm text-zinc-600">Status</th>
-              <th className="p-4 text-right text-sm text-zinc-600">Actions</th>
+          <thead className="bg-zinc-50 border-b">
+            <tr className="text-[11px] text-zinc-600">
+              <th className="p-3 text-left">Employee</th>
+              <th className="p-3 text-left">Designation</th>
+              <th className="p-3 text-left">Department</th>
+              <th className="p-3 text-left">Facility</th>
+              <th className="p-3 text-left">Status</th>
+              <th className="p-3 text-right">Actions</th>
             </tr>
           </thead>
 
-          {/* BODY */}
-          <tbody>
-            {filteredData.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="p-10 text-center text-zinc-400">
-                  No employees found
+          <tbody className="text-[12px]">
+            {currentData.map((emp) => (
+              <tr key={emp.id} className="border-b hover:bg-zinc-50">
+
+                {/* Employee */}
+                <td className="p-3 flex items-center gap-2">
+                  <img
+                    src={emp.image}
+                    className="h-8 w-8 rounded-full"
+                  />
+                  <div>
+                    <p className="text-[12px] font-medium">{emp.name}</p>
+                    <p className="text-[10px] text-zinc-500">{emp.id}</p>
+                  </div>
                 </td>
-              </tr>
-            ) : (
-              filteredData.map((emp) => (
-                <tr
-                  key={emp.id}
-                  className="border-b border-zinc-100 hover:bg-zinc-50 transition"
-                >
 
-                  {/* EMPLOYEE */}
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={emp.image}
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
-                      <div>
-                        <p className="font-medium text-zinc-800">
-                          {emp.name}
-                        </p>
-                        <p className="text-xs text-zinc-500">
-                          {emp.id}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
+                <td className="p-3">{emp.designation}</td>
+                <td className="p-3">{emp.department}</td>
+                <td className="p-3">{emp.facility}</td>
+                <td className="p-3">{emp.status}</td>
 
-                  <td className="p-4 text-zinc-700">{emp.designation}</td>
-                  <td className="p-4 text-zinc-700">{emp.department}</td>
-                  <td className="p-4 text-zinc-700">{emp.facility}</td>
+                {/* Actions */}
+                <td className="p-3">
+                  <div className="flex justify-end gap-2">
 
-                  {/* STATUS */}
-                  <td className="p-4">
-                    <span
-                      className={`
-                        px-3 py-1 text-xs rounded-full font-medium
-                        ${
-                          emp.status === "Active"
-                            ? "bg-green-100 text-green-600"
-                            : emp.status === "On Leave"
-                            ? "bg-yellow-100 text-yellow-600"
-                            : "bg-red-100 text-red-600"
-                        }
-                      `}
+                    <button
+                      onClick={() => navigate("/employees/form")}
+                      className="text-blue-600 flex items-center gap-1 text-[11px]"
                     >
-                      {emp.status}
-                    </span>
-                  </td>
+                      <Pencil size={14} />
+                    </button>
 
-                  {/* ACTIONS */}
-                  <td className="p-4">
-                    <div className="flex justify-end gap-2 text-zinc-500">
-                      <button className="hover:text-cyan-600">
-                        <Eye size={18} />
-                      </button>
-                      <button className="hover:text-blue-600">
-                        <Pencil size={18} />
-                      </button>
-                      <button className="hover:text-red-600">
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
+                    <button className="text-red-500">
+                      <Trash2 size={14} />
+                    </button>
 
-                </tr>
-              ))
-            )}
+                  </div>
+                </td>
+
+              </tr>
+            ))}
           </tbody>
 
         </table>
+      </div>
+
+      {/* PAGINATION */}
+      <div className="flex items-center justify-between p-3 border-t text-[11px]">
+
+        <p className="text-zinc-500">
+          Page {page} of {totalPages}
+        </p>
+
+        <div className="flex items-center gap-2">
+
+          <button
+            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            disabled={page === 1}
+            className="p-1.5 rounded-md border hover:bg-zinc-100 disabled:opacity-40"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          <button
+            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+            disabled={page === totalPages}
+            className="p-1.5 rounded-md border hover:bg-zinc-100 disabled:opacity-40"
+          >
+            <ChevronRight size={16} />
+          </button>
+
+        </div>
+
       </div>
 
     </div>

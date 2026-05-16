@@ -12,6 +12,7 @@ import Payroll from "./pages/Payroll";
 import Employees from "./pages/Employees";
 import Attendance from "./pages/Attendance";
 import Settings from "./pages/Settings";
+import EmployeeForm from "./pages/EmployeeForm"; // ✅ ADDED ONLY
 
 const App = () => {
   return (
@@ -41,6 +42,12 @@ const App = () => {
         <Route
           path="employees"
           element={<Employees />}
+        />
+
+        {/* ✅ ADDED ONLY THIS ROUTE */}
+        <Route
+          path="employees/form"
+          element={<EmployeeForm />}
         />
 
         <Route

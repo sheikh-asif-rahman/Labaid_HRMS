@@ -1,4 +1,5 @@
 import { Search, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // ✅ ADDED
 
 type EmployeeToolbarProps = {
   search: string;
@@ -9,8 +10,12 @@ const EmployeeToolbar = ({
   search,
   setSearch,
 }: EmployeeToolbarProps) => {
+
+  const navigate = useNavigate(); // ✅ ADDED
+
   return (
     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+
       {/* Search */}
       <div className="relative w-full md:w-[380px] lg:w-[420px]">
         <input
@@ -50,6 +55,7 @@ const EmployeeToolbar = ({
 
       {/* Add Employee */}
       <button
+        onClick={() => navigate("/employees/form")} // ✅ ADDED ONLY THIS LINE
         className="
           group
           relative
