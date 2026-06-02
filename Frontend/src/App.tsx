@@ -5,7 +5,6 @@ import {
 } from "react-router-dom";
 
 import Layout from "./components/layout/Layout";
-
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Payroll from "./pages/Payroll";
@@ -73,5 +72,4 @@ const App = () => {
     </Routes>
   );
 };
-
 export default App;

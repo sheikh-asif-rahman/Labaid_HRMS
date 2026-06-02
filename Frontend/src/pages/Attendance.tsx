@@ -1,23 +1,54 @@
+import AttendanceCard from "../components/Attendance/attendance_card";
+
+import { attendanceData } from "../data/attendance_data";
+
 const Attendance = () => {
   return (
-    <div
-      className="
-        bg-white
-        border border-zinc-200
-        rounded-2xl
-        h-[400px]
-        flex items-center justify-center
-      "
-    >
-      <h1
+    <div className="space-y-6">
+      <div
         className="
-          text-2xl
-          font-bold
-          text-zinc-800
+          flex items-center justify-between
         "
       >
-        Attendance Page
-      </h1>
+        <div>
+          <h1
+            className="
+              text-3xl
+              font-bold
+              text-zinc-800
+            "
+          >
+            Attendance Overview
+          </h1>
+
+          <p
+            className="
+              mt-1
+              text-sm
+              text-zinc-500
+            "
+          >
+            Branch wise employee attendance summary
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="
+          grid
+          grid-cols-1
+          gap-6
+          md:grid-cols-2
+          2xl:grid-cols-3
+        "
+      >
+        {attendanceData.map((item) => (
+          <AttendanceCard
+            key={item.id}
+            data={item}
+          />
+        ))}
+      </div>
     </div>
   );
 };
